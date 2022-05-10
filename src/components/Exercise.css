@@ -1,0 +1,12 @@
+.exercise {
+  max-width: 300px;
+  background: linear-gradient(135deg, white, rgb(92, 92, 92));
+  border-radius: 5px;
+  padding: 2vw;
+  margin-bottom: 1vw;
+}
+
+.delete-exercise {
+  cursor: pointer;
+  float: right;
+}

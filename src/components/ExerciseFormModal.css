@@ -1,0 +1,55 @@
+.exercise-form {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateX(50%) translateY(70%);
+  width: 50vw;
+  background-color: aliceblue;
+  border-radius: 5px;
+  padding: 2vw;
+  opacity: 1;
+  z-index: 1;
+}
+
+form {
+  margin-top: 5vw;
+}
+
+label,
+input {
+  display: block;
+  width: 100%;
+}
+
+.button {
+  font: inherit;
+  border: 1px solid #4f005f;
+  background: #4f005f;
+  color: white;
+  padding: 0.25rem 1rem;
+  cursor: pointer;
+  margin-top: 4vw;
+}
+.button:hover,
+.button:active {
+  background: #741188;
+  border-color: #741188;
+}
+.button:focus {
+  outline: none;
+}
+
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 0;
+  background: rgba(137, 137, 137, 0.75);
+}
+
+.close {
+  cursor: pointer;
+  float: right;
+}
