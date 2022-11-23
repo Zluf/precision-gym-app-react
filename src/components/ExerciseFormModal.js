@@ -33,7 +33,7 @@ export default function ExerciseForm(props) {
       "weight-kg": exWeight,
       sets: exSets,
     };
-    props.onAddEx(newExercise);
+    props.onAddExToStorage(newExercise);
     props.onToggleModal();
   };
 

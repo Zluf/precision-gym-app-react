@@ -6,17 +6,18 @@ import Exercise from "./Exercise";
 export default function MainWindow(props) {
   return (
     <main>
-      {props.exerciseList.map((exercise, i) => {
-        return (
-          <Exercise
-            key={props.exerciseList[i]["name"]}
-            exName={props.exerciseList[i]["name"]}
-            exWeight={props.exerciseList[i]["weight-kg"]}
-            exSets={props.exerciseList[i]["sets"]}
-            onDeleteExercise={props.onDeleteExercise}
-          />
-        );
-      })}
+      {props.exerciseList &&
+        props.exerciseList.map((exercise, i) => {
+          return (
+            <Exercise
+              key={props.exerciseList[i]["name"]}
+              exName={props.exerciseList[i]["name"]}
+              exWeight={props.exerciseList[i]["weight-kg"]}
+              exSets={props.exerciseList[i]["sets"]}
+              onDeleteExercise={props.onDeleteExercise}
+            />
+          );
+        })}
 
       <button
         onClick={() => {
