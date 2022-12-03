@@ -1,4 +1,4 @@
-import { react, useRef } from "react";
+import { useRef } from "react";
 import reactDom from "react-dom";
 import "./ExerciseFormModal.css";
 
@@ -33,7 +33,7 @@ export default function ExerciseForm(props) {
       "weight-kg": exWeight,
       sets: exSets,
     };
-    props.onAddExToStorage(newExercise);
+    props.onAddEx(newExercise);
     props.onToggleModal();
   };
 

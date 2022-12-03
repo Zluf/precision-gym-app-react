@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import "./App.css";
 import Logo from "./components/Logo/Logo";
 import MainWindow from "./components/MainWindow";
@@ -6,10 +6,17 @@ import ExerciseFormModal from "./components/ExerciseFormModal";
 
 function App() {
   const [modalWindow, setModalWindow] = React.useState(false);
+  const [exerciseList, setExerciseList] = React.useState([]);
 
-  let exerciseStorage = JSON.parse(localStorage.getItem("workouts"));
+  // const [exerciseList, setExerciseList] = React.useState(exerciseStorage);
+  // let exerciseStorage = JSON.parse(localStorage.getItem("workouts"));
 
-  let fetchExerciseDatabase = async function () {
+  // const addExToStorage = (newEx) => {
+  //   exerciseList.push(newEx);
+  //   localStorage.setItem("workouts", JSON.stringify(exerciseList));
+  // };
+
+  const fetchExerciseDatabase = useCallback(async () => {
     try {
       const response = await fetch(
         "https://precision-gym-default-rtdb.firebaseio.com/exercises.json"
@@ -17,14 +24,25 @@ function App() {
       if (!response.ok) {
         throw new Error("Something went wrong!");
       }
-      console.log(response);
+      const data = await response.json();
+      const arr = data ? Object.values(data) : [];
+      setExerciseList(arr);
     } catch (err) {
       console.log(err);
     }
-  };
+  }, []);
 
-  const [exerciseList, setExerciseList] = React.useState(exerciseStorage);
-  // const [exerciseList, setExerciseList] = React.useState(fetchExerciseDatabase);
+  const updateExerciseDatabase = async () => {
+    const response = await fetch(
+      "https://precision-gym-default-rtdb.firebaseio.com/exercises.json",
+      {
+        method: "PUT",
+        body: JSON.stringify(exerciseList),
+        headers: { "Content-Type": "application-json" },
+      }
+    );
+    console.log(response);
+  };
 
   const toggleModal = function () {
     setModalWindow((prevModalWindow) => {
@@ -32,13 +50,9 @@ function App() {
     });
   };
 
-  const addExToStorage = (newEx) => {
-    exerciseList.push(newEx);
-    localStorage.setItem("workouts", JSON.stringify(exerciseList));
-  };
-
   const addExToDatabase = async function (newEx) {
-    const response = await fetch(
+    // console.log(newEx);
+    await fetch(
       "https://precision-gym-default-rtdb.firebaseio.com/exercises.json",
       {
         method: "POST",
@@ -46,19 +60,26 @@ function App() {
         headers: { "Content-Type": "application-json" },
       }
     );
+    setExerciseList((prevExerciseList) => {
+      return [...prevExerciseList, newEx];
+    });
   };
 
   const deleteExercise = (exName) => {
-    setExerciseList((prevExerciseList) => {
-      return prevExerciseList.filter((ex) => ex.name !== exName);
+    const updatedExerciseList = exerciseList.filter((ex) => ex.name !== exName);
+    setExerciseList(updatedExerciseList);
+    fetch("https://precision-gym-default-rtdb.firebaseio.com/exercises.json", {
+      method: "PUT",
+      body: JSON.stringify(updatedExerciseList),
+      headers: { "Content-Type": "application-json" },
     });
   };
 
   React.useEffect(() => {
-    localStorage.setItem("workouts", JSON.stringify(exerciseList));
-    console.log(exerciseList);
-    console.log(JSON.parse(localStorage.workouts));
-  }, [deleteExercise]);
+    // localStorage.setItem("workouts", JSON.stringify(exerciseList));
+    // console.log(JSON.parse(localStorage.workouts));
+    fetchExerciseDatabase(); // executes upon mount, gets stored in memory, therefore does not executes on further re-renders
+  }, [fetchExerciseDatabase]);
 
   return (
     <div className="app">
@@ -71,7 +92,7 @@ function App() {
       />
       {modalWindow && (
         <ExerciseFormModal
-          onAddExToStorage={addExToDatabase}
+          onAddEx={addExToDatabase}
           onToggleModal={toggleModal}
         />
       )}
