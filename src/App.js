@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import "./App.css";
 import Logo from "./components/Logo/Logo";
 import MainWindow from "./components/MainWindow";
@@ -16,7 +16,7 @@ function App() {
   //   localStorage.setItem("workouts", JSON.stringify(exerciseList));
   // };
 
-  const fetchExerciseDatabase = useCallback(async () => {
+  const fetchExerciseDatabase = React.useCallback(async () => {
     try {
       const response = await fetch(
         "https://precision-gym-default-rtdb.firebaseio.com/exercises.json"
@@ -31,18 +31,6 @@ function App() {
       console.log(err);
     }
   }, []);
-
-  const updateExerciseDatabase = async () => {
-    const response = await fetch(
-      "https://precision-gym-default-rtdb.firebaseio.com/exercises.json",
-      {
-        method: "PUT",
-        body: JSON.stringify(exerciseList),
-        headers: { "Content-Type": "application-json" },
-      }
-    );
-    console.log(response);
-  };
 
   const toggleModal = function () {
     setModalWindow((prevModalWindow) => {
