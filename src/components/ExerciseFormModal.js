@@ -1,11 +1,11 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import reactDom from "react-dom";
 import "./ExerciseFormModal.css";
 
 export default function ExerciseForm(props) {
-  // const [exName, setExName] = react.useState("");
-  // const [exWeight, setExWeight] = react.useState("");
-  // const [exSets, setExSets] = react.useState("");
+  // const [exName, setExName] = useState("");
+  // const [exWeight, setExWeight] = useState("");
+  // const [exSets, setExSets] = useState("");
 
   // const exNameChangeHandler = (e) => {
   //   setExName(e.target.value);
@@ -41,7 +41,6 @@ export default function ExerciseForm(props) {
     <>
       {reactDom.createPortal(
         <div>
-          {/* <div className="backdrop" onClick={props.onToggleModal}></div> */}
           <div className="exercise-form">
             <div className="close" onClick={props.onToggleModal}>
               ❌

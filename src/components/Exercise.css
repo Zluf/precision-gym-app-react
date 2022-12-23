@@ -1,4 +1,5 @@
 .exercise {
+  cursor: pointer;
   max-width: 300px;
   background: linear-gradient(135deg, white, rgb(92, 92, 92));
   border-radius: 5px;

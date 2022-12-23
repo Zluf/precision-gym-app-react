@@ -1,25 +1,29 @@
 import React from "react";
 import "./MainWindow.css";
 import Exercise from "./Exercise";
+import AppContext from "../store/app-context";
 
-export default function MainWindow(props) {
+export default function MainWindow() {
+  const context = React.useContext(AppContext);
+  console.log(context);
   return (
     <main>
-      {props.exerciseList.map((exercise, i) => {
+      {context.exerciseList.map((exercise, i) => {
         return (
           <Exercise
-            key={props.exerciseList[i]["name"]}
-            exName={props.exerciseList[i]["name"]}
-            exWeight={props.exerciseList[i]["weight-kg"]}
-            exSets={props.exerciseList[i]["sets"]}
-            onDeleteExercise={props.onDeleteExercise}
+            key={context.exerciseList[i]["name"]}
+            exName={context.exerciseList[i]["name"]}
+            exWeight={context.exerciseList[i]["weight-kg"]}
+            exSets={context.exerciseList[i]["sets"]}
+            onDeleteExercise={context.onDeleteExercise}
+            onEditExercise={context.onEditExercise}
           />
         );
       })}
 
       <button
         onClick={() => {
-          props.onToggleModal();
+          context.toggleModal();
         }}
       >
         + Add Exercise

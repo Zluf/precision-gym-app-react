@@ -1,15 +1,21 @@
 import React from "react";
-// import exerciseList from "../RegisteredExercises.json";
 import "./Exercise.css";
+import AppContext from "../store/app-context";
 
 export default function Exercise(props) {
-  const deleteExercise = () => {
-    props.onDeleteExercise(props.exName);
+  const context = React.useContext(AppContext);
+
+  const onEditExercise = () => {
+    context.editExercise();
+  };
+
+  const onDeleteExercise = () => {
+    context.deleteExercise(props.exName);
   };
 
   return (
-    <div className="exercise">
-      <div className="delete-exercise" onClick={deleteExercise}>
+    <div className={`exercise ${props.exName}`} onClick={onEditExercise}>
+      <div className="delete-exercise" onClick={onDeleteExercise}>
         ❌
       </div>
       <div>Exercise name: {props.exName}</div>
