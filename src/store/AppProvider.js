@@ -5,6 +5,7 @@ import App from "../App";
 export default function AppProvider(props) {
   const [modalWindow, setModalWindow] = React.useState(false);
   const [exerciseList, setExerciseList] = React.useState([]);
+  const [currentExercise, setCurrentExercise] = React.useState(null);
 
   const fetchExerciseDatabase = React.useCallback(async () => {
     try {
@@ -35,6 +36,7 @@ export default function AppProvider(props) {
     setExerciseList((prevExerciseList) => {
       return [...prevExerciseList, newEx];
     });
+    console.log(exerciseList);
   };
 
   const deleteExercise = (exName) => {
@@ -47,30 +49,25 @@ export default function AppProvider(props) {
     });
   };
 
-  const toggleModal = function () {
-    setModalWindow((prevModalWindow) => {
-      return !prevModalWindow ? true : false;
-    });
+  const toggleModal = function (exerciseData) {
+    if (exerciseData) setCurrentExercise({ ...exerciseData });
+    setModalWindow(!modalWindow);
+    if (!exerciseData) setModalWindow(!modalWindow);
   };
 
-  const editExercise = () => {
-    toggleModal();
-    console.log("Opens Modal Window with passed Data");
-    console.log(exerciseList);
+  const context = {
+    exerciseList: exerciseList,
+    modalWindowIsOpen: modalWindow,
+    addExToDatabase: addExToDatabase,
+    deleteExercise: deleteExercise,
+    toggleModal: toggleModal,
+    currentExercise: currentExercise,
   };
 
   React.useEffect(() => {
     fetchExerciseDatabase(); // executes upon mount, gets stored in memory, therefore does not execute on further re-renders
   }, [fetchExerciseDatabase]);
 
-  const context = {
-    exerciseList: exerciseList,
-    modalWindow: modalWindow,
-    addExToDatabase: addExToDatabase,
-    deleteExercise: deleteExercise,
-    toggleModal: toggleModal,
-    editExercise: editExercise,
-  };
   return (
     <AppContext.Provider value={context}>
       <App>{props.children}</App>

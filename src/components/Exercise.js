@@ -5,16 +5,12 @@ import AppContext from "../store/app-context";
 export default function Exercise(props) {
   const context = React.useContext(AppContext);
 
-  const onEditExercise = () => {
-    context.editExercise();
-  };
-
   const onDeleteExercise = () => {
     context.deleteExercise(props.exName);
   };
 
   return (
-    <div className={`exercise ${props.exName}`} onClick={onEditExercise}>
+    <div className={`exercise ${props.exName}`} onClick={props.onEditExercise}>
       <div className="delete-exercise" onClick={onDeleteExercise}>
         ❌
       </div>

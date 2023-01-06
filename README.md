@@ -2,7 +2,11 @@
 
 ## About the app
 
-The purpose of this app is track the progress of a user's performance in the gym. The user would be able to manually add and edit their exercise routines. The routines with their input data would be later displayed in the UI.
+The purpose of this app is track the progress of a user's performance in the gym. The user would be able to manually add/edit their exercises and input statistics specific for each exercise. Added exercises could then be save in routines. The routines would be displayed in the UI.
+
+### Personal note
+
+As a gym-goer I'm interested in the progress of my performance. To do that I make notes tracking the amount of sets and repetitions (reps) in each exercise. Often towards the end of an exercise rep performance may slip as the muscles get fatigued. So I thought it would be a good idea to also track the **performance of each individal rep**. However, that would take too many notes, so it makes sense to have that in an app.
 
 ## Status
 

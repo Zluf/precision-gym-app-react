@@ -1,8 +1,11 @@
-import { useRef, useState } from "react";
+import React, { useRef } from "react";
 import reactDom from "react-dom";
+import AppContext from "../store/app-context";
 import "./ExerciseFormModal.css";
 
 export default function ExerciseForm(props) {
+  const context = React.useContext(AppContext);
+
   // const [exName, setExName] = useState("");
   // const [exWeight, setExWeight] = useState("");
   // const [exSets, setExSets] = useState("");
@@ -30,7 +33,7 @@ export default function ExerciseForm(props) {
 
     const newExercise = {
       name: exName,
-      "weight-kg": exWeight,
+      weightKg: exWeight,
       sets: exSets,
     };
     props.onAddEx(newExercise);
@@ -51,6 +54,9 @@ export default function ExerciseForm(props) {
                 name="exname"
                 type="text"
                 ref={nameInput}
+                defaultValue={
+                  context.currentExercise ? context.currentExercise.name : ""
+                }
                 // onChange={exNameChangeHandler}
               />
               <label htmlFor="weight">Weight</label>
@@ -58,6 +64,11 @@ export default function ExerciseForm(props) {
                 name="weight"
                 type="number"
                 ref={weightInput}
+                defaultValue={
+                  context.currentExercise
+                    ? context.currentExercise.weightKg
+                    : ""
+                }
                 // onChange={exWeightChangeHandler}
               />
               <label htmlFor="sets">Sets</label>
@@ -65,6 +76,9 @@ export default function ExerciseForm(props) {
                 name="sets"
                 type="number"
                 ref={setsInput}
+                defaultValue={
+                  context.currentExercise ? context.currentExercise.sets : ""
+                }
                 // onChange={exSetChangeHandler}
               />
               <button className="button" type="submit">

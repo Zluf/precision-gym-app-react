@@ -1,12 +1,7 @@
 main {
   position: relative;
   width: 90vw;
-  height: 80vh;
   padding: 5vw;
   background-color: grey;
   border-radius: 10px;
-}
-
-.unhide {
-  display: block;
 }
