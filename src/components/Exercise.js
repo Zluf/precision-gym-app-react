@@ -10,9 +10,12 @@ export default function Exercise(props) {
   };
 
   return (
-    <div className={`exercise ${props.exName}`} onClick={props.onEditExercise}>
-      <div className="delete-exercise" onClick={onDeleteExercise}>
+    <div className={`exercise ${props.exName}`}>
+      <div className="exercise-option" onClick={onDeleteExercise}>
         ❌
+      </div>
+      <div className="exercise-option" onClick={props.onEditExercise}>
+        📝
       </div>
       <div>Exercise name: {props.exName}</div>
       <div>Weight (kg): {props.exWeight}</div>

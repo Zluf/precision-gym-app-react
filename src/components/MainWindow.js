@@ -8,6 +8,7 @@ export default function MainWindow() {
 
   return (
     <main>
+      <h2>Routine Name</h2>
       {context.exerciseList.map((exercise, i) => {
         return (
           <Exercise

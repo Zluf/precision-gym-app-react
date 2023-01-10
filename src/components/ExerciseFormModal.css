@@ -1,8 +1,8 @@
 .exercise-form {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
-  transform: translateX(50%) translateY(70%);
+  transform: translateX(50%) translateY(50%);
   width: 50vw;
   background-color: aliceblue;
   border-radius: 5px;

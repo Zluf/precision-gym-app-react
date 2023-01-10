@@ -3,9 +3,9 @@ import AppContext from "./app-context";
 import App from "../App";
 
 export default function AppProvider(props) {
-  const [modalWindow, setModalWindow] = React.useState(false);
   const [exerciseList, setExerciseList] = React.useState([]);
   const [currentExercise, setCurrentExercise] = React.useState(null);
+  const [modalWindow, setModalWindow] = React.useState(false);
 
   const fetchExerciseDatabase = React.useCallback(async () => {
     try {
@@ -23,8 +23,13 @@ export default function AppProvider(props) {
     }
   }, []);
 
-  const addExToDatabase = async function (newEx) {
-    // console.log(newEx);
+  const addExToDatabase = async function (newExInput) {
+    const newEx = {
+      id: context.exerciseList.length + 1,
+      ...newExInput,
+    };
+    console.log(newEx);
+
     await fetch(
       "https://precision-gym-default-rtdb.firebaseio.com/exercises.json",
       {
@@ -36,7 +41,25 @@ export default function AppProvider(props) {
     setExerciseList((prevExerciseList) => {
       return [...prevExerciseList, newEx];
     });
-    console.log(exerciseList);
+    console.log("👊 Exercise added!");
+  };
+
+  const updateExercise = (exerciseData) => {
+    const updatedEx = { id: context.currentExercise.id, ...exerciseData };
+    const newExList = [
+      ...context.exerciseList.filter(
+        (ex) => ex.id !== context.currentExercise.id
+      ),
+      updatedEx,
+    ].sort((a, b) => a.id - b.id);
+
+    setExerciseList(newExList);
+    fetch("https://precision-gym-default-rtdb.firebaseio.com/exercises.json", {
+      method: "PUT",
+      body: JSON.stringify(newExList),
+      headers: { "Content-Type": "application-json" },
+    });
+    setCurrentExercise(null);
   };
 
   const deleteExercise = (exName) => {
@@ -50,9 +73,18 @@ export default function AppProvider(props) {
   };
 
   const toggleModal = function (exerciseData) {
-    if (exerciseData) setCurrentExercise({ ...exerciseData });
-    setModalWindow(!modalWindow);
-    if (!exerciseData) setModalWindow(!modalWindow);
+    if (exerciseData && modalWindow === false) {
+      setCurrentExercise({ ...exerciseData });
+      setModalWindow(true);
+    }
+    if (exerciseData && modalWindow === true) {
+      setCurrentExercise(null);
+      setModalWindow(false);
+    }
+    if (!exerciseData) {
+      setCurrentExercise(null);
+      setModalWindow(!modalWindow);
+    }
   };
 
   const context = {
@@ -62,6 +94,7 @@ export default function AppProvider(props) {
     deleteExercise: deleteExercise,
     toggleModal: toggleModal,
     currentExercise: currentExercise,
+    updateExercise: updateExercise,
   };
 
   React.useEffect(() => {

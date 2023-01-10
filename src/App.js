@@ -12,18 +12,8 @@ function App() {
     <div className="app">
       <div className="linear-gradient-layer"></div>
       <Logo />
-      <MainWindow
-        onToggleModal={context.toggleModal}
-        exerciseList={context.exerciseList}
-        onDeleteExercise={context.deleteExercise}
-        onEditExercise={context.editExercise}
-      />
-      {context.modalWindowIsOpen && (
-        <ExerciseFormModal
-          onAddEx={context.addExToDatabase}
-          onToggleModal={context.toggleModal}
-        />
-      )}
+      <MainWindow />
+      {context.modalWindowIsOpen && <ExerciseFormModal />}
     </div>
   );
 }

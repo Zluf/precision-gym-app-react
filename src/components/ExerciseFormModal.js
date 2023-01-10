@@ -3,7 +3,7 @@ import reactDom from "react-dom";
 import AppContext from "../store/app-context";
 import "./ExerciseFormModal.css";
 
-export default function ExerciseForm(props) {
+export default function ExerciseForm() {
   const context = React.useContext(AppContext);
 
   // const [exName, setExName] = useState("");
@@ -31,13 +31,14 @@ export default function ExerciseForm(props) {
     const exWeight = weightInput.current.value;
     const exSets = setsInput.current.value;
 
-    const newExercise = {
+    const exerciseData = {
       name: exName,
       weightKg: exWeight,
       sets: exSets,
     };
-    props.onAddEx(newExercise);
-    props.onToggleModal();
+    !context.currentExercise && context.addExToDatabase(exerciseData);
+    context.currentExercise && context.updateExercise(exerciseData);
+    context.toggleModal();
   };
 
   return (
@@ -45,7 +46,7 @@ export default function ExerciseForm(props) {
       {reactDom.createPortal(
         <div>
           <div className="exercise-form">
-            <div className="close" onClick={props.onToggleModal}>
+            <div className="close" onClick={context.toggleModal}>
               ❌
             </div>
             <form onSubmit={submitHandler}>
@@ -81,9 +82,16 @@ export default function ExerciseForm(props) {
                 }
                 // onChange={exSetChangeHandler}
               />
-              <button className="button" type="submit">
-                👊 Add Exercise
-              </button>
+              {!context.currentExercise && (
+                <button className="button" type="submit">
+                  👊 Add Exercise
+                </button>
+              )}
+              {context.currentExercise && (
+                <button className="button" type="submit">
+                  📝 Update Exercise
+                </button>
+              )}
             </form>
           </div>
         </div>,

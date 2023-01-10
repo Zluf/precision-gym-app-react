@@ -7,7 +7,7 @@
   margin-bottom: 1vw;
 }
 
-.delete-exercise {
+.exercise-option {
   z-index: 2;
   cursor: pointer;
   float: right;
