@@ -41,7 +41,7 @@ export default function AppProvider(props) {
     setExerciseList((prevExerciseList) => {
       return [...prevExerciseList, newEx];
     });
-    console.log("👊 Exercise added!");
+    // console.log("👊 Exercise added!");
   };
 
   const updateExercise = (exerciseData) => {
@@ -54,17 +54,18 @@ export default function AppProvider(props) {
     ].sort((a, b) => a.id - b.id);
 
     setExerciseList(newExList);
+    setCurrentExercise(null);
     fetch("https://precision-gym-default-rtdb.firebaseio.com/exercises.json", {
       method: "PUT",
       body: JSON.stringify(newExList),
       headers: { "Content-Type": "application-json" },
     });
-    setCurrentExercise(null);
   };
 
   const deleteExercise = (exName) => {
     const updatedExerciseList = exerciseList.filter((ex) => ex.name !== exName);
     setExerciseList(updatedExerciseList);
+
     fetch("https://precision-gym-default-rtdb.firebaseio.com/exercises.json", {
       method: "PUT",
       body: JSON.stringify(updatedExerciseList),

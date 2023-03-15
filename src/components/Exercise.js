@@ -9,6 +9,25 @@ export default function Exercise(props) {
     context.deleteExercise(props.exName);
   };
 
+  let sets = [];
+  for (let i = 0; i < props.exSets; i++) {
+    sets.push(
+      <div className="set-expanded" key={i}>
+        Set {i}:
+        <div className="rep-expanded">
+          Rep 1:
+          <div className="gauge">
+            <span className="circle"></span>
+            <span className="circle"></span>
+            <span className="circle"></span>
+            <span className="circle"></span>
+            <span className="circle"></span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`exercise ${props.exName}`}>
       <div className="exercise-option" onClick={onDeleteExercise}>
@@ -19,7 +38,7 @@ export default function Exercise(props) {
       </div>
       <div>Exercise name: {props.exName}</div>
       <div>Weight (kg): {props.exWeight}</div>
-      <div>Sets: {props.exSets}</div>
+      {sets.map((set) => set)}
     </div>
   );
 }

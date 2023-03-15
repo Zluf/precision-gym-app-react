@@ -80,7 +80,6 @@ export default function ExerciseForm() {
                 defaultValue={
                   context.currentExercise ? context.currentExercise.sets : ""
                 }
-                // onChange={exSetChangeHandler}
               />
               {!context.currentExercise && (
                 <button className="button" type="submit">
