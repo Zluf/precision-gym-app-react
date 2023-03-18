@@ -3,7 +3,8 @@ import "./App.css";
 import Logo from "./components/Logo/Logo";
 import MainWindow from "./components/MainWindow";
 import ExerciseFormModal from "./components/ExerciseFormModal";
-import AppContext from "./store/app-context";
+import AppContext from "./context/app-context";
+import InputValue from "./test-code/InputValue";
 
 function App() {
   const context = React.useContext(AppContext);
@@ -14,6 +15,7 @@ function App() {
       <Logo />
       <MainWindow />
       {context.modalWindowIsOpen && <ExerciseFormModal />}
+      <InputValue />
     </div>
   );
 }

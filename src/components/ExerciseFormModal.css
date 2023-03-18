@@ -8,7 +8,7 @@
   border-radius: 5px;
   padding: 2vw;
   opacity: 1;
-  z-index: 1;
+  z-index: 99;
 }
 
 form {

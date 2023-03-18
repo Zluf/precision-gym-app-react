@@ -1,29 +1,66 @@
 .exercise {
-  cursor: pointer;
-  max-width: 300px;
+  position: relative;
+  max-width: 400px;
   background: linear-gradient(135deg, white, rgb(92, 92, 92));
   border-radius: 5px;
-  padding: 2vw;
+  padding: 4vw 2vw 2vw 2vw;
   margin-bottom: 1vw;
 }
 
-.exercise-option {
+.exercise > * {
+  margin-bottom: 1vw;
+}
+
+.exercise-options {
+  position: absolute;
+  display: flex;
+  top: 1vw;
+  right: 1vw;
   z-index: 2;
   cursor: pointer;
-  float: right;
+  /* float: right; */
+}
+
+/* .exercise-stat {
+  display: inline-flex;
+} */
+
+.exercise-stat input {
+  width: 10ch; /* Set width to 1 character */
+  max-width: 100%;
+}
+
+.set-expanded > * {
+  margin-left: 1vw;
 }
 
 .rep-expanded {
   width: 100%;
   display: flex;
+  align-items: center;
   font-size: 0.8rem;
 }
 
-.circle {
-  display: inline-block;
-  width: 15px;
-  height: 15px;
-  background-color: green;
+.rep-expanded > span {
+  margin-right: 1vw;
+}
+
+.rep-expanded .gauge {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.gauge .circle {
+  width: 10px;
+  height: 10px;
+  background-color: white;
   border-radius: 50%;
-  margin-right: 2%;
+  margin-right: 12px;
+  cursor: pointer;
+}
+.circle:hover {
+  background-color: green;
+}
+.circle:hover ~ .circle {
+  background-color: green;
 }

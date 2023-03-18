@@ -17,6 +17,7 @@ export default function AppProvider(props) {
       }
       const data = await response.json();
       const arr = data ? Object.values(data) : [];
+
       setExerciseList(arr);
     } catch (err) {
       console.log(err);
@@ -28,7 +29,6 @@ export default function AppProvider(props) {
       id: context.exerciseList.length + 1,
       ...newExInput,
     };
-    console.log(newEx);
 
     await fetch(
       "https://precision-gym-default-rtdb.firebaseio.com/exercises.json",
@@ -41,11 +41,11 @@ export default function AppProvider(props) {
     setExerciseList((prevExerciseList) => {
       return [...prevExerciseList, newEx];
     });
-    // console.log("👊 Exercise added!");
+    console.log(newEx);
   };
 
-  const updateExercise = (exerciseData) => {
-    const updatedEx = { id: context.currentExercise.id, ...exerciseData };
+  const updateExercise = (newExerciseData) => {
+    const updatedEx = { id: context.currentExercise.id, ...newExerciseData };
     const newExList = [
       ...context.exerciseList.filter(
         (ex) => ex.id !== context.currentExercise.id
@@ -55,6 +55,23 @@ export default function AppProvider(props) {
 
     setExerciseList(newExList);
     setCurrentExercise(null);
+
+    fetch("https://precision-gym-default-rtdb.firebaseio.com/exercises.json", {
+      method: "PUT",
+      body: JSON.stringify(newExList),
+      headers: { "Content-Type": "application-json" },
+    });
+  };
+
+  const updateExerciseList2 = (updatedEx) => {
+    console.log(updatedEx);
+    const newExList = [
+      ...context.exerciseList.filter((ex) => ex.id !== updatedEx.id),
+      updatedEx,
+    ].sort((a, b) => a.id - b.id);
+
+    setExerciseList(newExList);
+
     fetch("https://precision-gym-default-rtdb.firebaseio.com/exercises.json", {
       method: "PUT",
       body: JSON.stringify(newExList),
@@ -96,10 +113,12 @@ export default function AppProvider(props) {
     toggleModal: toggleModal,
     currentExercise: currentExercise,
     updateExercise: updateExercise,
+    updateExerciseList2: updateExerciseList2,
   };
 
   React.useEffect(() => {
-    fetchExerciseDatabase(); // executes upon mount, gets stored in memory, therefore does not execute on further re-renders
+    // executes upon mount, gets stored in memory, therefore does not execute on further re-renders
+    fetchExerciseDatabase();
   }, [fetchExerciseDatabase]);
 
   return (
