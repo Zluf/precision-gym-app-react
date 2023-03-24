@@ -91,8 +91,9 @@ export default function AppProvider(props) {
   };
 
   const toggleModal = function (exerciseData) {
+    console.log(exerciseData);
     if (exerciseData && modalWindow === false) {
-      setCurrentExercise({ ...exerciseData });
+      setCurrentExercise(exerciseData);
       setModalWindow(true);
     }
     if (exerciseData && modalWindow === true) {

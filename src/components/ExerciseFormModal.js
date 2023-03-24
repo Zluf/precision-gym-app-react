@@ -20,11 +20,11 @@ export default function ExerciseForm() {
 
     const newExInput = {
       name: exName,
-      weightKg: exWeight,
+      weight: exWeight,
       sets: Array(+exSets).fill(Array(+exReps).fill(0)),
     };
     !context.currentExercise && context.addExToDatabase(newExInput);
-    context.currentExercise && context.updateExerciseList2(newExInput);
+    context.currentExercise && context.updateExercise(newExInput);
     context.toggleModal();
   };
 
@@ -37,16 +37,16 @@ export default function ExerciseForm() {
               ❌
             </div>
             <form onSubmit={submitHandler}>
-              <label htmlFor="exname">Exercise Name</label>
+              <label htmlFor="name">Exercise Name</label>
               <input
-                name="exname"
+                name="name"
                 type="text"
                 ref={nameInput}
                 defaultValue={
                   context.currentExercise ? context.currentExercise.name : ""
                 }
               />
-              <label htmlFor="weight">Weight</label>
+              <label htmlFor="weight">Weight (kg)</label>
               <input
                 name="weight"
                 type="number"

@@ -33,34 +33,3 @@
 .set-expanded > * {
   margin-left: 1vw;
 }
-
-.rep-expanded {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  font-size: 0.8rem;
-}
-
-.rep-expanded > span {
-  margin-right: 1vw;
-}
-
-.rep-expanded .gauge {
-  display: flex;
-  flex-direction: row-reverse;
-}
-
-.gauge .circle {
-  width: 10px;
-  height: 10px;
-  background-color: white;
-  border-radius: 50%;
-  margin-right: 12px;
-  cursor: pointer;
-}
-.circle:hover {
-  background-color: green;
-}
-.circle:hover ~ .circle {
-  background-color: green;
-}

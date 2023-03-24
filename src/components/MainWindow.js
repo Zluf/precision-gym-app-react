@@ -15,22 +15,37 @@ export default function MainWindow() {
     context.updateExerciseList2(updatedEx);
   };
 
+  const onInputKeyPressHandler = (event, exercise) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      const updatedEx = exercise;
+      const inputKey = Object.keys(updatedEx).find(
+        (key) => updatedEx[key] === updatedEx[event.target.name]
+      );
+      updatedEx[inputKey] = event.target.value;
+      console.log(updatedEx);
+      context.updateExerciseList2(updatedEx);
+
+      event.target.blur();
+    }
+  };
+
   return (
     <main>
       <h2>Routine Name</h2>
       {context.exerciseList.map((exercise, i) => {
         return (
           <Exercise
-            key={`${exercise.name}-${i}`}
-            exName={exercise.name}
-            exWeight={exercise.weightKg}
-            exSets={exercise.sets}
+            key={`${exercise.name}-${i + 1}`}
+            exIndex={i}
+            ex={exercise}
             onEditExercise={() => {
               context.toggleModal(exercise);
             }}
             onRepClick={(event) => {
               onRepClickHandler(event, exercise);
             }}
+            onInputKeyPress={(event) => onInputKeyPressHandler(event, exercise)}
             onDeleteExercise={context.onDeleteExercise}
           />
         );
