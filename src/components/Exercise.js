@@ -2,7 +2,6 @@ import React, { useRef } from "react";
 import "./Exercise.css";
 import AppContext from "../context/app-context";
 import RepGauge from "./RepGauge";
-import { render } from "react-dom";
 
 export default function Exercise(props) {
   const context = React.useContext(AppContext);
@@ -10,7 +9,7 @@ export default function Exercise(props) {
   const weightInput = useRef();
 
   const onDeleteExercise = () => {
-    context.deleteExercise(props.exName);
+    context.deleteExercise(props.ex.name);
   };
 
   let sets = [];

@@ -1,23 +1,29 @@
 import React from "react";
 import "./App.css";
 import Logo from "./components/Logo/Logo";
-import MainWindow from "./components/MainWindow";
+import Routine from "./components/Routine";
 import ExerciseFormModal from "./components/ExerciseFormModal";
 import AppContext from "./context/app-context";
-import InputValue from "./test-code/InputValue";
-import RepGauge from "./components/RepGauge";
 
 function App() {
   const context = React.useContext(AppContext);
 
+  const onClickButton = () => {
+    console.log("routine");
+  };
+
   return (
-    // <RepGauge />
     <div className="app">
-      <div className="linear-gradient-layer"></div>
+      {/* <div className="linear-gradient-layer"></div> */}
       <Logo />
-      <MainWindow />
+      {Object.values(context.routineList).length === 0 && <Routine />}
+      {Object.values(context.routineList).length > 0 &&
+        Object.values(context.routineList).map((routine, i) => {
+          return <Routine key={i} routineIndex={i} />;
+        })}
       {context.modalWindowIsOpen && <ExerciseFormModal />}
-      <InputValue />
+
+      <button>+ New Routine</button>
     </div>
   );
 }

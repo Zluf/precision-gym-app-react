@@ -46,6 +46,7 @@ export default function ExerciseForm() {
                   context.currentExercise ? context.currentExercise.name : ""
                 }
               />
+
               <label htmlFor="weight">Weight (kg)</label>
               <input
                 name="weight"
@@ -54,11 +55,10 @@ export default function ExerciseForm() {
                 min="0"
                 ref={weightInput}
                 defaultValue={
-                  context.currentExercise
-                    ? context.currentExercise.weightKg
-                    : ""
+                  context.currentExercise ? context.currentExercise.weight : ""
                 }
               />
+
               <label htmlFor="sets">Sets</label>
               <input
                 name="sets"
@@ -72,12 +72,24 @@ export default function ExerciseForm() {
                 }
               />
               <label htmlFor="reps">Reps per set</label>
-              <input name="reps" type="number" min="0" ref={repsInput} />
+              <input
+                name="reps"
+                type="number"
+                min="0"
+                ref={repsInput}
+                defaultValue={
+                  context.currentExercise
+                    ? context.currentExercise.sets[0].length
+                    : ""
+                }
+              />
+
               {!context.currentExercise && (
                 <button className="button" type="submit">
                   👊 Add Exercise
                 </button>
               )}
+
               {context.currentExercise && (
                 <button className="button" type="submit">
                   📝 Update Exercise
