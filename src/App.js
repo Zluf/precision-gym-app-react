@@ -1,23 +1,40 @@
 import React from "react";
 import "./App.css";
 import Logo from "./components/Logo/Logo";
-import MainWindow from "./components/MainWindow";
+import Routine from "./components/Routine";
 import ExerciseFormModal from "./components/ExerciseFormModal";
 import AppContext from "./context/app-context";
-import InputValue from "./test-code/InputValue";
-import RepGauge from "./components/RepGauge";
 
 function App() {
   const context = React.useContext(AppContext);
 
+  // console.log(context.routineList.sort((a, b) => a + b));
+  // console.log(context.routineList.map((r) => r[0]).sort((a, b) => a + b));
+
   return (
-    // <RepGauge />
     <div className="app">
-      <div className="linear-gradient-layer"></div>
       <Logo />
-      <MainWindow />
+      {/* {context.routineList.length === 0 && <Routine />} */}
+      {context.routineList
+        // .sort((a, b) => a - b)
+        .map((routine, i) => {
+          const routineClassName = routine[0]
+            .toLowerCase()
+            .split(" ")
+            .join("-");
+          return (
+            <Routine
+              key={i}
+              className={`section ${routineClassName}`}
+              routineName={routine[0]}
+              routine={routine[1]}
+              routineIndex={i}
+            />
+          );
+        })}
       {context.modalWindowIsOpen && <ExerciseFormModal />}
-      <InputValue />
+
+      <button>+ New Routine</button>
     </div>
   );
 }

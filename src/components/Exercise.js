@@ -2,7 +2,6 @@ import React, { useRef } from "react";
 import "./Exercise.css";
 import AppContext from "../context/app-context";
 import RepGauge from "./RepGauge";
-import { render } from "react-dom";
 
 export default function Exercise(props) {
   const context = React.useContext(AppContext);
@@ -10,7 +9,7 @@ export default function Exercise(props) {
   const weightInput = useRef();
 
   const onDeleteExercise = () => {
-    context.deleteExercise(props.exName);
+    context.deleteExercise(props.ex.name);
   };
 
   let sets = [];
@@ -18,20 +17,21 @@ export default function Exercise(props) {
     sets.push(
       <div className="set-expanded" key={setIndex + 1} data-set-num={setIndex}>
         Set {setIndex + 1}:
-        {context.exerciseList[props.exIndex].sets[setIndex].map(
-          (rep, repIndex) => (
-            <RepGauge
-              key={repIndex}
-              onRepClick={props.onRepClick}
-              exIndex={props.exIndex}
-              setIndex={setIndex}
-              repIndex={repIndex}
-            />
-          )
-        )}
+        {props.ex.sets[setIndex].map((rep, repIndex) => (
+          <RepGauge
+            key={repIndex}
+            rep={rep}
+            onRepClick={props.onRepClick}
+            repIndex={repIndex}
+          />
+        ))}
       </div>
     );
   }
+
+  const onBlurHandler = (event) => {
+    console.log(event.target);
+  };
 
   return (
     <div className={`exercise ${props.exName}`}>
@@ -39,27 +39,47 @@ export default function Exercise(props) {
         <div className="exercise-option" onClick={props.onEditExercise}>
           📝
         </div>
-        <div className="exercise-option" onClick={onDeleteExercise}>
+        <div
+          className="exercise-option"
+          onClick={() => {
+            context.deleteExercise(props.routineName, props.ex.name);
+          }}
+        >
           ❌
         </div>
       </div>
+
       <div className="exercise-stat exercise-stat-name">
         <label htmlFor="name">Exercise Name: </label>
         <input
           name="name"
+          type="text"
           defaultValue={props.ex.name}
-          ref={nameInput}
-          onKeyDown={props.onInputKeyPress}
+          onChange={(event) => event.target.value}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") event.target.blur();
+          }}
+          onBlur={props.onBlur}
+          style={{
+            width: `${props.ex.name.length}ch`,
+          }}
         ></input>
       </div>
+
       <div className="exercise-stat exercise-stat-weight">
         <label htmlFor="weight">Weight (kg): </label>
         <input
           name="weight"
           defaultValue={props.ex.weight}
-          onClick={props.onInputClick}
+          onBlur={props.onBlur} // ! to convert argument to Number
+          onChange={(event) => event.target.value}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") event.target.blur();
+          }}
           ref={weightInput}
-          onKeyDown={props.onInputKeyPress}
+          style={{
+            width: `5ch`,
+          }}
         ></input>
       </div>
       {sets.map((set) => set)}

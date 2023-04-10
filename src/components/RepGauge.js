@@ -3,9 +3,7 @@ import AppContext from "../context/app-context";
 import "./RepGauge.css";
 
 export default function RepGauge(props) {
-  const context = React.useContext(AppContext);
   let innerGauge = [];
-
   // Reverse iteration because CSS flex-direction: row-reverse
   for (let i = 5; i > 0; i--) {
     innerGauge.push(
@@ -15,11 +13,7 @@ export default function RepGauge(props) {
         data-value={i * 20}
         className="circle"
         style={{
-          backgroundColor:
-            context.exerciseList[props.exIndex].sets[props.setIndex][
-              props.repIndex
-            ] >=
-              i * 20 && "green",
+          backgroundColor: props.rep >= i * 20 && "green",
         }}
       ></span>
     );

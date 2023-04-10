@@ -1,7 +1,7 @@
-main {
-  position: relative;
+section {
   width: 90vw;
   padding: 5vw;
   background-color: grey;
   border-radius: 10px;
+  margin-bottom: 10px;
 }

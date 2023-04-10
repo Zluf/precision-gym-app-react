@@ -21,13 +21,14 @@
   /* float: right; */
 }
 
-/* .exercise-stat {
-  display: inline-flex;
-} */
-
 .exercise-stat input {
-  width: 10ch; /* Set width to 1 character */
-  max-width: 100%;
+  background: none;
+  border: none;
+}
+
+.exercise-stat input:focus {
+  background: white;
+  border: auto;
 }
 
 .set-expanded > * {

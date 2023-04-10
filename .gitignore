@@ -2,6 +2,6 @@ node_modules
 .vscode
 build
 notes.txt
-src/test-code
 database-backup.json
 database.json
+src/test-code

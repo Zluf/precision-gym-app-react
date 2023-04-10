@@ -5,11 +5,7 @@
 }
 
 html {
+  min-height: 100%;
   font-family: "Noto Sans JP", sans-serif;
-}
-
-body {
-  margin: 0;
-  width: 100vw;
-  height: 100vh;
+  background: linear-gradient(135deg, white, grey);
 }
