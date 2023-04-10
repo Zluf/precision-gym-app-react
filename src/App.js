@@ -8,18 +8,29 @@ import AppContext from "./context/app-context";
 function App() {
   const context = React.useContext(AppContext);
 
-  const onClickButton = () => {
-    console.log("routine");
-  };
+  // console.log(context.routineList.sort((a, b) => a + b));
+  // console.log(context.routineList.map((r) => r[0]).sort((a, b) => a + b));
 
   return (
     <div className="app">
-      {/* <div className="linear-gradient-layer"></div> */}
       <Logo />
-      {Object.values(context.routineList).length === 0 && <Routine />}
-      {Object.values(context.routineList).length > 0 &&
-        Object.values(context.routineList).map((routine, i) => {
-          return <Routine key={i} routineIndex={i} />;
+      {/* {context.routineList.length === 0 && <Routine />} */}
+      {context.routineList
+        // .sort((a, b) => a - b)
+        .map((routine, i) => {
+          const routineClassName = routine[0]
+            .toLowerCase()
+            .split(" ")
+            .join("-");
+          return (
+            <Routine
+              key={i}
+              className={`section ${routineClassName}`}
+              routineName={routine[0]}
+              routine={routine[1]}
+              routineIndex={i}
+            />
+          );
         })}
       {context.modalWindowIsOpen && <ExerciseFormModal />}
 

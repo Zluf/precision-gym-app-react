@@ -2,4 +2,6 @@ node_modules
 .vscode
 build
 notes.txt
+database-backup.json
+database.json
 src/test-code

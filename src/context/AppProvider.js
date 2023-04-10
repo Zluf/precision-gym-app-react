@@ -3,7 +3,7 @@ import AppContext from "./app-context";
 import App from "../App";
 
 export default function AppProvider(props) {
-  const [routineList, setRoutineList] = React.useState({});
+  const [routineList, setRoutineList] = React.useState([]);
   const [exerciseList, setExerciseList] = React.useState([]);
   const [currentExercise, setCurrentExercise] = React.useState(null);
   const [modalWindow, setModalWindow] = React.useState(false);
@@ -18,13 +18,11 @@ export default function AppProvider(props) {
         throw new Error("Could not reach database...");
       }
       const data = await response.json();
-      console.log(data);
-      // const arr = data ? Object.values(data) : [];
-      const newRoutineList = data ? data : {};
-      console.log(Object.values(newRoutineList));
+      console.log("Fetched Routines as Objects:", data);
+      const newRoutineList = data ? Object.entries(data) : [];
+      console.log("Fetched Routines as Object Entries:", newRoutineList);
 
       setRoutineList(newRoutineList);
-      // setExerciseList(arr);
     } catch (err) {
       console.log(err);
     }
@@ -114,30 +112,41 @@ export default function AppProvider(props) {
     );
   };
 
-  const updateExerciseList2 = (updatedEx) => {
-    console.log(updatedEx);
-    const newExList = [
-      ...context.exerciseList.filter((ex) => ex.id !== updatedEx.id),
+  const updateExerciseList2 = async (routineName, updatedEx) => {
+    // Updates local context
+    const newRoutineList = [
+      ...context.routineList.filter((r) => r[1].id !== updatedEx.id),
       updatedEx,
-    ].sort((a, b) => a.id - b.id);
+    ];
+    setExerciseList(newRoutineList);
 
-    setExerciseList(newExList);
-
-    fetch("https://precision-gym-default-rtdb.firebaseio.com/exercises.json", {
-      method: "PUT",
-      body: JSON.stringify(newExList),
-      headers: { "Content-Type": "application-json" },
-    });
+    // Updates database
+    await fetch(
+      `https://precision-gym-default-rtdb.firebaseio.com/routines/${routineName}/${
+        updatedEx.id - 1
+      }.json`,
+      {
+        method: "PUT",
+        body: JSON.stringify(updatedEx),
+        headers: { "Content-Type": "application-json" },
+      }
+    );
   };
 
-  const deleteExercise = (exName) => {
-    console.log(exName);
-    const updatedExerciseList = exerciseList.filter((ex) => ex.name !== exName);
-    setExerciseList(updatedExerciseList);
+  const deleteExercise = (routineName, exName) => {
+    console.log("Exercise to Be Deleted:", routineName, "->", exName);
+    const updatedExerciseList = context.routineList[routineName].filter(
+      (ex) => ex.name !== exName
+    );
+    const updatedRoutineList = context.routineList;
+    updatedRoutineList[routineName] = updatedExerciseList;
 
-    fetch("https://precision-gym-default-rtdb.firebaseio.com/exercises.json", {
+    console.log(`Updated Routine list:`, updatedRoutineList);
+    setRoutineList(updatedRoutineList);
+
+    fetch("https://precision-gym-default-rtdb.firebaseio.com/routines.json", {
       method: "PUT",
-      body: JSON.stringify(updatedExerciseList),
+      body: JSON.stringify(updatedRoutineList),
       headers: { "Content-Type": "application-json" },
     });
   };
