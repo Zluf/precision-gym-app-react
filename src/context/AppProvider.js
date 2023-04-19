@@ -4,8 +4,7 @@ import App from "../App";
 
 export default function AppProvider(props) {
   const [routineList, setRoutineList] = React.useState([]);
-  const [exerciseList, setExerciseList] = React.useState([]);
-  const [currentExercise, setCurrentExercise] = React.useState(null);
+  const [currentRoutine, setCurrentRoutine] = React.useState("");
   const [modalWindow, setModalWindow] = React.useState(false);
 
   const fetchExerciseDatabase = React.useCallback(async () => {
@@ -17,7 +16,6 @@ export default function AppProvider(props) {
         throw new Error("Could not reach database...");
       }
       const data = await response.json();
-      console.log("Fetched Routines as Objects:", data);
       const newRoutineList = data ? Object.entries(data) : [];
       console.log("Stored Routine List:", newRoutineList);
 
@@ -29,88 +27,54 @@ export default function AppProvider(props) {
 
   // !! To find a way to save automatically as unnamed routine
   const addRoutineToDatabase = async function (newExInput) {
-    const newRoutine = [
-      {
-        id: context.routineList.length + 1,
-        current: true,
-        exercises: [...newExInput],
-      },
-    ];
-
-    await fetch(
-      "https://precision-gym-default-rtdb.firebaseio.com/routines/new-routine.json",
-      {
-        method: "POST",
-        body: JSON.stringify(newRoutine),
-        headers: { "Content-Type": "application-json" },
-      }
-    );
-    setRoutineList((prevRoutineList) => {
-      return [...prevRoutineList, newRoutine];
-    });
-    console.log(newRoutine);
-  };
-
-  const addExToDatabase = async function (newExInput) {
-    // const newEx = {
-    //   id: context.routineList[currentExercise[0]]
-    //     ? context.routineList[currentExercise[0]].length + 1
-    //     : 1,
-    //   ...newExInput,
-    // };
+    // const newRoutine = [
+    //   {
+    //     id: routineList.length + 1,
+    //     exercises: [...newExInput],
+    //   },
+    // ];
     // await fetch(
-    //   `https://precision-gym-default-rtdb.firebaseio.com/routines/${newRoutineName}.json`,
+    //   "https://precision-gym-default-rtdb.firebaseio.com/routines/new-routine.json",
     //   {
     //     method: "POST",
-    //     // body: JSON.stringify({ name: newRoutineName, exercises: [newEx] }),
-    //     body: JSON.stringify(newEx),
+    //     body: JSON.stringify(newRoutine),
     //     headers: { "Content-Type": "application-json" },
     //   }
     // );
     // setRoutineList((prevRoutineList) => {
-    //   return [
-    //     ...prevRoutineList,
-    //     prevRoutineList
-    //       .find((r) => (r.name = newRoutineName))
-    //       .exercises.push(newEx),
-    //   ];
+    //   return [...prevRoutineList, newRoutine];
     // });
-    // setRoutineList((prevRoutineList) => {
-    //   console.log(prevRoutineList);
-    //   let updatedRoutineList = prevRoutineList;
-    //   updatedRoutineList[newRoutineName] = [];
-    //   updatedRoutineList[newRoutineName].push(newEx);
-    //   return Object.values(updatedRoutineList);
-    // });
+    // console.log(newRoutine);
   };
 
-  const updateExercise = async (newExerciseData) => {
-    const updatedEx = { id: context.currentExercise.id, ...newExerciseData };
-    const newExList = [
-      ...context.exerciseList.filter(
-        (ex) => ex.id !== context.currentExercise.id
-      ),
-      updatedEx,
-    ].sort((a, b) => a.name - b.name);
-
-    setExerciseList(newExList);
-    setCurrentExercise(null);
-
+  // firedby:  Routine -> Button (+ Add Exercise)
+  const addExToDatabase = async function (newExInput) {
     await fetch(
-      "https://precision-gym-default-rtdb.firebaseio.com/exercises.json",
+      `https://precision-gym-default-rtdb.firebaseio.com/routines/${currentRoutine}/${
+        newExInput.id - 1
+      }.json`,
       {
         method: "PUT",
-        body: JSON.stringify(newExList),
+        body: JSON.stringify(newExInput),
         headers: { "Content-Type": "application-json" },
       }
     );
+
+    let newRoutine = routineList.find((r) => (r[0] = currentRoutine));
+    newRoutine[1].push(newExInput);
+    setRoutineList((prevRoutineList) => {
+      return [
+        ...prevRoutineList.filter((r) => r[0] !== currentRoutine),
+        newRoutine,
+      ];
+    });
   };
 
   const updateExerciseList2 = async (routineName, updatedEx) => {
     console.log("Exercise to Be Updated:", routineName, "->", updatedEx.name);
     // Updates local context
     const newRoutineList = context.routineList.filter((r) => r[1]);
-    setExerciseList(newRoutineList);
+    setRoutineList(newRoutineList);
 
     // Updates database
     await fetch(
@@ -159,25 +123,9 @@ export default function AppProvider(props) {
 
   // fired by ExerciseFormModal -> submitHandler()
   // fired by Routine -> button onClick (+ Add Exercise)
-  const toggleModal = function (routineName, exerciseData) {
-    // // when exercise gets edited
-    // if (exerciseData && modalWindow === false) {
-    //   setCurrentExercise([routineName, exerciseData]);
-    //   setModalWindow(true);
-    // }
-
-    // // when new exercise gets added
-    // if (exerciseData && modalWindow === true) {
-    //   setCurrentExercise(null);
-    //   setModalWindow(false);
-    // }
-
-    // when Modal Window gets opened or closed
-    if (!exerciseData) {
-      setCurrentExercise([routineName, null]);
-      setModalWindow(!modalWindow);
-      // console.log(`Current Exercise Info:`, currentExercise);
-    }
+  const toggleModal = function (routineName) {
+    setModalWindow(!modalWindow);
+    setCurrentRoutine(routineName);
   };
 
   const context = {
@@ -186,8 +134,7 @@ export default function AppProvider(props) {
     addExToDatabase: addExToDatabase,
     deleteExercise: deleteExercise,
     toggleModal: toggleModal,
-    currentExercise: currentExercise,
-    updateExercise: updateExercise,
+    currentRoutine: currentRoutine,
     updateExerciseList2: updateExerciseList2,
     fetchExerciseDatabase: fetchExerciseDatabase,
   };

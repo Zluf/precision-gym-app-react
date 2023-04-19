@@ -54,7 +54,7 @@ export default function Routine(props) {
 
       <button
         onClick={() => {
-          context.toggleModal(props.routineName, null);
+          context.toggleModal(props.routineName);
         }}
       >
         + Add Exercise

@@ -1,5 +1,4 @@
 import React from "react";
-import AppContext from "../context/app-context";
 import "./RepGauge.css";
 
 export default function RepGauge(props) {

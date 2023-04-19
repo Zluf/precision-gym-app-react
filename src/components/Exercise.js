@@ -6,10 +6,6 @@ import RepGauge from "./RepGauge";
 export default function Exercise(props) {
   const context = React.useContext(AppContext);
 
-  const onDeleteExercise = () => {
-    context.deleteExercise(props.routineName, props.ex.name);
-  };
-
   let sets = [];
   for (let setIndex = 0; setIndex < props.ex.sets.length; setIndex++) {
     sets.push(

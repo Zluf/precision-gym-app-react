@@ -18,19 +18,19 @@ export default function ExerciseForm() {
     const exSets = setsInput.current.value;
     const exReps = repsInput.current.value;
 
+    const newExId =
+      context.routineList.find((r) => (r[0] = context.currentRoutine))[1]
+        .length + 1;
+
     const newExInput = {
+      id: newExId,
       name: exName,
       weight: exWeight,
       sets: Array(+exSets).fill(Array(+exReps).fill(0)),
     };
 
-    // when when exercise gets added
-    !context.currentExercise[1] && context.addExToDatabase(newExInput);
+    context.addExToDatabase(newExInput);
 
-    // when exercise gets edited
-    context.currentExercise[1] && context.updateExercise(newExInput);
-
-    // closes the Modal Window when it's currently open
     context.toggleModal();
   };
 
@@ -48,11 +48,7 @@ export default function ExerciseForm() {
                 name="name"
                 type="text"
                 ref={nameInput}
-                defaultValue={
-                  context.currentExercise[1]
-                    ? context.currentExercise[1].name
-                    : ""
-                }
+                defaultValue={""}
               />
 
               <label htmlFor="weight">Weight (kg)</label>
@@ -62,11 +58,7 @@ export default function ExerciseForm() {
                 step="any"
                 min="0"
                 ref={weightInput}
-                defaultValue={
-                  context.currentExercise[1]
-                    ? context.currentExercise[1].weight
-                    : ""
-                }
+                defaultValue={""}
               />
 
               <label htmlFor="sets">Sets</label>
@@ -75,36 +67,21 @@ export default function ExerciseForm() {
                 type="number"
                 ref={setsInput}
                 min="0"
-                defaultValue={
-                  context.currentExercise[1]
-                    ? context.currentExercise[1].sets.length
-                    : ""
-                }
+                defaultValue={""}
               />
+
               <label htmlFor="reps">Reps per set</label>
               <input
                 name="reps"
                 type="number"
                 min="0"
                 ref={repsInput}
-                defaultValue={
-                  context.currentExercise[1]
-                    ? context.currentExercise[1].sets.length
-                    : ""
-                }
+                defaultValue={""}
               />
 
-              {!context.currentExercise[1] && (
-                <button className="button" type="submit">
-                  👊 Add Exercise
-                </button>
-              )}
-
-              {context.currentExercise[1] && (
-                <button className="button" type="submit">
-                  📝 Update Exercise
-                </button>
-              )}
+              <button className="button" type="submit">
+                👊 Add Exercise
+              </button>
             </form>
           </div>
         </div>,
