@@ -23,8 +23,14 @@ export default function ExerciseForm() {
       weight: exWeight,
       sets: Array(+exSets).fill(Array(+exReps).fill(0)),
     };
-    !context.currentExercise && context.addExToDatabase(newExInput);
-    context.currentExercise && context.updateExercise(newExInput);
+
+    // when when exercise gets added
+    !context.currentExercise[1] && context.addExToDatabase(newExInput);
+
+    // when exercise gets edited
+    context.currentExercise[1] && context.updateExercise(newExInput);
+
+    // closes the Modal Window when it's currently open
     context.toggleModal();
   };
 
@@ -43,7 +49,9 @@ export default function ExerciseForm() {
                 type="text"
                 ref={nameInput}
                 defaultValue={
-                  context.currentExercise ? context.currentExercise.name : ""
+                  context.currentExercise[1]
+                    ? context.currentExercise[1].name
+                    : ""
                 }
               />
 
@@ -55,7 +63,9 @@ export default function ExerciseForm() {
                 min="0"
                 ref={weightInput}
                 defaultValue={
-                  context.currentExercise ? context.currentExercise.weight : ""
+                  context.currentExercise[1]
+                    ? context.currentExercise[1].weight
+                    : ""
                 }
               />
 
@@ -66,8 +76,8 @@ export default function ExerciseForm() {
                 ref={setsInput}
                 min="0"
                 defaultValue={
-                  context.currentExercise
-                    ? context.currentExercise.sets.length
+                  context.currentExercise[1]
+                    ? context.currentExercise[1].sets.length
                     : ""
                 }
               />
@@ -78,19 +88,19 @@ export default function ExerciseForm() {
                 min="0"
                 ref={repsInput}
                 defaultValue={
-                  context.currentExercise
-                    ? context.currentExercise.sets[0].length
+                  context.currentExercise[1]
+                    ? context.currentExercise[1].sets.length
                     : ""
                 }
               />
 
-              {!context.currentExercise && (
+              {!context.currentExercise[1] && (
                 <button className="button" type="submit">
                   👊 Add Exercise
                 </button>
               )}
 
-              {context.currentExercise && (
+              {context.currentExercise[1] && (
                 <button className="button" type="submit">
                   📝 Update Exercise
                 </button>

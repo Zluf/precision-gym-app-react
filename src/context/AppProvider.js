@@ -12,7 +12,6 @@ export default function AppProvider(props) {
     try {
       const response = await fetch(
         "https://precision-gym-default-rtdb.firebaseio.com/routines.json"
-        // "https://precision-gym-default-rtdb.firebaseio.com/exercises.json"
       );
       if (!response.ok) {
         throw new Error("Could not reach database...");
@@ -20,7 +19,7 @@ export default function AppProvider(props) {
       const data = await response.json();
       console.log("Fetched Routines as Objects:", data);
       const newRoutineList = data ? Object.entries(data) : [];
-      console.log("Fetched Routines as Object Entries:", newRoutineList);
+      console.log("Stored Routine List:", newRoutineList);
 
       setRoutineList(newRoutineList);
     } catch (err) {
@@ -28,8 +27,7 @@ export default function AppProvider(props) {
     }
   }, []);
 
-  // !! Find a way to add routine as 1 level before exList
-  // Saves automatically as unnamed routine
+  // !! To find a way to save automatically as unnamed routine
   const addRoutineToDatabase = async function (newExInput) {
     const newRoutine = [
       {
@@ -54,25 +52,21 @@ export default function AppProvider(props) {
   };
 
   const addExToDatabase = async function (newExInput) {
-    const newRoutineName = "New Routine";
-
-    const newEx = {
-      id: context.routineList[newRoutineName]
-        ? context.routineList[newRoutineName].length + 1
-        : 1,
-      ...newExInput,
-    };
-
-    await fetch(
-      `https://precision-gym-default-rtdb.firebaseio.com/routines/${newRoutineName}.json`,
-      // `https://precision-gym-default-rtdb.firebaseio.com/exercises.json`,
-      {
-        method: "POST",
-        // body: JSON.stringify({ name: newRoutineName, exercises: [newEx] }),
-        body: JSON.stringify(newEx),
-        headers: { "Content-Type": "application-json" },
-      }
-    );
+    // const newEx = {
+    //   id: context.routineList[currentExercise[0]]
+    //     ? context.routineList[currentExercise[0]].length + 1
+    //     : 1,
+    //   ...newExInput,
+    // };
+    // await fetch(
+    //   `https://precision-gym-default-rtdb.firebaseio.com/routines/${newRoutineName}.json`,
+    //   {
+    //     method: "POST",
+    //     // body: JSON.stringify({ name: newRoutineName, exercises: [newEx] }),
+    //     body: JSON.stringify(newEx),
+    //     headers: { "Content-Type": "application-json" },
+    //   }
+    // );
     // setRoutineList((prevRoutineList) => {
     //   return [
     //     ...prevRoutineList,
@@ -81,13 +75,13 @@ export default function AppProvider(props) {
     //       .exercises.push(newEx),
     //   ];
     // });
-    setRoutineList((prevRoutineList) => {
-      console.log(prevRoutineList);
-      let updatedRoutineList = prevRoutineList;
-      updatedRoutineList[newRoutineName] = [];
-      updatedRoutineList[newRoutineName].push(newEx);
-      return Object.values(updatedRoutineList);
-    });
+    // setRoutineList((prevRoutineList) => {
+    //   console.log(prevRoutineList);
+    //   let updatedRoutineList = prevRoutineList;
+    //   updatedRoutineList[newRoutineName] = [];
+    //   updatedRoutineList[newRoutineName].push(newEx);
+    //   return Object.values(updatedRoutineList);
+    // });
   };
 
   const updateExercise = async (newExerciseData) => {
@@ -113,11 +107,9 @@ export default function AppProvider(props) {
   };
 
   const updateExerciseList2 = async (routineName, updatedEx) => {
+    console.log("Exercise to Be Updated:", routineName, "->", updatedEx.name);
     // Updates local context
-    const newRoutineList = [
-      ...context.routineList.filter((r) => r[1].id !== updatedEx.id),
-      updatedEx,
-    ];
+    const newRoutineList = context.routineList.filter((r) => r[1]);
     setExerciseList(newRoutineList);
 
     // Updates database
@@ -134,41 +126,62 @@ export default function AppProvider(props) {
   };
 
   const deleteExercise = (routineName, exName) => {
-    console.log("Exercise to Be Deleted:", routineName, "->", exName);
-    const updatedExerciseList = context.routineList[routineName].filter(
-      (ex) => ex.name !== exName
-    );
-    const updatedRoutineList = context.routineList;
-    updatedRoutineList[routineName] = updatedExerciseList;
+    // Updates local context
+    const newRoutine = [
+      routineName,
+      context.routineList
+        .find((r) => r[0] === routineName)[1]
+        .filter((ex) => ex.name !== exName),
+    ];
 
-    console.log(`Updated Routine list:`, updatedRoutineList);
-    setRoutineList(updatedRoutineList);
+    console.log("New Routine:", newRoutine);
 
-    fetch("https://precision-gym-default-rtdb.firebaseio.com/routines.json", {
-      method: "PUT",
-      body: JSON.stringify(updatedRoutineList),
-      headers: { "Content-Type": "application-json" },
+    let newRoutineList = [
+      ...context.routineList.filter((r) => r[0] !== routineName),
+      newRoutine,
+    ];
+
+    setRoutineList((prevRoutineList) => {
+      console.log("New Routine List:", newRoutineList);
+      return newRoutineList;
     });
+
+    // Updates database
+    fetch(
+      `https://precision-gym-default-rtdb.firebaseio.com/routines/${routineName}.json`,
+      {
+        method: "PUT",
+        body: JSON.stringify(newRoutine[1]),
+        headers: { "Content-Type": "application-json" },
+      }
+    );
   };
 
-  const toggleModal = function (exerciseData) {
-    if (exerciseData && modalWindow === false) {
-      setCurrentExercise(exerciseData);
-      setModalWindow(true);
-    }
-    if (exerciseData && modalWindow === true) {
-      setCurrentExercise(null);
-      setModalWindow(false);
-    }
+  // fired by ExerciseFormModal -> submitHandler()
+  // fired by Routine -> button onClick (+ Add Exercise)
+  const toggleModal = function (routineName, exerciseData) {
+    // // when exercise gets edited
+    // if (exerciseData && modalWindow === false) {
+    //   setCurrentExercise([routineName, exerciseData]);
+    //   setModalWindow(true);
+    // }
+
+    // // when new exercise gets added
+    // if (exerciseData && modalWindow === true) {
+    //   setCurrentExercise(null);
+    //   setModalWindow(false);
+    // }
+
+    // when Modal Window gets opened or closed
     if (!exerciseData) {
-      setCurrentExercise(null);
+      setCurrentExercise([routineName, null]);
       setModalWindow(!modalWindow);
+      // console.log(`Current Exercise Info:`, currentExercise);
     }
   };
 
   const context = {
     routineList: routineList,
-    exerciseList: exerciseList,
     modalWindowIsOpen: modalWindow,
     addExToDatabase: addExToDatabase,
     deleteExercise: deleteExercise,
@@ -176,11 +189,11 @@ export default function AppProvider(props) {
     currentExercise: currentExercise,
     updateExercise: updateExercise,
     updateExerciseList2: updateExerciseList2,
+    fetchExerciseDatabase: fetchExerciseDatabase,
   };
 
   React.useEffect(() => {
     // executes upon mount, gets stored in memory, therefore does not execute on further re-renders
-    // console.log(routineList);
     fetchExerciseDatabase();
   }, [fetchExerciseDatabase]);
 

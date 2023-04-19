@@ -29,29 +29,32 @@ export default function Routine(props) {
   return (
     <section onClick={props.onClick} className={props.className}>
       <h2>{props.routineName}</h2>
-      {props.routine.map((exercise, i) => {
-        return (
-          <Exercise
-            key={`${exercise.name}-${i + 1}`}
-            exIndex={i}
-            routine={props.routine}
-            routineIndex={props.routineIndex}
-            ex={exercise}
-            onEditExercise={() => {
-              context.toggleModal(exercise);
-            }}
-            onRepClick={(event) => {
-              onRepClickHandler(event, props.routineName, exercise);
-            }}
-            onBlur={(event) => onBlurHandler(event, exercise)}
-            onDeleteExercise={context.deleteExercise}
-          />
-        );
-      })}
+      <div className="exercises-container">
+        {props.routine.map((exercise, i) => {
+          return (
+            <Exercise
+              key={`${exercise.name}-${i + 1}`}
+              exIndex={i}
+              routine={props.routine}
+              routineName={props.routineName}
+              routineIndex={props.routineIndex}
+              ex={exercise}
+              onEditExercise={() => {
+                context.toggleModal(exercise);
+              }}
+              onRepClick={(event) => {
+                onRepClickHandler(event, props.routineName, exercise);
+              }}
+              onBlur={(event) => onBlurHandler(event, exercise)}
+              onDeleteExercise={context.deleteExercise}
+            />
+          );
+        })}
+      </div>
 
       <button
         onClick={() => {
-          context.toggleModal();
+          context.toggleModal(props.routineName, null);
         }}
       >
         + Add Exercise

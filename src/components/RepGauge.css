@@ -27,5 +27,5 @@
 }
 .circle:hover ~ .circle {
   background-color: green;
-  z-index: 99;
+  z-index: 1;
 }
