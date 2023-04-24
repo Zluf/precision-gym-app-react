@@ -2,8 +2,10 @@ import React from "react";
 import "./Routine.css";
 import Exercise from "./Exercise";
 import AppContext from "../context/app-context";
+import slideChange from "../assets/icon-slide-change.svg";
 
 export default function Routine(props) {
+  const [currentSlide, setCurrentSlide] = React.useState(0);
   const context = React.useContext(AppContext);
 
   const onRepClickHandler = (event, routineName, exercise) => {
@@ -26,10 +28,41 @@ export default function Routine(props) {
     context.updateExerciseList2(props.routineName, updatedEx);
   };
 
+  const onSlideChange = (event, direction) => {
+    if (direction === "prev")
+      setCurrentSlide((prevCurrentSlide) => prevCurrentSlide - 1);
+    if (direction === "next")
+      setCurrentSlide((prevCurrentSlide) => prevCurrentSlide + 1);
+  };
+
   return (
     <section onClick={props.onClick} className={props.className}>
+      <div className="slide-buttons">
+        <button
+          className="slide-btn slide-left"
+          style={{ visibility: currentSlide === 0 && "hidden" }}
+          onClick={(event) => onSlideChange(event, "prev")}
+        >
+          <img src={slideChange} />
+        </button>
+
+        <button
+          className="slide-btn slide-right"
+          style={{
+            visibility: currentSlide === props.routine.length - 1 && "hidden",
+          }}
+          onClick={(event) => onSlideChange(event, "next")}
+        >
+          <img src={slideChange} />
+        </button>
+      </div>
+
       <h2>{props.routineName}</h2>
-      <div className="exercises-container">
+
+      <div
+        className="exercises-container"
+        style={{ transform: `translateX(-${50 * currentSlide}%)` }}
+      >
         {props.routine.map((exercise, i) => {
           return (
             <Exercise

@@ -5,6 +5,9 @@ import Routine from "./components/Routine";
 import ExerciseFormModal from "./components/ExerciseFormModal";
 import AppContext from "./context/app-context";
 
+// !! To add dates
+// !! To add login
+
 function App() {
   const context = React.useContext(AppContext);
 

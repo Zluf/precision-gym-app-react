@@ -25,12 +25,6 @@ In development...
 
 ## User Stories & Features
 
-![User Stories 01](./assets/user-stories-01.png)
-![User Stories 01](./assets/user-stories-02.png)
-![User Stories 01](./assets/user-stories-03.png)
-
-### Primary Features:
-
-- Add and edit exercise with basic stats:
-  - Execise name
-  -
+![User Stories 01](./user-stories/user-stories-01.png)
+![User Stories 01](./user-stories/user-stories-02.png)
+![User Stories 01](./user-stories/user-stories-03.png)
