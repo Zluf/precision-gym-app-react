@@ -43,7 +43,7 @@ export default function Routine(props) {
           style={{ visibility: currentSlide === 0 && "hidden" }}
           onClick={(event) => onSlideChange(event, "prev")}
         >
-          <img src={slideChange} />
+          <img src={slideChange} alt="slide-left arrow" />
         </button>
 
         <button
@@ -53,7 +53,7 @@ export default function Routine(props) {
           }}
           onClick={(event) => onSlideChange(event, "next")}
         >
-          <img src={slideChange} />
+          <img src={slideChange} alt="slide-right arrow" />
         </button>
       </div>
 
@@ -93,9 +93,7 @@ export default function Routine(props) {
         + Add Exercise
       </button>
 
-      <button onClick={props.onClickButton}>Click me!</button>
-
-      {/* <button>+ Add to Logbook</button> */}
+      <button onClick={props.onClickButton}>+ Add to Logbook</button>
     </section>
   );
 }
