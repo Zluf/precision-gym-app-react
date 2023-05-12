@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import "./App.css";
+import "./components/UI/Card.css";
 import Logo from "./components/Logo/Logo";
-import Routine from "./components/Routine";
-import ExerciseFormModal from "./components/ExerciseFormModal";
 import AppContext from "./context/app-context";
+import SignIn from "./components/auth/SignIn";
+import SignUp from "./components/auth/SignUp";
+import AuthDetails from "./components/auth/AuthDetails";
+import UserDashboard from "./components/UI/UserDashboard";
 
 // !! To add dates
 // !! To add login
@@ -15,23 +18,17 @@ function App() {
     <div className="app">
       <Logo />
 
-      {context.routineList.sort().map((routine, i) => {
-        const routineClassName = routine[0].toLowerCase().split(" ").join("-");
+      <AuthDetails />
 
-        return (
-          <Routine
-            key={i}
-            className={`section ${routineClassName}`}
-            routineName={routine[0]}
-            routine={routine[1]}
-            routineIndex={i}
-          />
-        );
-      })}
+      {!context.authUser && (
+        <section>
+          <SignIn />
+          <SignUp />
+          <AuthDetails />
+        </section>
+      )}
 
-      {context.modalWindowIsOpen && <ExerciseFormModal />}
-
-      <button>+ New Routine</button>
+      {context.authUser && <UserDashboard />}
     </div>
   );
 }

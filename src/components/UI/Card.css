@@ -1,0 +1,29 @@
+section {
+  position: relative;
+  width: 90vw;
+  padding: 5vw;
+  background-color: grey;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+section::before,
+section::after {
+  content: "";
+  position: absolute;
+  background-color: grey;
+  width: 1%;
+  box-shadow: 0px 0px 10px 10px grey;
+  z-index: 2;
+}
+section:before {
+  top: 0;
+  bottom: 0;
+  left: 0;
+}
+section:after {
+  top: 0;
+  bottom: 0;
+  right: 0;
+}

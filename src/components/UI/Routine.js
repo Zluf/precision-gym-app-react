@@ -1,8 +1,8 @@
 import React from "react";
 import "./Routine.css";
 import Exercise from "./Exercise";
-import AppContext from "../context/app-context";
-import slideChange from "../assets/icon-slide-change.svg";
+import AppContext from "../../context/app-context";
+import slideChange from "../../assets/icon-slide-change.svg";
 
 export default function Routine(props) {
   const [currentSlide, setCurrentSlide] = React.useState(0);

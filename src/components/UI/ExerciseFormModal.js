@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import reactDom from "react-dom";
-import AppContext from "../context/app-context";
+import AppContext from "../../context/app-context";
 import "./ExerciseFormModal.css";
 
 export default function ExerciseForm() {

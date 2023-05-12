@@ -6,24 +6,27 @@ export default function AppProvider(props) {
   const [routineList, setRoutineList] = React.useState([]);
   const [currentRoutine, setCurrentRoutine] = React.useState("");
   const [modalWindow, setModalWindow] = React.useState(false);
+  const [authUser, setAuthUser] = React.useState(null);
+
+  const setUser = (user) => setAuthUser(user);
 
   const fetchExerciseDatabase = React.useCallback(async () => {
     try {
       const response = await fetch(
-        "https://precision-gym-default-rtdb.firebaseio.com/routines.json"
+        `https://precision-gym-default-rtdb.firebaseio.com/users/${authUser}/routines.json`
       );
       if (!response.ok) {
         throw new Error("Could not reach database...");
       }
       const data = await response.json();
       const newRoutineList = data ? Object.entries(data) : [];
-      console.log("Stored Routine List:", newRoutineList);
+      // console.log("Stored Routine List:", newRoutineList);
 
       setRoutineList(newRoutineList);
     } catch (err) {
       console.log(err);
     }
-  }, []);
+  }, [authUser]);
 
   // !! To find a way to save automatically as unnamed routine
   const addRoutineToDatabase = async function (newExInput) {
@@ -50,7 +53,7 @@ export default function AppProvider(props) {
   // firedby:  Routine -> Button (+ Add Exercise)
   const addExToDatabase = async function (newExInput) {
     await fetch(
-      `https://precision-gym-default-rtdb.firebaseio.com/routines/${currentRoutine}/${
+      `https://precision-gym-default-rtdb.firebaseio.com/users/zluf/routines/${currentRoutine}/${
         newExInput.id - 1
       }.json`,
       {
@@ -78,7 +81,7 @@ export default function AppProvider(props) {
 
     // Updates database
     await fetch(
-      `https://precision-gym-default-rtdb.firebaseio.com/routines/${routineName}/${
+      `https://precision-gym-default-rtdb.firebaseio.com/users/zluf/routines/${routineName}/${
         updatedEx.id - 1
       }.json`,
       {
@@ -129,6 +132,8 @@ export default function AppProvider(props) {
   };
 
   const context = {
+    authUser: authUser,
+    setUser: setUser,
     routineList: routineList,
     modalWindowIsOpen: modalWindow,
     addExToDatabase: addExToDatabase,
@@ -141,6 +146,7 @@ export default function AppProvider(props) {
 
   React.useEffect(() => {
     // executes upon mount, gets stored in memory, therefore does not execute on further re-renders
+    console.log(`Authed User: ${authUser}`);
     fetchExerciseDatabase();
   }, [fetchExerciseDatabase]);
 

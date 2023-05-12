@@ -1,7 +1,7 @@
 import React from "react";
 import "./MainWindow.css";
 import Exercise from "./Exercise";
-import AppContext from "../context/app-context";
+import AppContext from "../../context/app-context";
 
 export default function MainWindow() {
   const context = React.useContext(AppContext);
