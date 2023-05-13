@@ -20,7 +20,7 @@ export default function AppProvider(props) {
       }
       const data = await response.json();
       const newRoutineList = data ? Object.entries(data) : [];
-      // console.log("Stored Routine List:", newRoutineList);
+      console.log("Stored Routine List:", newRoutineList);
 
       setRoutineList(newRoutineList);
     } catch (err) {
