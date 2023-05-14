@@ -36,7 +36,7 @@ export default function Routine(props) {
   };
 
   return (
-    <section onClick={props.onClick} className={props.className}>
+    <div onClick={props.onClick} className={props.className}>
       <div className="slide-buttons">
         <button
           className="slide-btn slide-left"
@@ -56,8 +56,6 @@ export default function Routine(props) {
           <img src={slideChange} alt="slide-right arrow" />
         </button>
       </div>
-
-      <h2>{props.routineName}</h2>
 
       <div
         className="exercises-container"
@@ -94,6 +92,6 @@ export default function Routine(props) {
       </button>
 
       <button onClick={props.onClickButton}>+ Add to Logbook</button>
-    </section>
+    </div>
   );
 }

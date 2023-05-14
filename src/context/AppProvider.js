@@ -10,6 +10,8 @@ export default function AppProvider(props) {
 
   const setUser = (user) => setAuthUser(user);
 
+  const setCurRoutine = (routine) => setCurrentRoutine(routine);
+
   const fetchExerciseDatabase = React.useCallback(async () => {
     try {
       const response = await fetch(
@@ -73,6 +75,7 @@ export default function AppProvider(props) {
     });
   };
 
+  // !! To update the Fetch pathŸ
   const updateExerciseList2 = async (routineName, updatedEx) => {
     console.log("Exercise to Be Updated:", routineName, "->", updatedEx.name);
     // Updates local context
@@ -134,6 +137,8 @@ export default function AppProvider(props) {
   const context = {
     authUser: authUser,
     setUser: setUser,
+    currentRoutine: currentRoutine,
+    setCurrentRoutine: setCurRoutine,
     routineList: routineList,
     modalWindowIsOpen: modalWindow,
     addExToDatabase: addExToDatabase,
@@ -145,8 +150,8 @@ export default function AppProvider(props) {
   };
 
   React.useEffect(() => {
+    // console.log(`Authed User: ${authUser}`);
     // executes upon mount, gets stored in memory, therefore does not execute on further re-renders
-    console.log(`Authed User: ${authUser}`);
     fetchExerciseDatabase();
   }, [fetchExerciseDatabase]);
 
