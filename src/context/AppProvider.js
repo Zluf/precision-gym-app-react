@@ -75,7 +75,7 @@ export default function AppProvider(props) {
     });
   };
 
-  // !! To update the Fetch pathŸ
+  // !! To update the Fetch path
   const updateExerciseList2 = async (routineName, updatedEx) => {
     console.log("Exercise to Be Updated:", routineName, "->", updatedEx.name);
     // Updates local context
