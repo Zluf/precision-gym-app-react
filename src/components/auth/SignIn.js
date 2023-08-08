@@ -21,7 +21,7 @@ export default function SignIn() {
   };
 
   return (
-    <div className="sign-in-container">
+    <div className="auth-container">
       <form onSubmit={signIn}>
         <h2>Log In to Your Account</h2>
         <input

@@ -1,0 +1,11 @@
+.auth-container {
+  margin-bottom: 2vw;
+}
+
+.auth-container * {
+  margin-top: 1vw;
+}
+
+.auth-container input {
+  width: 50%;
+}

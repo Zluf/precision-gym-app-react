@@ -20,7 +20,7 @@ export default function AppProvider(props) {
       }
       const data = await response.json();
       const newRoutineList = data ? Object.entries(data) : [];
-      console.log("Stored Routine List:", newRoutineList);
+      // console.log("Stored Routine List:", newRoutineList);
 
       setRoutineList(newRoutineList);
     } catch (err) {
@@ -146,7 +146,7 @@ export default function AppProvider(props) {
 
   React.useEffect(() => {
     // executes upon mount, gets stored in memory, therefore does not execute on further re-renders
-    console.log(`Authed User: ${authUser}`);
+    // console.log(`Authed User: ${authUser}`);
     fetchExerciseDatabase();
   }, [fetchExerciseDatabase]);
 

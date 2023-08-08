@@ -3,8 +3,7 @@ import "./App.css";
 import "./components/UI/Card.css";
 import Logo from "./components/Logo/Logo";
 import AppContext from "./context/app-context";
-import SignIn from "./components/auth/SignIn";
-import SignUp from "./components/auth/SignUp";
+import Auth from "./components/auth/Auth";
 import AuthDetails from "./components/auth/AuthDetails";
 import UserDashboard from "./components/UI/UserDashboard";
 
@@ -20,13 +19,7 @@ function App() {
 
       <AuthDetails />
 
-      {!context.authUser && (
-        <section>
-          <SignIn />
-          <SignUp />
-          <AuthDetails />
-        </section>
-      )}
+      {!context.authUser && <Auth />}
 
       {context.authUser && <UserDashboard />}
     </div>

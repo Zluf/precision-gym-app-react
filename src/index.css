@@ -9,3 +9,7 @@ html {
   font-family: "Noto Sans JP", sans-serif;
   background: linear-gradient(135deg, white, grey);
 }
+
+h2 {
+  margin: 0;
+}

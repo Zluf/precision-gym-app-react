@@ -18,7 +18,7 @@ export default function SignUp() {
   };
 
   return (
-    <div className="sign-in-container">
+    <div className="auth-container">
       <form onSubmit={signUp}>
         <h2>Create Account</h2>
         <input

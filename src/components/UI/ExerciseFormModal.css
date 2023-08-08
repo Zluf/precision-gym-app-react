@@ -11,10 +11,6 @@
   z-index: 99;
 }
 
-form {
-  margin-top: 5vw;
-}
-
 label,
 input {
   display: block;
