@@ -25,7 +25,7 @@ export default function AuthDetails() {
   };
 
   return (
-    <div>
+    <div className="auth-details">
       {context.authUser ? (
         <>
           <p>{`Signed in as ${context.authUser}`}</p>

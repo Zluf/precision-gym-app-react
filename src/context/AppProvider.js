@@ -16,15 +16,16 @@ export default function AppProvider(props) {
         `https://precision-gym-default-rtdb.firebaseio.com/users/${authUser}/routines.json`
       );
       if (!response.ok) {
+        // for some reason response is always ok
         throw new Error("Could not reach database...");
       }
       const data = await response.json();
       const newRoutineList = data ? Object.entries(data) : [];
-      // console.log("Stored Routine List:", newRoutineList);
+      console.log("Stored Routine List:", newRoutineList);
 
       setRoutineList(newRoutineList);
     } catch (err) {
-      console.log(err);
+      console.log(`💥 ${err}`);
     }
   }, [authUser]);
 
@@ -144,11 +145,11 @@ export default function AppProvider(props) {
     fetchExerciseDatabase: fetchExerciseDatabase,
   };
 
-  React.useEffect(() => {
-    // executes upon mount, gets stored in memory, therefore does not execute on further re-renders
-    // console.log(`Authed User: ${authUser}`);
-    fetchExerciseDatabase();
-  }, [fetchExerciseDatabase]);
+  // React.useEffect(() => {
+  //   // executes upon mount, gets stored in memory, therefore does not execute on further re-renders
+  //   // console.log(`Authed User: ${authUser}`);
+  //   fetchExerciseDatabase();
+  // }, [fetchExerciseDatabase]);
 
   return (
     <AppContext.Provider value={context}>

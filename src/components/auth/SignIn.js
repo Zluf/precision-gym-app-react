@@ -14,7 +14,7 @@ export default function SignIn() {
     event.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        console.log(userCredential.user.email);
+        // console.log(userCredential.user.email);
         context.setUser(userCredential.user.email.split("@")[0]);
       })
       .catch((error) => console.log(error));

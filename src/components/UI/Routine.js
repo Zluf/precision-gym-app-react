@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./Routine.css";
 import Exercise from "./Exercise";
 import AppContext from "../../context/app-context";
@@ -35,9 +35,11 @@ export default function Routine(props) {
       setCurrentSlide((prevCurrentSlide) => prevCurrentSlide + 1);
   };
 
+  console.log(props.routineName, Object.keys(props.routine.logbook));
+
   return (
     <section onClick={props.onClick} className={props.className}>
-      <div className="slide-buttons">
+      {/* <div className="slide-buttons">
         <button
           className="slide-btn slide-left"
           style={{ visibility: currentSlide === 0 && "hidden" }}
@@ -55,15 +57,21 @@ export default function Routine(props) {
         >
           <img src={slideChange} alt="slide-right arrow" />
         </button>
-      </div>
+      </div> */}
 
       <h2>{props.routineName}</h2>
+
+      <select name="routine-dates" id="routine-dates">
+        {Object.keys(props.routine.logbook).map((date) => (
+          <option value="">{date}</option>
+        ))}
+      </select>
 
       <div
         className="exercises-container"
         style={{ transform: `translateX(-${50 * currentSlide}%)` }}
       >
-        {props.routine.map((exercise, i) => {
+        {/* {props.routine.map((exercise, i) => {
           return (
             <Exercise
               key={`${exercise.name}-${i + 1}`}
@@ -82,7 +90,7 @@ export default function Routine(props) {
               onDeleteExercise={context.deleteExercise}
             />
           );
-        })}
+        })} */}
       </div>
 
       <button
