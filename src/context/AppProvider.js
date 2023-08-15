@@ -125,6 +125,24 @@ export default function AppProvider(props) {
     );
   };
 
+  const addNewSession = async (routineName) => {
+    console.log(`Add new session for ${routineName}`);
+    const date = new Date();
+    const month =
+      date.getMonth() < 10 ? `0${date.getMonth()}` : date.getMonth();
+    const todaysDate = `${date.getFullYear()}-${month}-${date.getDate()}`;
+    console.log(todaysDate);
+
+    await fetch(
+      `https://precision-gym-default-rtdb.firebaseio.com/users/${authUser}/routines/${routineName}/logbook/${todaysDate}.json`,
+      {
+        method: "POST",
+        body: JSON.stringify({ test: todaysDate }),
+        headers: { "Content-Type": "application-json" },
+      }
+    );
+  };
+
   // fired by ExerciseFormModal -> submitHandler()
   // fired by Routine -> button onClick (+ Add Exercise)
   const toggleModal = function (routineName) {
@@ -143,6 +161,7 @@ export default function AppProvider(props) {
     currentRoutine: currentRoutine,
     updateExerciseList2: updateExerciseList2,
     fetchExerciseDatabase: fetchExerciseDatabase,
+    addNewSession: addNewSession,
   };
 
   // React.useEffect(() => {

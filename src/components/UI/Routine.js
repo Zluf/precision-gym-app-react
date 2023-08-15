@@ -6,6 +6,10 @@ import slideChange from "../../assets/icon-slide-change.svg";
 
 export default function Routine(props) {
   const [currentSlide, setCurrentSlide] = React.useState(0);
+  const [sessionIsToDay, setSessionIsToday] = React.useState(false);
+  const [currentDate, setCurrentDate] = React.useState(
+    Object.keys(props.routine.logbook).length - 1
+  );
   const context = React.useContext(AppContext);
 
   const onRepClickHandler = (event, routineName, exercise) => {
@@ -35,7 +39,14 @@ export default function Routine(props) {
       setCurrentSlide((prevCurrentSlide) => prevCurrentSlide + 1);
   };
 
-  console.log(props.routineName, Object.keys(props.routine.logbook));
+  const setCurrentDateHandler = (dateListNum) => {
+    setCurrentDate(dateListNum);
+  };
+
+  const addNewSessionHandler = () => {
+    setSessionIsToday(true);
+    context.addNewSession(props.routineName);
+  };
 
   return (
     <section onClick={props.onClick} className={props.className}>
@@ -60,48 +71,61 @@ export default function Routine(props) {
       </div> */}
 
       <h2>{props.routineName}</h2>
+      <h3>{Object.keys(props.routine.logbook)[currentDate]}</h3>
 
       <select name="routine-dates" id="routine-dates">
-        {Object.keys(props.routine.logbook).map((date) => (
-          <option value="">{date}</option>
-        ))}
+        <option>Select a date</option>
+        {Object.keys(props.routine.logbook)
+          .map((date, i) => (
+            <option onClick={() => setCurrentDateHandler(i)} key={date}>
+              {date}
+            </option>
+          ))
+          .sort((a, b) => a - b)}
       </select>
+
+      <button onClick={addNewSessionHandler}>
+        + I'm doing a new session today!
+      </button>
 
       <div
         className="exercises-container"
         style={{ transform: `translateX(-${50 * currentSlide}%)` }}
       >
-        {/* {props.routine.map((exercise, i) => {
-          return (
-            <Exercise
-              key={`${exercise.name}-${i + 1}`}
-              exIndex={i}
-              routine={props.routine}
-              routineName={props.routineName}
-              routineIndex={props.routineIndex}
-              ex={exercise}
-              onEditExercise={() => {
-                context.toggleModal(exercise);
-              }}
-              onRepClick={(event) => {
-                onRepClickHandler(event, props.routineName, exercise);
-              }}
-              onBlur={(event) => onBlurHandler(event, exercise)}
-              onDeleteExercise={context.deleteExercise}
-            />
-          );
-        })} */}
+        {!sessionIsToDay &&
+          Object.values(props.routine.logbook)[currentDate].map(
+            (exercise, i) => {
+              return (
+                <Exercise
+                  key={`${exercise.name}-${i + 1}`}
+                  exIndex={i}
+                  routine={props.routine}
+                  routineName={props.routineName}
+                  routineIndex={props.routineIndex}
+                  ex={exercise}
+                  onEditExercise={() => {
+                    context.toggleModal(exercise);
+                  }}
+                  onRepClick={(event) => {
+                    onRepClickHandler(event, props.routineName, exercise);
+                  }}
+                  onBlur={(event) => onBlurHandler(event, exercise)}
+                  onDeleteExercise={context.deleteExercise}
+                />
+              );
+            }
+          )}
       </div>
 
-      <button
-        onClick={() => {
-          context.toggleModal(props.routineName);
-        }}
-      >
-        + Add Exercise
-      </button>
-
-      <button onClick={props.onClickButton}>+ Add to Logbook</button>
+      {sessionIsToDay && (
+        <button
+          onClick={() => {
+            context.toggleModal(props.routineName);
+          }}
+        >
+          + Add Exercise
+        </button>
+      )}
     </section>
   );
 }
