@@ -18,6 +18,10 @@ export default function ExerciseForm() {
     const exSets = setsInput.current.value;
     const exReps = repsInput.current.value;
 
+    console.log(
+      context.routineList.find((r) => (r[0] = context.currentRoutine))[1]
+        .logbook
+    );
     const newExId =
       context.routineList.find((r) => (r[0] = context.currentRoutine))[1]
         .length + 1;

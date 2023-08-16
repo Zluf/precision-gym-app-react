@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import AppContext from "./app-context";
 import App from "../App";
 
 export default function AppProvider(props) {
-  const [routineList, setRoutineList] = React.useState([]);
-  const [currentRoutine, setCurrentRoutine] = React.useState("");
-  const [modalWindow, setModalWindow] = React.useState(false);
   const [authUser, setAuthUser] = React.useState(null);
+  const [routineList, setRoutineList] = React.useState([]);
+  const [modalWindow, setModalWindow] = React.useState(false);
+  const [currentRoutine, setCurrentRoutine] = React.useState({
+    name: "",
+    date: "",
+    exercises: [],
+  });
 
   const setUser = (user) => setAuthUser(user);
 
@@ -21,7 +25,6 @@ export default function AppProvider(props) {
       }
       const data = await response.json();
       const newRoutineList = data ? Object.entries(data) : [];
-      console.log("Stored Routine List:", newRoutineList);
 
       setRoutineList(newRoutineList);
     } catch (err) {
@@ -51,27 +54,31 @@ export default function AppProvider(props) {
     // console.log(newRoutine);
   };
 
-  // firedby:  Routine -> Button (+ Add Exercise)
   const addExToDatabase = async function (newExInput) {
-    await fetch(
-      `https://precision-gym-default-rtdb.firebaseio.com/users/zluf/routines/${currentRoutine}/${
-        newExInput.id - 1
-      }.json`,
-      {
-        method: "PUT",
-        body: JSON.stringify(newExInput),
-        headers: { "Content-Type": "application-json" },
-      }
-    );
+    // fired by:  Routine -> Button (+ Add Exercise)
+    console.log(newExInput);
+    const newInputId =
+      currentRoutine.exercises.length > 0 ? currentRoutine.exercises.length : 0;
+    console.log(newInputId);
+    // await fetch(
+    //   `https://precision-gym-default-rtdb.firebaseio.com/users/${authUser}/routines/logbook/${currentRoutine.name}/logbook/${currentRoutine.date}/${
+    //     newExInput.id - 1
+    //   }.json`,
+    //   {
+    //     method: "PUT",
+    //     body: JSON.stringify(newExInput),
+    //     headers: { "Content-Type": "application-json" },
+    //   }
+    // );
 
-    let newRoutine = routineList.find((r) => (r[0] = currentRoutine));
-    newRoutine[1].push(newExInput);
-    setRoutineList((prevRoutineList) => {
-      return [
-        ...prevRoutineList.filter((r) => r[0] !== currentRoutine),
-        newRoutine,
-      ];
-    });
+    // let newRoutine = routineList.find((r) => (r[0] = currentRoutine));
+    // newRoutine[1].push(newExInput);
+    // setRoutineList((prevRoutineList) => {
+    //   return [
+    //     ...prevRoutineList.filter((r) => r[0] !== currentRoutine),
+    //     newRoutine,
+    //   ];
+    // });
   };
 
   const updateExerciseList2 = async (routineName, updatedEx) => {
@@ -125,29 +132,30 @@ export default function AppProvider(props) {
     );
   };
 
-  const addNewSession = async (routineName) => {
-    console.log(`Add new session for ${routineName}`);
+  const addNewSession = (routineName) => {
     const date = new Date();
     const month =
       date.getMonth() < 10 ? `0${date.getMonth()}` : date.getMonth();
     const todaysDate = `${date.getFullYear()}-${month}-${date.getDate()}`;
-    console.log(todaysDate);
 
-    await fetch(
-      `https://precision-gym-default-rtdb.firebaseio.com/users/${authUser}/routines/${routineName}/logbook/${todaysDate}.json`,
-      {
-        method: "POST",
-        body: JSON.stringify({ test: todaysDate }),
-        headers: { "Content-Type": "application-json" },
-      }
-    );
+    const allocatedRoutine = routineList.find((r) => r[0] == routineName);
+    allocatedRoutine[1].logbook[todaysDate] = [];
+    setCurrentRoutine({
+      name: allocatedRoutine[0],
+      date: todaysDate,
+      exercises: allocatedRoutine[1].logbook[todaysDate],
+    });
+    const newRoutineList = routineList.filter((r) => r[0] !== routineName);
+    newRoutineList.push(allocatedRoutine);
+    setRoutineList(newRoutineList);
   };
 
-  // fired by ExerciseFormModal -> submitHandler()
-  // fired by Routine -> button onClick (+ Add Exercise)
-  const toggleModal = function (routineName) {
+  const toggleModal = function (routineDetails) {
+    // fired by ExerciseFormModal -> submitHandler()
+    // fired by Routine -> button onClick (+ Add Exercise)
+
     setModalWindow(!modalWindow);
-    setCurrentRoutine(routineName);
+    setCurrentRoutine(routineDetails);
   };
 
   const context = {
@@ -163,6 +171,11 @@ export default function AppProvider(props) {
     fetchExerciseDatabase: fetchExerciseDatabase,
     addNewSession: addNewSession,
   };
+
+  useEffect(() => {
+    console.log("Stored Routine List:", routineList);
+    console.log("Currently edited routine is:", currentRoutine);
+  }, [routineList, currentRoutine]);
 
   // React.useEffect(() => {
   //   // executes upon mount, gets stored in memory, therefore does not execute on further re-renders

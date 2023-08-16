@@ -1,16 +1,21 @@
-import React, { useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import "./Routine.css";
 import Exercise from "./Exercise";
 import AppContext from "../../context/app-context";
 import slideChange from "../../assets/icon-slide-change.svg";
 
 export default function Routine(props) {
-  const [currentSlide, setCurrentSlide] = React.useState(0);
-  const [sessionIsToDay, setSessionIsToday] = React.useState(false);
-  const [currentDate, setCurrentDate] = React.useState(
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [sessionIsToday, setSessionIsToday] = useState(false);
+  const [displayedRoutine, setDisplayedRoutine] = useState({
+    name: props.routineName,
+    date: props.routineDate,
+    exercises: props.exercises,
+  });
+  const [currentDateIndex, setCurrentDateIndex] = useState(
     Object.keys(props.routine.logbook).length - 1
   );
-  const context = React.useContext(AppContext);
+  const context = useContext(AppContext);
 
   const onRepClickHandler = (event, routineName, exercise) => {
     const setNum = event.target.closest(".set-expanded").dataset.setNum;
@@ -39,14 +44,16 @@ export default function Routine(props) {
       setCurrentSlide((prevCurrentSlide) => prevCurrentSlide + 1);
   };
 
-  const setCurrentDateHandler = (dateListNum) => {
-    setCurrentDate(dateListNum);
+  const setCurrentDateIndexHandler = (dateListNum) => {
+    setCurrentDateIndex(dateListNum);
   };
 
   const addNewSessionHandler = () => {
     setSessionIsToday(true);
     context.addNewSession(props.routineName);
   };
+
+  console.log(currentDateIndex);
 
   return (
     <section onClick={props.onClick} className={props.className}>
@@ -71,13 +78,13 @@ export default function Routine(props) {
       </div> */}
 
       <h2>{props.routineName}</h2>
-      <h3>{Object.keys(props.routine.logbook)[currentDate]}</h3>
+      <h3>{Object.keys(props.routine.logbook)[currentDateIndex]}</h3>
 
       <select name="routine-dates" id="routine-dates">
         <option>Select a date</option>
         {Object.keys(props.routine.logbook)
           .map((date, i) => (
-            <option onClick={() => setCurrentDateHandler(i)} key={date}>
+            <option onClick={() => setCurrentDateIndexHandler(i)} key={date}>
               {date}
             </option>
           ))
@@ -92,35 +99,38 @@ export default function Routine(props) {
         className="exercises-container"
         style={{ transform: `translateX(-${50 * currentSlide}%)` }}
       >
-        {!sessionIsToDay &&
-          Object.values(props.routine.logbook)[currentDate].map(
-            (exercise, i) => {
-              return (
-                <Exercise
-                  key={`${exercise.name}-${i + 1}`}
-                  exIndex={i}
-                  routine={props.routine}
-                  routineName={props.routineName}
-                  routineIndex={props.routineIndex}
-                  ex={exercise}
-                  onEditExercise={() => {
-                    context.toggleModal(exercise);
-                  }}
-                  onRepClick={(event) => {
-                    onRepClickHandler(event, props.routineName, exercise);
-                  }}
-                  onBlur={(event) => onBlurHandler(event, exercise)}
-                  onDeleteExercise={context.deleteExercise}
-                />
-              );
-            }
-          )}
+        {Object.values(props.routine.logbook)[currentDateIndex].map(
+          (exercise, i) => {
+            return (
+              <Exercise
+                key={`${exercise.name}-${i + 1}`}
+                exIndex={i}
+                routine={props.routine}
+                routineName={props.routineName}
+                routineIndex={props.routineIndex}
+                ex={exercise}
+                onEditExercise={() => {
+                  context.toggleModal(exercise);
+                }}
+                onRepClick={(event) => {
+                  onRepClickHandler(event, props.routineName, exercise);
+                }}
+                onBlur={(event) => onBlurHandler(event, exercise)}
+                onDeleteExercise={context.deleteExercise}
+              />
+            );
+          }
+        )}
       </div>
 
-      {sessionIsToDay && (
+      {sessionIsToday && (
         <button
           onClick={() => {
-            context.toggleModal(props.routineName);
+            context.toggleModal({
+              name: props.routineName,
+              date: Object.keys(props.routine.logbook),
+              exercises: props.routine.logbook[currentDateIndex],
+            });
           }}
         >
           + Add Exercise
