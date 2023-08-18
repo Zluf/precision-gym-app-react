@@ -5,16 +5,11 @@ import AppContext from "../../context/app-context";
 import slideChange from "../../assets/icon-slide-change.svg";
 
 export default function Routine(props) {
+  const updatedAmountOfDates = Object.keys(props.routine.logbook).length - 1;
   const [currentSlide, setCurrentSlide] = useState(0);
   const [sessionIsToday, setSessionIsToday] = useState(false);
-  const [displayedRoutine, setDisplayedRoutine] = useState({
-    name: props.routineName,
-    date: props.routineDate,
-    exercises: props.exercises,
-  });
-  const [currentDateIndex, setCurrentDateIndex] = useState(
-    Object.keys(props.routine.logbook).length - 1
-  );
+  const [currentDateIndex, setCurrentDateIndex] =
+    useState(updatedAmountOfDates);
   const context = useContext(AppContext);
 
   const onRepClickHandler = (event, routineName, exercise) => {
@@ -44,8 +39,9 @@ export default function Routine(props) {
       setCurrentSlide((prevCurrentSlide) => prevCurrentSlide + 1);
   };
 
-  const setCurrentDateIndexHandler = (dateListNum) => {
+  const setCurrentDateIndexHandler = (date, dateListNum) => {
     setCurrentDateIndex(dateListNum);
+    if (dateListNum !== currentDateIndex) setSessionIsToday(!sessionIsToday);
   };
 
   const addNewSessionHandler = () => {
@@ -53,7 +49,9 @@ export default function Routine(props) {
     context.addNewSession(props.routineName);
   };
 
-  console.log(currentDateIndex);
+  useEffect(() => {
+    setCurrentDateIndex(updatedAmountOfDates);
+  }, [context.routineList]);
 
   return (
     <section onClick={props.onClick} className={props.className}>
@@ -84,16 +82,21 @@ export default function Routine(props) {
         <option>Select a date</option>
         {Object.keys(props.routine.logbook)
           .map((date, i) => (
-            <option onClick={() => setCurrentDateIndexHandler(i)} key={date}>
+            <option
+              onClick={() => setCurrentDateIndexHandler(date, i)}
+              key={date}
+            >
               {date}
             </option>
           ))
           .sort((a, b) => a - b)}
       </select>
 
-      <button onClick={addNewSessionHandler}>
-        + I'm doing a new session today!
-      </button>
+      {!sessionIsToday && (
+        <button onClick={addNewSessionHandler}>
+          + I'm doing a new session today!
+        </button>
+      )}
 
       <div
         className="exercises-container"
