@@ -174,14 +174,8 @@ export default function AppProvider(props) {
 
   useEffect(() => {
     console.log("Stored Routine List:", routineList);
-    console.log("Currently edited routine is:", currentRoutine);
+    // console.log("Currently edited routine is:", currentRoutine);
   }, [routineList, currentRoutine]);
-
-  // React.useEffect(() => {
-  //   // executes upon mount, gets stored in memory, therefore does not execute on further re-renders
-  //   // console.log(`Authed User: ${authUser}`);
-  //   fetchExerciseDatabase();
-  // }, [fetchExerciseDatabase]);
 
   return (
     <AppContext.Provider value={context}>

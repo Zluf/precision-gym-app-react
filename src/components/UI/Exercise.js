@@ -9,9 +9,33 @@ export default function Exercise(props) {
   let sets = [];
   for (let setIndex = 0; setIndex < props.ex.sets.length; setIndex++) {
     sets.push(
-      <div className="set-expanded" key={setIndex + 1} data-set-num={setIndex}>
-        Set {setIndex + 1}:
-        {props.ex.sets[setIndex].map((rep, repIndex) => (
+      <div
+        className="exercise-stat set-expanded"
+        key={setIndex + 1}
+        data-set-num={setIndex}
+      >
+        <span className="exercise-stat exercise-stat-set-num">
+          Set {setIndex + 1},
+        </span>
+        <div className="exercise-stat exercise-stat-weight">
+          <label htmlFor="weight">weight (kg): </label>
+          <input
+            name="weight"
+            defaultValue={props.ex.sets[setIndex].weight}
+            onBlur={props.onBlur} // ! to convert argument to Number
+            onChange={(event) => event.target.value}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") event.target.blur();
+            }}
+            style={{
+              width: `5ch`,
+            }}
+          ></input>
+        </div>
+        {/* <span className="weight">
+          weight (kg): {props.ex.sets[setIndex].weight}
+        </span> */}
+        {props.ex.sets[setIndex].reps.map((rep, repIndex) => (
           // rep is a value inside the array
           <RepGauge
             key={repIndex}
@@ -51,22 +75,6 @@ export default function Exercise(props) {
           onBlur={props.onBlur}
           style={{
             width: `${props.ex.name.length}ch`,
-          }}
-        ></input>
-      </div>
-
-      <div className="exercise-stat exercise-stat-weight">
-        <label htmlFor="weight">Weight (kg): </label>
-        <input
-          name="weight"
-          defaultValue={props.ex.weight}
-          onBlur={props.onBlur} // ! to convert argument to Number
-          onChange={(event) => event.target.value}
-          onKeyDown={(event) => {
-            if (event.key === "Enter") event.target.blur();
-          }}
-          style={{
-            width: `5ch`,
           }}
         ></input>
       </div>

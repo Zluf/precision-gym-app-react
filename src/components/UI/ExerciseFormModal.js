@@ -18,24 +18,23 @@ export default function ExerciseForm() {
     const exSets = setsInput.current.value;
     const exReps = repsInput.current.value;
 
-    console.log(
-      context.routineList.find((r) => (r[0] = context.currentRoutine))[1]
-        .logbook
+    const curRout = context.routineList.find(
+      (r) => (r[0] = context.currentRoutine)
     );
-    const newExId =
-      context.routineList.find((r) => (r[0] = context.currentRoutine))[1]
-        .length + 1;
+    console.log(curRout);
 
     const newExInput = {
-      id: newExId,
+      // id: newExId,
       name: exName,
       weight: exWeight,
       sets: Array(+exSets).fill(Array(+exReps).fill(0)),
     };
 
-    context.addExToDatabase(newExInput);
+    console.log(newExInput);
 
-    context.toggleModal();
+    // context.addExToDatabase(newExInput);
+
+    // context.toggleModal();
   };
 
   return (

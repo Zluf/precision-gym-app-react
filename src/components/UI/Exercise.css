@@ -19,6 +19,16 @@
   cursor: pointer;
 }
 
+.exercise-stat-set-num,
+.exercise-stat-weight,
+.exercise-stat-weight > * {
+  display: inline;
+}
+
+.exercise-stat-weight input {
+  font-size: 1rem;
+}
+
 .exercise-stat input {
   background: none;
   border: none;
@@ -30,5 +40,5 @@
 }
 
 .set-expanded > * {
-  margin-left: 1vw;
+  margin-right: 1vw;
 }

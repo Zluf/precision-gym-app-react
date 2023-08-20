@@ -24,7 +24,6 @@ export default function UserDashboard() {
             className={`routine ${routineClassName}`}
             routineName={routine[0]}
             routine={routine[1]}
-            routineIndex={i}
           />
         );
       })}

@@ -17,7 +17,8 @@ export default function Routine(props) {
     const repPerfNum = event.target.closest(".rep-expanded").dataset.repNum;
     const repPerformance = +event.target.dataset.value;
     const updatedEx = exercise;
-    updatedEx.sets[setNum][repPerfNum] = repPerformance;
+    updatedEx.sets[setNum].reps[repPerfNum] = repPerformance;
+    console.log(updatedEx);
     context.updateExerciseList2(routineName, updatedEx);
   };
 
