@@ -89,7 +89,7 @@ export default function AppProvider(props) {
 
     // Updates database
     await fetch(
-      `https://precision-gym-default-rtdb.firebaseio.com/users/zluf/routines/${routineName}/${
+      `https://precision-gym-default-rtdb.firebaseio.com/users/zluf/routines/${routineName}/logbook/${
         updatedEx.id - 1
       }.json`,
       {
@@ -132,19 +132,26 @@ export default function AppProvider(props) {
     );
   };
 
-  const addNewSession = (routineName) => {
-    const date = new Date();
-    const month =
-      date.getMonth() < 10 ? `0${date.getMonth()}` : date.getMonth();
-    const todaysDate = `${date.getFullYear()}-${month}-${date.getDate()}`;
-
+  const addNewSession = (routineName, todaysDate) => {
     const allocatedRoutine = routineList.find((r) => r[0] == routineName);
-    allocatedRoutine[1].logbook[todaysDate] = [];
-    setCurrentRoutine({
-      name: allocatedRoutine[0],
-      date: todaysDate,
-      exercises: allocatedRoutine[1].logbook[todaysDate],
+    const routineLogs = Object.values(allocatedRoutine[1].logbook);
+    const mostRecentDate = routineLogs[routineLogs.length - 1];
+    const newDate = mostRecentDate.map((ex) => {
+      const newEx = { id: ex.id, name: ex.name, sets: ex.sets };
+      const newSets = [];
+      for (let i = 0; i < ex.sets.length; i++) {
+        newSets.push({
+          weight: ex.sets[i].weight,
+          reps: Array(5)
+            .fill(0)
+            .map((arr) => arr * ex.sets[i].reps.length),
+        });
+      }
+      newEx.sets = newSets;
+      return newEx;
     });
+    allocatedRoutine[1].logbook[todaysDate] = newDate;
+
     const newRoutineList = routineList.filter((r) => r[0] !== routineName);
     newRoutineList.push(allocatedRoutine);
     setRoutineList(newRoutineList);
@@ -174,7 +181,7 @@ export default function AppProvider(props) {
 
   useEffect(() => {
     console.log("Stored Routine List:", routineList);
-    // console.log("Currently edited routine is:", currentRoutine);
+    console.log("Currently edited routine is:", currentRoutine);
   }, [routineList, currentRoutine]);
 
   return (
