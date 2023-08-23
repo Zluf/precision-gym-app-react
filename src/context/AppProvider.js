@@ -81,7 +81,9 @@ export default function AppProvider(props) {
     // });
   };
 
-  const updateExerciseList2 = async (routineName, updatedEx) => {
+  const updateExerciseList2 = async (routineName, updatedEx, displayedDate) => {
+    console.log("Updated Exercise:", updatedEx);
+    console.log("Displayed Date:", displayedDate);
     console.log("Exercise to Be Updated:", routineName, "->", updatedEx.name);
     // Updates local context
     const newRoutineList = context.routineList.filter((r) => r[1]);
@@ -89,7 +91,7 @@ export default function AppProvider(props) {
 
     // Updates database
     await fetch(
-      `https://precision-gym-default-rtdb.firebaseio.com/users/zluf/routines/${routineName}/logbook/${
+      `https://precision-gym-default-rtdb.firebaseio.com/users/zluf/routines/${routineName}/logbook/${displayedDate}/${
         updatedEx.id - 1
       }.json`,
       {
@@ -151,6 +153,7 @@ export default function AppProvider(props) {
       return newEx;
     });
     allocatedRoutine[1].logbook[todaysDate] = newDate;
+    console.log(allocatedRoutine);
 
     const newRoutineList = routineList.filter((r) => r[0] !== routineName);
     newRoutineList.push(allocatedRoutine);
@@ -179,10 +182,10 @@ export default function AppProvider(props) {
     addNewSession: addNewSession,
   };
 
-  useEffect(() => {
-    console.log("Stored Routine List:", routineList);
-    console.log("Currently edited routine is:", currentRoutine);
-  }, [routineList, currentRoutine]);
+  // useEffect(() => {
+  //   console.log("Stored Routine List:", routineList);
+  //   console.log("Currently edited routine is:", currentRoutine);
+  // }, [routineList, currentRoutine]);
 
   return (
     <AppContext.Provider value={context}>

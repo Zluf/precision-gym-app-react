@@ -30,3 +30,23 @@
   background-color: green;
   z-index: 1;
 }
+
+.add-delete-rep {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s;
+  padding: 0;
+  cursor: pointer;
+  border: none;
+  background: none;
+  margin-right: 1vw;
+}
+.add-delete-rep:active {
+  filter: invert(23%) sepia(91%) saturate(6463%) hue-rotate(356deg)
+    brightness(93%) contrast(117%);
+}
+
+.rep-expanded:hover .add-delete-rep {
+  visibility: visible;
+  opacity: 1;
+}

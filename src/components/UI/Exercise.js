@@ -40,8 +40,10 @@ export default function Exercise(props) {
           <RepGauge
             key={repIndex}
             rep={rep}
+            ex={props.ex}
             routineName={props.routineName}
             onRepClick={props.onRepClick}
+            onAddOrDeleteRep={props.onAddOrDeleteRep}
             repIndex={repIndex}
           />
         ))}
@@ -50,7 +52,7 @@ export default function Exercise(props) {
   }
 
   return (
-    <div className={`exercise ${props.exName}`}>
+    <div className={`exercise ${props.ex.name}`} data-ex-index={props.exIndex}>
       <div className="exercise-options">
         <div
           className="exercise-option"

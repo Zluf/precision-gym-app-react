@@ -19,14 +19,20 @@ export default function Routine(props) {
   const addNewSession = routineDates.some((date) => date === todaysDate);
   const context = useContext(AppContext);
 
+  const addOrDeleteRep = (addOrDelete) => {
+    if (addOrDelete === "delete") {
+    }
+    if (addOrDelete === "add") {
+    }
+  };
+
   const onRepClickHandler = (event, routineName, exercise) => {
     const setNum = event.target.closest(".set-expanded").dataset.setNum;
     const repPerfNum = event.target.closest(".rep-expanded").dataset.repNum;
-    const date = event.target.closest(".rep-expanded");
     const repPerformance = +event.target.dataset.value;
     const updatedEx = exercise;
     updatedEx.sets[setNum].reps[repPerfNum] = repPerformance;
-    context.updateExerciseList2(routineName, updatedEx);
+    context.updateExerciseList2(routineName, updatedEx, displayedDate);
   };
 
   const onBlurHandler = (event, exercise) => {
@@ -57,6 +63,7 @@ export default function Routine(props) {
   useEffect(() => {
     if (displayedDate === todaysDate) setSessionIsToday(true);
     if (displayedDate !== todaysDate) setSessionIsToday(false);
+    console.log(displayedDate);
   }, [displayedDate]);
 
   useEffect(() => {
@@ -64,8 +71,13 @@ export default function Routine(props) {
   }, [context.routineList]);
 
   return (
-    <section onClick={props.onClick} className={props.className}>
-      <div className="slide-buttons">
+    <section
+      onClick={props.onClick}
+      className={props.className}
+      data-routine-name={props.routineName}
+      data-date={displayedDate}
+    >
+      {/* <div className="slide-buttons">
         <button
           className="slide-btn slide-left"
           style={{ visibility: currentSlide === 0 && "hidden" }}
@@ -83,7 +95,7 @@ export default function Routine(props) {
         >
           <img src={slideChange} alt="slide-right arrow" />
         </button>
-      </div>
+      </div> */}
 
       <h2>{props.routineName}</h2>
 
@@ -113,6 +125,7 @@ export default function Routine(props) {
       )}
 
       <div
+        data-date={displayedDate}
         className={`exercises-container ${!sessionIsToday ? "archive" : ""}`}
         style={{ transform: `translateX(-${50 * currentSlide}%)` }}
       >
@@ -128,9 +141,10 @@ export default function Routine(props) {
               onEditExercise={() => {
                 context.toggleModal(exercise);
               }}
-              onRepClick={(event) => {
-                onRepClickHandler(event, props.routineName, exercise);
-              }}
+              onRepClick={(event) =>
+                onRepClickHandler(event, props.routineName, exercise)
+              }
+              onAddOrDeleteRep={addOrDeleteRep}
               onBlur={(event) => onBlurHandler(event, exercise)}
               onDeleteExercise={context.deleteExercise}
             />
