@@ -63,7 +63,6 @@ export default function Routine(props) {
   useEffect(() => {
     if (displayedDate === todaysDate) setSessionIsToday(true);
     if (displayedDate !== todaysDate) setSessionIsToday(false);
-    console.log(displayedDate);
   }, [displayedDate]);
 
   useEffect(() => {

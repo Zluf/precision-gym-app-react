@@ -23,18 +23,23 @@ export default function RepGauge(props) {
   }
 
   const addOrDeleteRepHandler = (addOrDelete, event) => {
+    // 1. Locate the targeted rep
+    const setNum = event.target.closest(".set-expanded").dataset.setNum;
+    const repNum = event.target.closest(".rep-expanded").dataset.repNum;
+    const routineDate = event.target.closest(".routine").dataset.date;
+    const routineName = event.target.closest(".routine").dataset.routineName;
+    const ex = props.ex;
+    const modifiedReps = ex.sets[setNum].reps;
+    // 2.1 Remove the targeted rep
     if (addOrDelete === "delete") {
-      const setNum = event.target.closest(".set-expanded").dataset.setNum;
-      const repNum = event.target.closest(".rep-expanded").dataset.repNum;
-      const ex = props.ex;
-      const modifiedReps = ex.sets[setNum].reps.filter(
-        (rep, i) => ex.sets[setNum].reps[repNum] !== rep && i !== repNum
-      );
-      ex.sets[setNum].reps = modifiedReps;
-      console.log(ex);
+      modifiedReps.splice(repNum, 1);
     }
-    // if (addOrDelete === "add") {
-    // }
+    // 2.2 Add a new subsequent rep
+    if (addOrDelete === "add") {
+      modifiedReps.splice(repNum + 1, 0, 0);
+    }
+    // 3. Update the database
+    context.updateExerciseList2(routineName, ex, routineDate);
   };
 
   return (

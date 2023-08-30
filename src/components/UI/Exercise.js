@@ -32,9 +32,7 @@ export default function Exercise(props) {
             }}
           ></input>
         </div>
-        {/* <span className="weight">
-          weight (kg): {props.ex.sets[setIndex].weight}
-        </span> */}
+
         {props.ex.sets[setIndex].reps.map((rep, repIndex) => (
           // rep is a value inside the array
           <RepGauge
