@@ -82,24 +82,25 @@ export default function AppProvider(props) {
   };
 
   const updateExerciseList2 = async (routineName, updatedEx, displayedDate) => {
-    console.log("Updated Exercise:", updatedEx);
-    console.log("Displayed Date:", displayedDate);
-    console.log("Exercise to Be Updated:", routineName, "->", updatedEx.name);
+    // console.log("Updated Exercise:", updatedEx);
+    // console.log("Displayed Date:", displayedDate);
+    // console.log("Exercise to Be Updated:", routineName, "->", updatedEx.name);
     // Updates local context
     const newRoutineList = context.routineList.filter((r) => r[1]);
-    setRoutineList(newRoutineList);
+    console.log(newRoutineList);
+    // setRoutineList(newRoutineList);
 
     // Updates database
-    await fetch(
-      `https://precision-gym-default-rtdb.firebaseio.com/users/zluf/routines/${routineName}/logbook/${displayedDate}/${
-        updatedEx.id - 1
-      }.json`,
-      {
-        method: "PUT",
-        body: JSON.stringify(updatedEx),
-        headers: { "Content-Type": "application-json" },
-      }
-    );
+    // await fetch(
+    //   `https://precision-gym-default-rtdb.firebaseio.com/users/zluf/routines/${routineName}/logbook/${displayedDate}/${
+    //     updatedEx.id - 1
+    //   }.json`,
+    //   {
+    //     method: "PUT",
+    //     body: JSON.stringify(updatedEx),
+    //     headers: { "Content-Type": "application-json" },
+    //   }
+    // );
   };
 
   const deleteExercise = (routineName, exName) => {

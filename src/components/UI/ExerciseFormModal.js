@@ -10,29 +10,30 @@ export default function ExerciseForm() {
   const setsInput = useRef();
   const repsInput = useRef();
 
-  const submitHandler = (e) => {
-    e.preventDefault();
+  const submitHandler = (event) => {
+    event.preventDefault();
 
     const exName = nameInput.current.value;
     const exWeight = weightInput.current.value;
     const exSets = setsInput.current.value;
     const exReps = repsInput.current.value;
 
-    const curRout = context.routineList.find(
-      (r) => (r[0] = context.currentRoutine)
-    );
-    console.log(curRout);
-
     const newExInput = {
-      // id: newExId,
+      id: context.currentRoutine.exercises.length + 1,
       name: exName,
-      weight: exWeight,
-      sets: Array(+exSets).fill(Array(+exReps).fill(0)),
+      sets: Array(+exSets).fill({
+        weight: exWeight,
+        reps: Array(+exReps).fill(0),
+      }),
     };
 
     console.log(newExInput);
 
-    // context.addExToDatabase(newExInput);
+    context.updateExerciseList2(
+      context.currentRoutine.routineName,
+      newExInput,
+      context.currentRoutine.routineDate
+    );
 
     // context.toggleModal();
   };

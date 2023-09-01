@@ -6,8 +6,11 @@ import slideChange from "../../assets/icon-slide-change.svg";
 
 export default function Routine(props) {
   const date = new Date();
-  const month = date.getMonth() < 10 ? `0${date.getMonth()}` : date.getMonth();
-  const todaysDate = `${date.getFullYear()}-${month}-${date.getDate()}`;
+  const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
+  const month =
+    date.getMonth() < 10 ? `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`;
+  const todaysDate = `${date.getFullYear()}-${month}-${day}`;
+  console.log(date.getDate());
 
   const routineDates = Object.keys(props.routine.logbook);
   const updatedAmountOfDates = routineDates.length - 1;
@@ -76,10 +79,15 @@ export default function Routine(props) {
       data-routine-name={props.routineName}
       data-date={displayedDate}
     >
-      {/* <div className="slide-buttons">
+      <div className="slide-buttons">
         <button
           className="slide-btn slide-left"
-          style={{ visibility: currentSlide === 0 && "hidden" }}
+          style={{
+            visibility:
+              currentSlide === 0 ||
+              (currentSlide === props.routine.logbook[displayedDate].length &&
+                "hidden"),
+          }}
           onClick={(event) => onSlideChange(event, "prev")}
         >
           <img src={slideChange} alt="slide-left arrow" />
@@ -94,7 +102,7 @@ export default function Routine(props) {
         >
           <img src={slideChange} alt="slide-right arrow" />
         </button>
-      </div> */}
+      </div>
 
       <h2>{props.routineName}</h2>
 
@@ -155,8 +163,8 @@ export default function Routine(props) {
         <button
           onClick={() => {
             context.toggleModal({
-              name: props.routineName,
-              date: routineDates,
+              routineName: props.routineName,
+              routineDate: displayedDate,
               exercises: props.routine.logbook[displayedDate],
             });
           }}
