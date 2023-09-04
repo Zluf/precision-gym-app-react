@@ -10,7 +10,6 @@ export default function Routine(props) {
   const month =
     date.getMonth() < 10 ? `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`;
   const todaysDate = `${date.getFullYear()}-${month}-${day}`;
-  console.log(date.getDate());
 
   const routineDates = Object.keys(props.routine.logbook);
   const updatedAmountOfDates = routineDates.length - 1;

@@ -15,15 +15,18 @@ export default function UserDashboard() {
 
   return (
     <div className="user-dashboard">
-      {context.routineList.sort().map((routine, i) => {
-        const routineClassName = routine[0].toLowerCase().split(" ").join("-");
+      {context.routineList.map((routine, i) => {
+        const routineClassName = routine.routineName
+          .toLowerCase()
+          .split(" ")
+          .join("-");
 
         return (
           <Routine
             key={i}
             className={`routine ${routineClassName}`}
-            routineName={routine[0]}
-            routine={routine[1]}
+            routineName={routine.routineName}
+            routine={routine}
           />
         );
       })}

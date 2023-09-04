@@ -24,7 +24,9 @@ export default function AppProvider(props) {
         throw new Error("Could not reach database...");
       }
       const data = await response.json();
-      const newRoutineList = data ? Object.entries(data) : [];
+      const newRoutineList = data
+        ? Object.values(data).sort((a, b) => a.routineId - b.routineId)
+        : [];
 
       setRoutineList(newRoutineList);
     } catch (err) {
@@ -82,25 +84,29 @@ export default function AppProvider(props) {
   };
 
   const updateExerciseList2 = async (routineName, updatedEx, displayedDate) => {
-    // console.log("Updated Exercise:", updatedEx);
-    // console.log("Displayed Date:", displayedDate);
-    // console.log("Exercise to Be Updated:", routineName, "->", updatedEx.name);
+    console.log("Updated Exercise:", updatedEx);
+    console.log("Displayed Date:", displayedDate);
+    console.log("Exercise to Be Updated:", routineName, "->", updatedEx.name);
     // Updates local context
-    const newRoutineList = context.routineList.filter((r) => r[1]);
-    console.log(newRoutineList);
-    // setRoutineList(newRoutineList);
+    const routineIndex = context.routineList.findIndex(
+      (r) => r.routineName === routineName
+    );
+    const newRoutineList = context.routineList.slice();
+    newRoutineList[routineIndex].logbook[displayedDate][updatedEx.id - 1] =
+      updatedEx;
+    setRoutineList(newRoutineList);
 
     // Updates database
-    // await fetch(
-    //   `https://precision-gym-default-rtdb.firebaseio.com/users/zluf/routines/${routineName}/logbook/${displayedDate}/${
-    //     updatedEx.id - 1
-    //   }.json`,
-    //   {
-    //     method: "PUT",
-    //     body: JSON.stringify(updatedEx),
-    //     headers: { "Content-Type": "application-json" },
-    //   }
-    // );
+    await fetch(
+      `https://precision-gym-default-rtdb.firebaseio.com/users/zluf/routines/${routineName}/logbook/${displayedDate}/${
+        updatedEx.id - 1
+      }.json`,
+      {
+        method: "PUT",
+        body: JSON.stringify(updatedEx),
+        headers: { "Content-Type": "application-json" },
+      }
+    );
   };
 
   const deleteExercise = (routineName, exName) => {
@@ -135,9 +141,11 @@ export default function AppProvider(props) {
     );
   };
 
-  const addNewSession = (routineName, todaysDate) => {
-    const allocatedRoutine = routineList.find((r) => r[0] == routineName);
-    const routineLogs = Object.values(allocatedRoutine[1].logbook);
+  const addNewSession = async (routineName, todaysDate) => {
+    const allocatedRoutine = routineList.find(
+      (r) => r.routineName == routineName
+    );
+    const routineLogs = Object.values(allocatedRoutine.logbook);
     const mostRecentDate = routineLogs[routineLogs.length - 1];
     const newDate = mostRecentDate.map((ex) => {
       const newEx = { id: ex.id, name: ex.name, sets: ex.sets };
@@ -153,12 +161,22 @@ export default function AppProvider(props) {
       newEx.sets = newSets;
       return newEx;
     });
-    allocatedRoutine[1].logbook[todaysDate] = newDate;
+    allocatedRoutine.logbook[todaysDate] = newDate;
     console.log(allocatedRoutine);
 
     const newRoutineList = routineList.filter((r) => r[0] !== routineName);
     newRoutineList.push(allocatedRoutine);
     setRoutineList(newRoutineList);
+
+    // Updates database
+    await fetch(
+      `https://precision-gym-default-rtdb.firebaseio.com/users/zluf/routines/.json`,
+      {
+        method: "PUT",
+        body: JSON.stringify(newRoutineList),
+        headers: { "Content-Type": "application-json" },
+      }
+    );
   };
 
   const toggleModal = function (routineDetails) {
@@ -183,10 +201,10 @@ export default function AppProvider(props) {
     addNewSession: addNewSession,
   };
 
-  // useEffect(() => {
-  //   console.log("Stored Routine List:", routineList);
-  //   console.log("Currently edited routine is:", currentRoutine);
-  // }, [routineList, currentRoutine]);
+  useEffect(() => {
+    console.log("Stored Routine List:", routineList);
+    // console.log("Currently edited routine is:", currentRoutine);
+  }, [routineList, currentRoutine]);
 
   return (
     <AppContext.Provider value={context}>
