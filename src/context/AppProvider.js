@@ -84,21 +84,18 @@ export default function AppProvider(props) {
   };
 
   const updateExerciseList2 = async (routineName, updatedEx, displayedDate) => {
-    console.log("Updated Exercise:", updatedEx);
-    console.log("Displayed Date:", displayedDate);
-    console.log("Exercise to Be Updated:", routineName, "->", updatedEx.name);
-    // Updates local context
-    const routineIndex = context.routineList.findIndex(
-      (r) => r.routineName === routineName
+    console.log("updateExerciseList2 :Updated Exercise:", updatedEx);
+    console.log("updateExerciseList2: Displayed Date:", displayedDate);
+    console.log(
+      "updateExerciseList2: Exercise to Be Updated:",
+      routineName,
+      "->",
+      updatedEx.name
     );
-    const newRoutineList = context.routineList.slice();
-    newRoutineList[routineIndex].logbook[displayedDate][updatedEx.id - 1] =
-      updatedEx;
-    setRoutineList(newRoutineList);
 
     // Updates database
     await fetch(
-      `https://precision-gym-default-rtdb.firebaseio.com/users/zluf/routines/${routineName}/logbook/${displayedDate}/${
+      `https://precision-gym-default-rtdb.firebaseio.com/users/${authUser}/routines/${routineName}/logbook/${displayedDate}/${
         updatedEx.id - 1
       }.json`,
       {
@@ -107,6 +104,16 @@ export default function AppProvider(props) {
         headers: { "Content-Type": "application-json" },
       }
     );
+
+    // Updates local context
+    const routineIndex = context.routineList.findIndex(
+      (r) => r.routineName === routineName
+    );
+    const newRoutineList = context.routineList.slice();
+    newRoutineList[routineIndex].logbook[displayedDate][updatedEx.id - 1] =
+      updatedEx;
+    console.log(newRoutineList);
+    setRoutineList(newRoutineList);
   };
 
   const deleteExercise = (routineName, exName) => {
@@ -162,7 +169,6 @@ export default function AppProvider(props) {
       return newEx;
     });
     allocatedRoutine.logbook[todaysDate] = newDate;
-    console.log(allocatedRoutine);
 
     const newRoutineList = routineList.filter((r) => r[0] !== routineName);
     newRoutineList.push(allocatedRoutine);
@@ -170,10 +176,10 @@ export default function AppProvider(props) {
 
     // Updates database
     await fetch(
-      `https://precision-gym-default-rtdb.firebaseio.com/users/zluf/routines/.json`,
+      `https://precision-gym-default-rtdb.firebaseio.com/users/zluf/routines/${routineName}/logbook/${todaysDate}.json`,
       {
         method: "PUT",
-        body: JSON.stringify(newRoutineList),
+        body: JSON.stringify(newDate),
         headers: { "Content-Type": "application-json" },
       }
     );

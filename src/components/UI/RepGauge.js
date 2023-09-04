@@ -36,7 +36,6 @@ export default function RepGauge(props) {
     }
     // 2.2 Add a new subsequent rep
     if (addOrDelete === "add") {
-      console.log(repNum + 1);
       modifiedReps.splice(repNum + 1, 0, 0);
     }
     // 3. Update the database

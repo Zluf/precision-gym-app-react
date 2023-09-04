@@ -21,29 +21,13 @@ export default function Routine(props) {
   const addNewSession = routineDates.some((date) => date === todaysDate);
   const context = useContext(AppContext);
 
-  const addOrDeleteRep = (addOrDelete) => {
-    if (addOrDelete === "delete") {
-    }
-    if (addOrDelete === "add") {
-    }
-  };
-
-  const onRepClickHandler = (event, routineName, exercise) => {
-    const setNum = event.target.closest(".set-expanded").dataset.setNum;
-    const repPerfNum = event.target.closest(".rep-expanded").dataset.repNum;
-    const repPerformance = +event.target.dataset.value;
-    const updatedEx = exercise;
-    updatedEx.sets[setNum].reps[repPerfNum] = repPerformance;
-    context.updateExerciseList2(routineName, updatedEx, displayedDate);
-  };
-
   const onBlurHandler = (event, exercise) => {
     let updatedEx = exercise;
     const inputKeyName = Object.keys(updatedEx).find(
       (key) => updatedEx[key] === updatedEx[event.target.name]
     );
     updatedEx[inputKeyName] = event.target.value;
-    context.updateExerciseList2(props.routineName, updatedEx);
+    context.updateExerciseList2(props.routineName, updatedEx, displayedDate);
   };
 
   const onSlideChange = (event, direction) => {
@@ -143,14 +127,11 @@ export default function Routine(props) {
               routine={props.routine}
               routineName={props.routineName}
               routineIndex={props.routineIndex}
+              routineDate={displayedDate}
               ex={exercise}
               onEditExercise={() => {
                 context.toggleModal(exercise);
               }}
-              onRepClick={(event) =>
-                onRepClickHandler(event, props.routineName, exercise)
-              }
-              onAddOrDeleteRep={addOrDeleteRep}
               onBlur={(event) => onBlurHandler(event, exercise)}
               onDeleteExercise={context.deleteExercise}
             />

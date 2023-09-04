@@ -6,6 +6,30 @@ import RepGauge from "./RepGauge";
 export default function Exercise(props) {
   const context = React.useContext(AppContext);
 
+  const keyDownHandler = (event) => {
+    if (event.key === "Enter") event.target.blur();
+  };
+
+  const blurHandler = (event, setIndex) => {
+    if (!setIndex) {
+      props.ex["name"] = event.target.value;
+    } else {
+      props.ex.sets[setIndex].weight = +event.target.value;
+    }
+    context.updateExerciseList2(props.routineName, props.ex, props.routineDate);
+  };
+
+  const repClickHandler = (event, setNum, repNum) => {
+    const repPerformance = +event.target.dataset.value;
+    const updatedEx = props.ex;
+    updatedEx.sets[setNum].reps[repNum] = repPerformance;
+    context.updateExerciseList2(
+      props.routineName,
+      updatedEx,
+      props.routineDate
+    );
+  };
+
   let sets = [];
   for (let setIndex = 0; setIndex < props.ex.sets.length; setIndex++) {
     sets.push(
@@ -22,11 +46,9 @@ export default function Exercise(props) {
           <input
             name="weight"
             defaultValue={props.ex.sets[setIndex].weight}
-            onBlur={props.onBlur} // ! to convert argument to Number
+            onBlur={(event) => blurHandler(event, setIndex)}
             onChange={(event) => event.target.value}
-            onKeyDown={(event) => {
-              if (event.key === "Enter") event.target.blur();
-            }}
+            onKeyDown={keyDownHandler}
             style={{
               width: `5ch`,
             }}
@@ -40,7 +62,7 @@ export default function Exercise(props) {
             rep={rep}
             ex={props.ex}
             routineName={props.routineName}
-            onRepClick={props.onRepClick}
+            onRepClick={(event) => repClickHandler(event, setIndex, repIndex)}
             onAddOrDeleteRep={props.onAddOrDeleteRep}
             repIndex={repIndex}
           />
@@ -69,10 +91,8 @@ export default function Exercise(props) {
           type="text"
           defaultValue={props.ex.name}
           onChange={(event) => event.target.value}
-          onKeyDown={(event) => {
-            if (event.key === "Enter") event.target.blur();
-          }}
-          onBlur={props.onBlur}
+          onKeyDown={keyDownHandler}
+          onBlur={(event) => blurHandler(event)}
           style={{
             width: `${props.ex.name.length}ch`,
           }}
