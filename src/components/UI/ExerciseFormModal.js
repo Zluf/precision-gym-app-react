@@ -35,7 +35,7 @@ export default function ExerciseForm() {
       context.currentRoutine.routineDate
     );
 
-    // context.toggleModal();
+    context.toggleModal();
   };
 
   return (

@@ -62,7 +62,7 @@ export default function Routine(props) {
       data-routine-name={props.routineName}
       data-date={displayedDate}
     >
-      <div className="slide-buttons">
+      {/* <div className="slide-buttons">
         <button
           className="slide-btn slide-left"
           style={{
@@ -85,7 +85,7 @@ export default function Routine(props) {
         >
           <img src={slideChange} alt="slide-right arrow" />
         </button>
-      </div>
+      </div> */}
 
       <h2>{props.routineName}</h2>
 

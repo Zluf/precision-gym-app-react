@@ -19,10 +19,10 @@ export default function Exercise(props) {
     context.updateExerciseList2(props.routineName, props.ex, props.routineDate);
   };
 
-  const repClickHandler = (event, setNum, repNum) => {
+  const repClickHandler = (event, setIndex, repIndex) => {
     const repPerformance = +event.target.dataset.value;
     const updatedEx = props.ex;
-    updatedEx.sets[setNum].reps[repNum] = repPerformance;
+    updatedEx.sets[setIndex].reps[repIndex] = repPerformance;
     context.updateExerciseList2(
       props.routineName,
       updatedEx,
@@ -77,7 +77,11 @@ export default function Exercise(props) {
         <div
           className="exercise-option"
           onClick={() => {
-            context.deleteExercise(props.routineName, props.ex.name);
+            context.deleteExercise(
+              props.routineName,
+              props.ex.name,
+              props.routineDate
+            );
           }}
         >
           ❌
