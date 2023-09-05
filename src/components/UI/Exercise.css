@@ -1,6 +1,6 @@
 .exercise {
   position: relative;
-  min-width: 40%;
+  min-width: 300px;
   background: linear-gradient(135deg, white, rgb(92, 92, 92));
   border-radius: 5px;
   padding: 4vw 2vw 2vw 2vw;
@@ -19,46 +19,44 @@
   cursor: pointer;
 }
 
-.exercise-stat-set-num,
-.exercise-stat-weight,
-.exercise-stat-weight > * {
-  display: inline;
+.exercise-stats--set {
+  display: flex;
+  /* justify-content: space-between; */
 }
 
-.exercise-stat-weight input {
-  font-size: 1rem;
+.exercise-stat {
+  margin-right: 2%;
 }
 
-.exercise-stat input {
+.exercise-stats--weight {
+  display: flex;
+}
+.exercise-stats--weight label {
+  margin-right: 1vw;
+}
+
+.exercise-stats-weight .exercise-stat-weight input {
+  font-size: 1.5rem;
+}
+
+.exercise-stats--set input,
+.exercise-stats--name input {
   background: none;
   border: none;
 }
 
-.exercise-stat input:focus {
+.exercise-stats--set input:focus {
   background: white;
   border: auto;
 }
 
-.set-expanded > * {
-  margin-right: 1vw;
-}
-
 .add-delete-set {
-  visibility: hidden;
-  opacity: 0;
-  transition: opacity 0.3s;
   padding: 0;
   cursor: pointer;
   border: none;
   background: none;
-  margin-right: 1vw;
 }
 .add-delete-set:active {
   filter: invert(23%) sepia(91%) saturate(6463%) hue-rotate(356deg)
     brightness(93%) contrast(117%);
-}
-
-.set-expanded:hover .add-delete-set {
-  visibility: visible;
-  opacity: 1;
 }

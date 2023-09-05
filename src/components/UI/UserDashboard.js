@@ -15,21 +15,23 @@ export default function UserDashboard() {
 
   return (
     <div className="user-dashboard">
-      {context.routineList.map((routine, i) => {
-        const routineClassName = routine.routineName
-          .toLowerCase()
-          .split(" ")
-          .join("-");
+      {context.routineList
+        .sort((a, b) => a.routineId - b.routineId)
+        .map((routine, i) => {
+          const routineClassName = routine.routineName
+            .toLowerCase()
+            .split(" ")
+            .join("-");
 
-        return (
-          <Routine
-            key={i}
-            className={`routine ${routineClassName}`}
-            routineName={routine.routineName}
-            routine={routine}
-          />
-        );
-      })}
+          return (
+            <Routine
+              key={i}
+              className={`routine ${routineClassName}`}
+              routineName={routine.routineName}
+              routine={routine}
+            />
+          );
+        })}
       {context.modalWindowIsOpen && <ExerciseFormModal />}
     </div>
   );

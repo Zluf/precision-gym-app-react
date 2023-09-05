@@ -18,6 +18,7 @@ export default function Routine(props) {
   const [displayedDate, setDisplayedDate] = useState(
     routineDates[updatedAmountOfDates]
   );
+  console.log(displayedDate);
   const addNewSession = routineDates.some((date) => date === todaysDate);
   const context = useContext(AppContext);
 
@@ -62,30 +63,27 @@ export default function Routine(props) {
       data-routine-name={props.routineName}
       data-date={displayedDate}
     >
-      {/* <div className="slide-buttons">
-        <button
-          className="slide-btn slide-left"
-          style={{
-            visibility:
-              currentSlide === 0 ||
-              (currentSlide === props.routine.logbook[displayedDate].length &&
-                "hidden"),
-          }}
-          onClick={(event) => onSlideChange(event, "prev")}
-        >
-          <img src={slideChange} alt="slide-left arrow" />
-        </button>
+      <button
+        className="slide-btn slide-left"
+        style={{
+          visibility: currentSlide === 0 && "hidden",
+        }}
+        onClick={(event) => onSlideChange(event, "prev")}
+      >
+        <img src={slideChange} alt="slide-left arrow" />
+      </button>
 
-        <button
-          className="slide-btn slide-right"
-          style={{
-            visibility: currentSlide === props.routine.length - 1 && "hidden",
-          }}
-          onClick={(event) => onSlideChange(event, "next")}
-        >
-          <img src={slideChange} alt="slide-right arrow" />
-        </button>
-      </div> */}
+      <button
+        className="slide-btn slide-right"
+        style={{
+          visibility:
+            currentSlide === props.routine.logbook[displayedDate].length - 1 &&
+            "hidden",
+        }}
+        onClick={(event) => onSlideChange(event, "next")}
+      >
+        <img src={slideChange} alt="slide-right arrow" />
+      </button>
 
       <h2>{props.routineName}</h2>
 
@@ -139,6 +137,7 @@ export default function Routine(props) {
 
       {sessionIsToday && (
         <button
+          className="add-ex-btn"
           onClick={() => {
             context.toggleModal({
               routineName: props.routineName,

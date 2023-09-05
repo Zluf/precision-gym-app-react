@@ -10,12 +10,13 @@ export default function Exercise(props) {
     if (event.key === "Enter") event.target.blur();
   };
 
-  const blurHandler = (event, setIndex) => {
-    if (!setIndex) {
-      props.ex["name"] = event.target.value;
-    } else {
-      props.ex.sets[setIndex].weight = +event.target.value;
-    }
+  const weightBlurHandler = (event, setIndex) => {
+    props.ex.sets[setIndex].weight = +event.target.value;
+    context.updateExerciseList2(props.routineName, props.ex, props.routineDate);
+  };
+
+  const nameBlurHandler = (event) => {
+    props.ex["name"] = event.target.value;
     context.updateExerciseList2(props.routineName, props.ex, props.routineDate);
   };
 
@@ -49,18 +50,22 @@ export default function Exercise(props) {
   let sets = [];
   for (let setIndex = 0; setIndex < props.ex.sets.length; setIndex++) {
     sets.push(
-      <div className="exercise-stat" key={setIndex + 1} data-set-num={setIndex}>
-        <div className="set-expanded">
-          <span className="exercise-stat exercise-stat-set-num">
+      <div
+        className="exercise-stats"
+        key={setIndex + 1}
+        data-set-num={setIndex}
+      >
+        <div className="exercise-stats--set">
+          <span className="exercise-stat exercise-stats--set-num">
             Set {setIndex + 1},
           </span>
 
-          <div className="exercise-stat exercise-stat-weight">
+          <div className="exercise-stat exercise-stats--weight">
             <label htmlFor="weight">weight (kg): </label>
             <input
               name="weight"
               defaultValue={props.ex.sets[setIndex].weight}
-              onBlur={(event) => blurHandler(event, setIndex)}
+              onBlur={(event) => weightBlurHandler(event, setIndex)}
               onChange={(event) => event.target.value}
               onKeyDown={keyDownHandler}
               style={{
@@ -70,14 +75,14 @@ export default function Exercise(props) {
           </div>
 
           <button
-            className="add-delete-set"
+            className="exercise-stat add-delete-set"
             onClick={addOrDeleteSetHandler.bind(null, "delete", setIndex)}
           >
             ➖
           </button>
 
           <button
-            className="add-delete-set"
+            className="exercise-stat add-delete-set"
             onClick={addOrDeleteSetHandler.bind(null, "add", setIndex)}
           >
             ➕
@@ -118,7 +123,7 @@ export default function Exercise(props) {
         </div>
       </div>
 
-      <div className="exercise-stat exercise-stat-name">
+      <div className="exercise-stat exercise-stats--name">
         <label htmlFor="name">Exercise Name: </label>
         <input
           name="name"
@@ -126,7 +131,7 @@ export default function Exercise(props) {
           defaultValue={props.ex.name}
           onChange={(event) => event.target.value}
           onKeyDown={keyDownHandler}
-          onBlur={(event) => blurHandler(event)}
+          onBlur={(event) => nameBlurHandler(event)}
           style={{
             width: `${props.ex.name.length}ch`,
           }}

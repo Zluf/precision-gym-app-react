@@ -5,6 +5,7 @@
 .exercises-container {
   display: flex;
   flex-direction: row;
+  width: inherit;
   transition: transform 0.3s;
 }
 .archive > * {
@@ -12,7 +13,7 @@
   pointer-events: none;
 }
 
-.slide-buttons {
+/* .slide-buttons {
   position: absolute;
   top: 50%;
   left: 0;
@@ -20,14 +21,18 @@
   z-index: 3;
   display: flex;
   justify-content: space-between;
-}
+} */
 
 .slide-btn {
+  position: absolute;
+  z-index: 2;
   width: 10%;
+  top: 50%;
   border-radius: 50%;
   border: none;
   background: none;
   cursor: pointer;
+  transform: translateY(0%);
   transition: width 0.3s;
 }
 

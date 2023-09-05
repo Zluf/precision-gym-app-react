@@ -24,9 +24,7 @@ export default function AppProvider(props) {
         throw new Error("Could not reach database...");
       }
       const data = await response.json();
-      const newRoutineList = data
-        ? Object.values(data).sort((a, b) => a.routineId - b.routineId)
-        : [];
+      const newRoutineList = data ? Object.values(data) : [];
 
       setRoutineList(newRoutineList);
     } catch (err) {
@@ -48,6 +46,8 @@ export default function AppProvider(props) {
     newRoutineList[routineIndex].logbook[routineDate].forEach(
       (ex, i) => (ex.id = i + 1)
     );
+
+    console.log(newRoutineList);
 
     setRoutineList(newRoutineList);
 
@@ -113,8 +113,11 @@ export default function AppProvider(props) {
     });
     allocatedRoutine.logbook[todaysDate] = newDate;
 
-    const newRoutineList = routineList.filter((r) => r[0] !== routineName);
+    const newRoutineList = routineList.filter(
+      (r) => r.routineName !== routineName
+    );
     newRoutineList.push(allocatedRoutine);
+    console.log(newRoutineList);
     setRoutineList(newRoutineList);
 
     // Updates database
@@ -150,7 +153,7 @@ export default function AppProvider(props) {
   };
 
   useEffect(() => {
-    // console.log("Stored Routine List:", routineList);
+    console.log("Stored Routine List:", routineList);
     // console.log("Currently edited routine is:", currentRoutine);
   }, [routineList, currentRoutine]);
 

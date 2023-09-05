@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "./App.css";
-import "./components/UI/Card.css";
 import Logo from "./components/Logo/Logo";
 import AppContext from "./context/app-context";
 import Auth from "./components/auth/Auth";
