@@ -43,4 +43,22 @@
   margin-right: 1vw;
 }
 
+.add-delete-set {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s;
+  padding: 0;
+  cursor: pointer;
+  border: none;
+  background: none;
+  margin-right: 1vw;
+}
+.add-delete-set:active {
+  filter: invert(23%) sepia(91%) saturate(6463%) hue-rotate(356deg)
+    brightness(93%) contrast(117%);
+}
 
+.set-expanded:hover .add-delete-set {
+  visibility: visible;
+  opacity: 1;
+}

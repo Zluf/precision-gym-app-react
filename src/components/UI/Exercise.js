@@ -30,41 +30,71 @@ export default function Exercise(props) {
     );
   };
 
+  const addOrDeleteSetHandler = (addOrDelete, setIndex) => {
+    const newEx = Object.assign({}, props.ex);
+    // Remove the targeted set
+    if (addOrDelete === "delete") {
+      newEx.sets.splice(setIndex, 1);
+    }
+    // Add a new subsequent set with new rep stats
+    if (addOrDelete === "add") {
+      const newSet = Object.assign({}, newEx.sets[setIndex]);
+      newSet.reps = Array(newSet.reps.length).fill(0);
+      newEx.sets.splice(setIndex + 1, 0, newSet);
+    }
+    // 3. Update the database
+    context.updateExerciseList2(props.routineName, newEx, props.routineDate);
+  };
+
   let sets = [];
   for (let setIndex = 0; setIndex < props.ex.sets.length; setIndex++) {
     sets.push(
-      <div
-        className="exercise-stat set-expanded"
-        key={setIndex + 1}
-        data-set-num={setIndex}
-      >
-        <span className="exercise-stat exercise-stat-set-num">
-          Set {setIndex + 1},
-        </span>
-        <div className="exercise-stat exercise-stat-weight">
-          <label htmlFor="weight">weight (kg): </label>
-          <input
-            name="weight"
-            defaultValue={props.ex.sets[setIndex].weight}
-            onBlur={(event) => blurHandler(event, setIndex)}
-            onChange={(event) => event.target.value}
-            onKeyDown={keyDownHandler}
-            style={{
-              width: `5ch`,
-            }}
-          ></input>
+      <div className="exercise-stat" key={setIndex + 1} data-set-num={setIndex}>
+        <div className="set-expanded">
+          <span className="exercise-stat exercise-stat-set-num">
+            Set {setIndex + 1},
+          </span>
+
+          <div className="exercise-stat exercise-stat-weight">
+            <label htmlFor="weight">weight (kg): </label>
+            <input
+              name="weight"
+              defaultValue={props.ex.sets[setIndex].weight}
+              onBlur={(event) => blurHandler(event, setIndex)}
+              onChange={(event) => event.target.value}
+              onKeyDown={keyDownHandler}
+              style={{
+                width: `5ch`,
+              }}
+            ></input>
+          </div>
+
+          <button
+            className="add-delete-set"
+            onClick={addOrDeleteSetHandler.bind(null, "delete", setIndex)}
+          >
+            ➖
+          </button>
+
+          <button
+            className="add-delete-set"
+            onClick={addOrDeleteSetHandler.bind(null, "add", setIndex)}
+          >
+            ➕
+          </button>
         </div>
 
         {props.ex.sets[setIndex].reps.map((rep, repIndex) => (
           // rep is a value inside the array
           <RepGauge
-            key={repIndex}
             rep={rep}
+            key={repIndex}
+            repIndex={repIndex}
+            setIndex={setIndex}
             ex={props.ex}
             routineName={props.routineName}
+            routineDate={props.routineDate}
             onRepClick={(event) => repClickHandler(event, setIndex, repIndex)}
-            onAddOrDeleteRep={props.onAddOrDeleteRep}
-            repIndex={repIndex}
           />
         ))}
       </div>

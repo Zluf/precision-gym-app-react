@@ -123,8 +123,6 @@ export default function Routine(props) {
           return (
             <Exercise
               key={`${exercise.name}-${i + 1}`}
-              exIndex={i}
-              routine={props.routine}
               routineName={props.routineName}
               routineIndex={props.routineIndex}
               routineDate={displayedDate}

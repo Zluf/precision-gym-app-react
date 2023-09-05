@@ -22,24 +22,21 @@ export default function RepGauge(props) {
     );
   }
 
-  const addOrDeleteRepHandler = (addOrDelete, event) => {
+  const addOrDeleteRepHandler = (addOrDelete) => {
     // 1. Locate the targeted rep
-    const setNum = event.target.closest(".set-expanded").dataset.setNum;
-    const repNum = +event.target.closest(".rep-expanded").dataset.repNum;
-    const routineDate = event.target.closest(".routine").dataset.date;
-    const routineName = event.target.closest(".routine").dataset.routineName;
     const ex = props.ex;
-    const modifiedReps = ex.sets[setNum].reps;
+    const modifiedReps = ex.sets[props.setIndex].reps;
     // 2.1 Remove the targeted rep
     if (addOrDelete === "delete") {
-      modifiedReps.splice(repNum, 1);
+      modifiedReps.splice(props.repIndex, 1);
+      console.log(ex);
     }
     // 2.2 Add a new subsequent rep
     if (addOrDelete === "add") {
-      modifiedReps.splice(repNum + 1, 0, 0);
+      modifiedReps.splice(props.repIndex + 1, 0, 0);
     }
     // 3. Update the database
-    context.updateExerciseList2(routineName, ex, routineDate);
+    context.updateExerciseList2(props.routineName, ex, props.routineDate);
   };
 
   return (
@@ -48,13 +45,13 @@ export default function RepGauge(props) {
       <div className="gauge">{innerGauge.map((circle) => circle)}</div>
       <button
         className="add-delete-rep"
-        onClick={(event) => addOrDeleteRepHandler("delete", event)}
+        onClick={addOrDeleteRepHandler.bind(null, "delete")}
       >
         ➖
       </button>
       <button
         className="add-delete-rep"
-        onClick={(event) => addOrDeleteRepHandler("add", event)}
+        onClick={addOrDeleteRepHandler.bind(null, "add")}
       >
         ➕
       </button>
