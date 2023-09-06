@@ -12,12 +12,9 @@ export default function Routine(props) {
   const todaysDate = `${date.getFullYear()}-${month}-${day}`;
 
   const routineDates = Object.keys(props.routine.logbook);
-  const updatedAmountOfDates = routineDates.length - 1;
   const [currentSlide, setCurrentSlide] = useState(0);
   const [sessionIsToday, setSessionIsToday] = useState(false);
-  const [displayedDate, setDisplayedDate] = useState(
-    routineDates[updatedAmountOfDates]
-  );
+  const [displayedDate, setDisplayedDate] = useState();
   const todayIsTheNewDate = routineDates.some((date) => date === todaysDate);
   const context = useContext(AppContext);
 
@@ -47,13 +44,15 @@ export default function Routine(props) {
   };
 
   useEffect(() => {
-    if (displayedDate === todaysDate) setSessionIsToday(true);
-    if (displayedDate !== todaysDate) setSessionIsToday(false);
-  }, [displayedDate]);
+    setDisplayedDate(routineDates[routineDates.length - 1]);
+  }, [context.routineList]);
 
   useEffect(() => {
-    setDisplayedDate(routineDates[updatedAmountOfDates]);
-  }, [context.routineList]);
+    if (routineDates[routineDates.length - 1] === todaysDate)
+      setSessionIsToday(true);
+    if (routineDates[routineDates.length - 1] !== todaysDate)
+      setSessionIsToday(false);
+  }, [displayedDate]);
 
   return (
     <section
@@ -72,7 +71,7 @@ export default function Routine(props) {
         <img src={slideChange} alt="slide-left arrow" />
       </button>
 
-      <button
+      {/* <button
         className="slide-btn slide-right"
         style={{
           visibility:
@@ -82,7 +81,7 @@ export default function Routine(props) {
         onClick={(event) => onSlideChange(event, "next")}
       >
         <img src={slideChange} alt="slide-right arrow" />
-      </button>
+      </button> */}
 
       <h2>{props.routineName}</h2>
 
@@ -111,28 +110,30 @@ export default function Routine(props) {
         </button>
       )}
 
-      <div
-        data-date={displayedDate}
-        className={`exercises-container ${!sessionIsToday ? "archive" : ""}`}
-        style={{ transform: `translateX(-${50 * currentSlide}%)` }}
-      >
-        {props.routine.logbook[displayedDate].map((exercise, i) => {
-          return (
-            <Exercise
-              key={`${exercise.name}-${i + 1}`}
-              routineName={props.routineName}
-              routineIndex={props.routineIndex}
-              routineDate={displayedDate}
-              ex={exercise}
-              onEditExercise={() => {
-                context.toggleModal(exercise);
-              }}
-              onBlur={(event) => onBlurHandler(event, exercise)}
-              onDeleteExercise={context.deleteExercise}
-            />
-          );
-        })}
-      </div>
+      {props.routine.logbook[displayedDate] && (
+        <div
+          data-date={displayedDate}
+          className={`exercises-container ${!sessionIsToday ? "archive" : ""}`}
+          style={{ transform: `translateX(-${50 * currentSlide}%)` }}
+        >
+          {props.routine.logbook[displayedDate].map((exercise, i) => {
+            return (
+              <Exercise
+                key={`${exercise.name}-${i + 1}`}
+                routineName={props.routineName}
+                routineIndex={props.routineIndex}
+                routineDate={displayedDate}
+                ex={exercise}
+                onEditExercise={() => {
+                  context.toggleModal(exercise);
+                }}
+                onBlur={(event) => onBlurHandler(event, exercise)}
+                onDeleteExercise={context.deleteExercise}
+              />
+            );
+          })}
+        </div>
+      )}
 
       {sessionIsToday && (
         <button

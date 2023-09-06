@@ -1,9 +1,0 @@
-.new-session-form {
-  display: flex;
-}
-.new-session-form > * {
-  margin-right: 1vw;
-}
-.new-session-form input {
-  width: 30ch;
-}

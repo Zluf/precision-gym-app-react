@@ -3,7 +3,7 @@ import React, { useRef, useState } from "react";
 import Routine from "./UserDashboard/Routine";
 import ExerciseFormModal from "./ExerciseFormModal";
 import AppContext from "../../context/app-context";
-import AddNewSession from "./UserDashboard/AddNewSession";
+import AddNewRoutine from "./UserDashboard/AddNewRoutine";
 
 export default function UserDashboard() {
   const context = React.useContext(AppContext);
@@ -33,7 +33,7 @@ export default function UserDashboard() {
                 routine={routine}
               />
 
-              <AddNewSession routineIndex={i} />
+              <AddNewRoutine routineIndex={i} />
             </div>
           );
         })}

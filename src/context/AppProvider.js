@@ -1,6 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import AppContext from "./app-context";
 import App from "../App";
+
+export const todaysDate = () => {
+  const date = new Date();
+  const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
+  const month =
+    date.getMonth() < 10 ? `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`;
+  return `${date.getFullYear()}-${month}-${day}`;
+};
 
 export default function AppProvider(props) {
   const [authUser, setAuthUser] = React.useState(null);
@@ -129,9 +137,6 @@ export default function AppProvider(props) {
     setRoutineList(newRoutineList);
 
     // Updates database
-    const routineIndex = context.routineList.findIndex(
-      (r) => r.routineName === routineName
-    );
     await fetch(
       `https://precision-gym-default-rtdb.firebaseio.com/users/${authUser}/routines/${routineName}/logbook/${todaysDate}.json`,
       {
@@ -139,6 +144,24 @@ export default function AppProvider(props) {
         body: JSON.stringify(newDate),
         headers: { "Content-Type": "application-json" },
       }
+    );
+  };
+
+  const addNewRoutine = (prevRoutineIndex, newRoutine) => {
+    const newRoutineList = [...routineList];
+    newRoutineList.splice(prevRoutineIndex + 1, 0, newRoutine);
+    newRoutineList.forEach((r, i) => (r.routineId = i + 1));
+    setRoutineList(newRoutineList);
+
+    newRoutineList.forEach((r, i) =>
+      fetch(
+        `https://precision-gym-default-rtdb.firebaseio.com/users/${authUser}/routines/${r.routineName}.json`,
+        {
+          method: "PUT",
+          body: JSON.stringify(r),
+          headers: { "Content-Type": "application-json" },
+        }
+      )
     );
   };
 
@@ -161,6 +184,7 @@ export default function AppProvider(props) {
     updateExerciseList2: updateExerciseList2,
     fetchExerciseDatabase: fetchExerciseDatabase,
     addNewDate: addNewDate,
+    addNewRoutine: addNewRoutine,
   };
 
   useEffect(() => {
