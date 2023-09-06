@@ -1,0 +1,6 @@
+.routine-container {
+  margin-bottom: 5vh;
+}
+.routine-container > * {
+  margin-bottom: 1vh;
+}

@@ -1,8 +1,9 @@
 import "./UserDashboard.css";
-import React from "react";
-import Routine from "./Routine";
+import React, { useRef, useState } from "react";
+import Routine from "./UserDashboard/Routine";
 import ExerciseFormModal from "./ExerciseFormModal";
 import AppContext from "../../context/app-context";
+import AddNewSession from "./UserDashboard/AddNewSession";
 
 export default function UserDashboard() {
   const context = React.useContext(AppContext);
@@ -24,14 +25,19 @@ export default function UserDashboard() {
             .join("-");
 
           return (
-            <Routine
-              key={i}
-              className={`routine ${routineClassName}`}
-              routineName={routine.routineName}
-              routine={routine}
-            />
+            <div className="routine-container" key={`rc${i}`}>
+              <Routine
+                key={i}
+                className={`routine ${routineClassName}`}
+                routineName={routine.routineName}
+                routine={routine}
+              />
+
+              <AddNewSession routineIndex={i} />
+            </div>
           );
         })}
+
       {context.modalWindowIsOpen && <ExerciseFormModal />}
     </div>
   );

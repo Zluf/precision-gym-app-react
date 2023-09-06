@@ -33,36 +33,40 @@ export default function AppProvider(props) {
   }, [authUser]);
 
   const updateExerciseList2 = async (routineName, updatedEx, routineDate) => {
+    let newRoutineList = context.routineList.slice();
+
     const routineIndex = context.routineList.findIndex(
       (r) => r.routineName === routineName
     );
 
-    // Updates local context
-    const newRoutineList = context.routineList.slice();
-    newRoutineList[routineIndex].logbook[routineDate][updatedEx.id - 1] =
-      updatedEx;
+    if (updatedEx) {
+      // Updates local context
+      newRoutineList[routineIndex].logbook[routineDate][updatedEx.id - 1] =
+        updatedEx;
 
-    // Assigns new IDs to the updated exercise list
-    newRoutineList[routineIndex].logbook[routineDate].forEach(
-      (ex, i) => (ex.id = i + 1)
-    );
-
-    console.log(newRoutineList);
+      // Assigns new IDs to the updated exercise list
+      newRoutineList[routineIndex].logbook[routineDate].forEach(
+        (ex, i) => (ex.id = i + 1)
+      );
+    }
 
     setRoutineList(newRoutineList);
 
-    // Updates database
+    // Updates targeted routine in database
+    const newRoutine = newRoutineList.find(
+      (r) => r.routineName === routineName
+    );
     await fetch(
-      `https://precision-gym-default-rtdb.firebaseio.com/users/${authUser}/routines.json`,
+      `https://precision-gym-default-rtdb.firebaseio.com/users/${authUser}/routines/${routineName}/.json`,
       {
         method: "PUT",
-        body: JSON.stringify(newRoutineList),
+        body: JSON.stringify(newRoutine),
         headers: { "Content-Type": "application-json" },
       }
     );
   };
 
-  const deleteExercise = (routineName, exName, routineDate) => {
+  const deleteExercise = async (routineName, exName, routineDate) => {
     const updatedDay = routineList
       .find((r) => r.routineName === routineName)
       .logbook[routineDate].filter((ex) => ex.name !== exName);
@@ -81,17 +85,21 @@ export default function AppProvider(props) {
 
     setRoutineList(newRoutineList);
 
-    fetch(
-      `https://precision-gym-default-rtdb.firebaseio.com/users/${authUser}/routines.json`,
+    // Updates targeted routine in database
+    const newRoutine = newRoutineList.find(
+      (r) => r.routineName === routineName
+    );
+    await fetch(
+      `https://precision-gym-default-rtdb.firebaseio.com/users/${authUser}/routines/${routineName}/.json`,
       {
         method: "PUT",
-        body: JSON.stringify(newRoutineList),
+        body: JSON.stringify(newRoutine),
         headers: { "Content-Type": "application-json" },
       }
     );
   };
 
-  const addNewSession = async (routineName, todaysDate) => {
+  const addNewDate = async (routineName, todaysDate) => {
     const allocatedRoutine = routineList.find(
       (r) => r.routineName == routineName
     );
@@ -121,6 +129,9 @@ export default function AppProvider(props) {
     setRoutineList(newRoutineList);
 
     // Updates database
+    const routineIndex = context.routineList.findIndex(
+      (r) => r.routineName === routineName
+    );
     await fetch(
       `https://precision-gym-default-rtdb.firebaseio.com/users/${authUser}/routines/${routineName}/logbook/${todaysDate}.json`,
       {
@@ -149,7 +160,7 @@ export default function AppProvider(props) {
     currentRoutine: currentRoutine,
     updateExerciseList2: updateExerciseList2,
     fetchExerciseDatabase: fetchExerciseDatabase,
-    addNewSession: addNewSession,
+    addNewDate: addNewDate,
   };
 
   useEffect(() => {

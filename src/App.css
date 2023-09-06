@@ -3,6 +3,9 @@
   width: 100%;
   padding: 5vw;
 }
+.app > * {
+  margin-bottom: 3vh;
+}
 
 .linear-gradient-layer {
   position: absolute;
@@ -19,7 +22,6 @@ section {
   padding: 5vw 8vw;
   background-color: grey;
   border-radius: 10px;
-  margin-bottom: 10px;
   overflow: hidden;
 }
 
@@ -41,4 +43,11 @@ section:after {
   top: 0;
   bottom: 0;
   right: 0;
+}
+
+.btn-transparent {
+  padding: 0;
+  cursor: pointer;
+  border: none;
+  background: none;
 }

@@ -1,6 +1,6 @@
 import React from "react";
 import "./Exercise.css";
-import AppContext from "../../context/app-context";
+import AppContext from "../../../context/app-context";
 import RepGauge from "./RepGauge";
 
 export default function Exercise(props) {

@@ -1,8 +1,8 @@
 import { useState, useEffect, useContext } from "react";
 import "./Routine.css";
 import Exercise from "./Exercise";
-import AppContext from "../../context/app-context";
-import slideChange from "../../assets/icon-slide-change.svg";
+import AppContext from "../../../context/app-context";
+import slideChange from "../../../assets/icon-slide-change.svg";
 
 export default function Routine(props) {
   const date = new Date();
@@ -18,8 +18,7 @@ export default function Routine(props) {
   const [displayedDate, setDisplayedDate] = useState(
     routineDates[updatedAmountOfDates]
   );
-  console.log(displayedDate);
-  const addNewSession = routineDates.some((date) => date === todaysDate);
+  const todayIsTheNewDate = routineDates.some((date) => date === todaysDate);
   const context = useContext(AppContext);
 
   const onBlurHandler = (event, exercise) => {
@@ -42,8 +41,8 @@ export default function Routine(props) {
     setDisplayedDate(date);
   };
 
-  const addNewSessionHandler = () => {
-    context.addNewSession(props.routineName, todaysDate);
+  const addNewDateHandler = () => {
+    context.addNewDate(props.routineName, todaysDate);
     setCurrentSlide(0);
   };
 
@@ -106,8 +105,8 @@ export default function Routine(props) {
           .sort((a, b) => a - b)}
       </select>
 
-      {!addNewSession && (
-        <button onClick={addNewSessionHandler}>
+      {!todayIsTheNewDate && (
+        <button onClick={addNewDateHandler}>
           + I'm doing a new session today!
         </button>
       )}

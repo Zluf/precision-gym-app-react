@@ -35,10 +35,6 @@
   visibility: hidden;
   opacity: 0;
   transition: opacity 0.3s;
-  padding: 0;
-  cursor: pointer;
-  border: none;
-  background: none;
   margin-right: 1vw;
 }
 .add-delete-rep:active {

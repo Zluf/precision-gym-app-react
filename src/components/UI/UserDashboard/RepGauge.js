@@ -1,7 +1,7 @@
 import React from "react";
 import "./RepGauge.css";
 import { useContext } from "react";
-import AppContext from "../../context/app-context";
+import AppContext from "../../../context/app-context";
 
 export default function RepGauge(props) {
   const context = useContext(AppContext);
@@ -44,13 +44,13 @@ export default function RepGauge(props) {
       <span>{`Rep ${props.repIndex + 1}:`}</span>
       <div className="gauge">{innerGauge.map((circle) => circle)}</div>
       <button
-        className="add-delete-rep"
+        className="add-delete-rep btn-transparent"
         onClick={addOrDeleteRepHandler.bind(null, "delete")}
       >
         ➖
       </button>
       <button
-        className="add-delete-rep"
+        className="add-delete-rep btn-transparent"
         onClick={addOrDeleteRepHandler.bind(null, "add")}
       >
         ➕
