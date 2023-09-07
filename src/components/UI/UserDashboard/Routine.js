@@ -71,17 +71,17 @@ export default function Routine(props) {
         <img src={slideChange} alt="slide-left arrow" />
       </button>
 
-      {/* <button
+      <button
         className="slide-btn slide-right"
-        style={{
-          visibility:
-            currentSlide === props.routine.logbook[displayedDate].length - 1 &&
-            "hidden",
-        }}
+        // style={{
+        //   visibility:
+        //     currentSlide === props.routine.logbook[displayedDate].length - 1 &&
+        //     "hidden",
+        // }}
         onClick={(event) => onSlideChange(event, "next")}
       >
         <img src={slideChange} alt="slide-right arrow" />
-      </button> */}
+      </button>
 
       <h2>{props.routineName}</h2>
 

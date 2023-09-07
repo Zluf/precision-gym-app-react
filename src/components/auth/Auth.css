@@ -1,11 +1,22 @@
-.auth-container {
+.signin-login-container {
+  width: 50%;
   margin-bottom: 2vw;
 }
 
-.auth-container * {
+.signin-login-container * {
   margin-top: 1vw;
 }
 
-.auth-container input {
-  width: 50%;
+.signin-login-container input {
+  width: 70%;
+}
+
+.auth {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.guest-login:hover {
+  cursor: pointer;
+  color: rgb(32, 112, 0);
 }

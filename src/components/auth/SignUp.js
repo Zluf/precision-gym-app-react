@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../../firebase";
 import "./Auth.css";
 import AppContext from "../../context/app-context";
@@ -7,19 +7,31 @@ import AppContext from "../../context/app-context";
 export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [userName, setUserName] = useState("");
   const context = React.useContext(AppContext);
 
   const signUp = (event) => {
     event.preventDefault();
     createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => console.log(userCredential))
+      .then((userCredential) => {
+        updateProfile(auth.currentUser, {
+          displayName: userName,
+        });
+        context.setUser(userCredential.user.displayName);
+      })
       .catch((error) => console.log(error));
   };
 
   return (
-    <div className="auth-container">
+    <div className="signin-login-container">
       <form onSubmit={signUp}>
         <h2>Create Account</h2>
+        <input
+          type="name"
+          placeholder="Enter your name"
+          value={userName}
+          onChange={(event) => setUserName(event.target.value)}
+        ></input>
         <input
           type="email"
           placeholder="Enter your email"
@@ -28,7 +40,7 @@ export default function SignUp() {
         ></input>
         <input
           type="password"
-          placeholder="Enter your password"
+          placeholder="Enter new password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
         ></input>

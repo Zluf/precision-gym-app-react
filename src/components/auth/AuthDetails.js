@@ -8,9 +8,11 @@ export default function AuthDetails() {
 
   useEffect(() => {
     const listen = onAuthStateChanged(auth, (user) => {
-      if (user) context.setUser(user.email.split("@")[0]);
-      else context.setUser(null);
-      // console.log("Auth user:", context.authUser);
+      if (user) {
+        context.setUser(
+          user.displayName ? user.displayName : user.email.split("@")[0]
+        );
+      } else context.setUser(null);
     });
 
     return () => {
