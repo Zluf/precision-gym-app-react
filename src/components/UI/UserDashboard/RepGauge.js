@@ -42,13 +42,16 @@ export default function RepGauge(props) {
   return (
     <div className="rep-expanded" data-rep-num={props.repIndex}>
       <span>{`Rep ${props.repIndex + 1}:`}</span>
+
       <div className="gauge">{innerGauge.map((circle) => circle)}</div>
+
       <button
         className="add-delete-rep btn-transparent"
         onClick={addOrDeleteRepHandler.bind(null, "delete")}
       >
         ➖
       </button>
+
       <button
         className="add-delete-rep btn-transparent"
         onClick={addOrDeleteRepHandler.bind(null, "add")}

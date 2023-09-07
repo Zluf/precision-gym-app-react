@@ -50,13 +50,17 @@
   border: auto;
 }
 
-.add-delete-set {
+.delete-set {
   padding: 0;
   cursor: pointer;
   border: none;
   background: none;
+  filter: saturate(0%) brightness(100%) contrast(1000%);
 }
-.add-delete-set:active {
-  filter: invert(23%) sepia(91%) saturate(6463%) hue-rotate(356deg)
-    brightness(93%) contrast(117%);
+.delete-set:active {
+  filter: none;
+}
+
+.add-set {
+  margin-left: 5.5vw;
 }

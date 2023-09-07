@@ -75,33 +75,35 @@ export default function Exercise(props) {
           </div>
 
           <button
-            className="exercise-stat add-delete-set"
+            className="exercise-stat delete-set"
             onClick={addOrDeleteSetHandler.bind(null, "delete", setIndex)}
           >
-            ➖
-          </button>
-
-          <button
-            className="exercise-stat add-delete-set"
-            onClick={addOrDeleteSetHandler.bind(null, "add", setIndex)}
-          >
-            ➕
+            ❌
           </button>
         </div>
 
-        {props.ex.sets[setIndex].reps.map((rep, repIndex) => (
-          // rep is a value inside the array
-          <RepGauge
-            rep={rep}
-            key={repIndex}
-            repIndex={repIndex}
-            setIndex={setIndex}
-            ex={props.ex}
-            routineName={props.routineName}
-            routineDate={props.routineDate}
-            onRepClick={(event) => repClickHandler(event, setIndex, repIndex)}
-          />
-        ))}
+        <div className="exercise-stat--collapsed">
+          {props.ex.sets[setIndex].reps.map((rep, repIndex) => (
+            // rep is a value inside the array
+            <RepGauge
+              rep={rep}
+              key={repIndex}
+              repIndex={repIndex}
+              setIndex={setIndex}
+              ex={props.ex}
+              routineName={props.routineName}
+              routineDate={props.routineDate}
+              onRepClick={(event) => repClickHandler(event, setIndex, repIndex)}
+            />
+          ))}
+
+          <button
+            className="add-set"
+            onClick={addOrDeleteSetHandler.bind(null, "add", setIndex)}
+          >
+            + Add a set
+          </button>
+        </div>
       </div>
     );
   }
