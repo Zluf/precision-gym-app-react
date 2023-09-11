@@ -30,18 +30,21 @@ export default function SignUp() {
           type="name"
           placeholder="Enter your name"
           value={userName}
+          required
           onChange={(event) => setUserName(event.target.value)}
         ></input>
         <input
           type="email"
           placeholder="Enter your email"
           value={email}
+          required
           onChange={(event) => setEmail(event.target.value)}
         ></input>
         <input
           type="password"
           placeholder="Enter new password"
           value={password}
+          required
           onChange={(event) => setPassword(event.target.value)}
         ></input>
         <button type="submit">Sign Up</button>

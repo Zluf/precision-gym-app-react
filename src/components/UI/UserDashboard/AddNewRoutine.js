@@ -12,7 +12,7 @@ export default function AddNewRoutine(props) {
     event.preventDefault();
 
     const newRoutine = {
-      routineName: newRoutineInputRef.current.value,
+      routineName: newRoutineInputRef.current.value.toString(),
       routineId: null,
       logbook: {
         [todaysDate()]: [

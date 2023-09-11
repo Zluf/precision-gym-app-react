@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../../firebase";
 import AppContext from "../../context/app-context";
 import "./Auth.css";
@@ -14,11 +14,7 @@ export default function SignIn() {
     event.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        context.setUser(
-          userCredential.user.displayName
-            ? userCredential.user.displayName
-            : "zluf"
-        );
+        context.setUser(userCredential.user.displayName);
       })
       .catch((error) => {
         setError(true);
