@@ -42,6 +42,7 @@ export default function Routine(props) {
     context.addNewDate(props.routineName, todaysDate);
     setCurrentSlide(0);
   };
+  console.log(displayedDate);
 
   useEffect(() => {
     setDisplayedDate(routineDates[routineDates.length - 1]);
@@ -73,11 +74,12 @@ export default function Routine(props) {
 
       <button
         className="slide-btn slide-right"
-        // style={{
-        //   visibility:
-        //     currentSlide === props.routine.logbook[displayedDate].length - 1 &&
-        //     "hidden",
-        // }}
+        style={{
+          visibility:
+            displayedDate &&
+            currentSlide === props.routine.logbook[displayedDate].length - 1 &&
+            "hidden",
+        }}
         onClick={(event) => onSlideChange(event, "next")}
       >
         <img src={slideChange} alt="slide-right arrow" />

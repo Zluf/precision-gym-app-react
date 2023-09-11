@@ -19,48 +19,6 @@
   cursor: pointer;
 }
 
-.exercise-stats--set {
-  display: flex;
-  /* justify-content: space-between; */
-}
-
-.exercise-stat {
-  margin-right: 2%;
-}
-
-.exercise-stats--weight {
-  display: flex;
-}
-.exercise-stats--weight label {
-  margin-right: 1vw;
-}
-
-.exercise-stats-weight .exercise-stat-weight input {
-  font-size: 1.5rem;
-}
-
-.exercise-stats--set input,
-.exercise-stats--name input {
-  background: none;
-  border: none;
-}
-
-.exercise-stats--set input:focus {
-  background: white;
-  border: auto;
-}
-
-.delete-set {
-  padding: 0;
-  cursor: pointer;
-  border: none;
-  background: none;
-  filter: saturate(0%) brightness(100%) contrast(1000%);
-}
-.delete-set:active {
-  filter: none;
-}
-
 .add-set {
   margin-left: 5.5vw;
 }

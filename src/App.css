@@ -30,7 +30,7 @@ section::after {
   content: "";
   position: absolute;
   background-color: grey;
-  width: 3%;
+  width: 7%;
   box-shadow: 0px 0px 10px 10px grey;
   z-index: 2;
 }

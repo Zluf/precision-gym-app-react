@@ -1,0 +1,50 @@
+.exercise-stats--top input,
+.exercise-stats--name input {
+  background: none;
+  border: none;
+}
+
+.exercise-stats--top,
+.exercise-stats--set-and-weight {
+  display: flex;
+  justify-content: space-between;
+}
+
+.exercise-stats--set-and-weight > * {
+  margin-right: 5px;
+}
+
+.exercise-stats--weight {
+  display: flex;
+}
+.exercise-stats--weight input {
+  font-size: 1rem;
+  text-align: center;
+  width: 4ch;
+}
+.exercise-stats--weight input:focus {
+  background: white;
+  border: auto;
+}
+
+.exercise-stats--reps {
+  position: relative;
+  transition: opacity 0.2s, height 0.4s;
+  overflow: hidden;
+}
+
+.expand-stats-btn img {
+  width: 10px;
+  transition: transform 0.3s opacity 0.3s;
+}
+
+.delete-set {
+  padding: 0;
+  cursor: pointer;
+  border: none;
+  background: none;
+  filter: saturate(0%) brightness(100%) contrast(1000%);
+}
+.delete-set:active {
+  filter: none;
+}

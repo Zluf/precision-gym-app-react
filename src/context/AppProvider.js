@@ -41,6 +41,7 @@ export default function AppProvider(props) {
   }, [authUser]);
 
   const updateExerciseList2 = async (routineName, updatedEx, routineDate) => {
+    console.log(routineName, updatedEx, routineDate);
     let newRoutineList = context.routineList.slice();
 
     const routineIndex = context.routineList.findIndex(

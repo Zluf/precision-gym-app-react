@@ -13,19 +13,9 @@
   pointer-events: none;
 }
 
-/* .slide-buttons {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: 90vw;
-  z-index: 3;
-  display: flex;
-  justify-content: space-between;
-} */
-
 .slide-btn {
   position: absolute;
-  z-index: 2;
+  z-index: 3;
   width: 10%;
   top: 50%;
   border-radius: 50%;
