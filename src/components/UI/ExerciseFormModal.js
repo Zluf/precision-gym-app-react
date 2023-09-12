@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import reactDom from "react-dom";
 import AppContext from "../../context/app-context";
 import "./ExerciseFormModal.css";
@@ -27,8 +27,6 @@ export default function ExerciseForm() {
       }),
     };
 
-    console.log(newExInput);
-
     context.updateExerciseList2(
       context.currentRoutine.routineName,
       newExInput,
@@ -38,58 +36,75 @@ export default function ExerciseForm() {
     context.toggleModal();
   };
 
+  const formRef = useRef(null);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (formRef.current && !formRef.current.contains(event.target)) {
+        context.toggleModal();
+      }
+    };
+    window.addEventListener("click", handleClickOutside);
+    return () => {
+      window.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
   return (
     <>
       {reactDom.createPortal(
-        <div>
-          <div className="exercise-form">
-            <div className="close" onClick={context.toggleModal}>
-              ❌
-            </div>
-            <form onSubmit={submitHandler}>
-              <label htmlFor="name">Exercise Name</label>
-              <input
-                name="name"
-                type="text"
-                ref={nameInput}
-                defaultValue={""}
-              />
-
-              <label htmlFor="weight">Weight (kg)</label>
-              <input
-                name="weight"
-                type="number"
-                step="any"
-                min="0"
-                ref={weightInput}
-                defaultValue={""}
-              />
-
-              <label htmlFor="sets">Sets</label>
-              <input
-                name="sets"
-                type="number"
-                ref={setsInput}
-                min="0"
-                defaultValue={""}
-              />
-
-              <label htmlFor="reps">Reps per set</label>
-              <input
-                name="reps"
-                type="number"
-                min="0"
-                ref={repsInput}
-                defaultValue={""}
-              />
-
-              <button className="button" type="submit">
-                👊 Add Exercise
-              </button>
-            </form>
+        <div className="exercise-form" ref={formRef}>
+          <div className="close" onClick={context.toggleModal}>
+            ❌
           </div>
+          <form onSubmit={submitHandler}>
+            <label htmlFor="name">Exercise Name</label>
+            <input
+              name="name"
+              type="text"
+              ref={nameInput}
+              defaultValue={""}
+              required
+            />
+
+            <label htmlFor="weight">Weight (kg)</label>
+            <input
+              name="weight"
+              type="number"
+              step="any"
+              min="0"
+              ref={weightInput}
+              defaultValue={""}
+              required
+            />
+
+            <label htmlFor="sets">Sets</label>
+            <input
+              name="sets"
+              type="number"
+              ref={setsInput}
+              min="0"
+              defaultValue={""}
+              required
+            />
+
+            <label htmlFor="reps">Reps per set</label>
+            <input
+              name="reps"
+              type="number"
+              min="0"
+              ref={repsInput}
+              defaultValue={""}
+              required
+            />
+
+            <button className="button" type="submit">
+              👊 Add Exercise
+            </button>
+          </form>
         </div>,
-        document.getElementById("modal-root")
+        document.getElementById(
+          context.currentRoutine.routineName.toLowerCase().split(" ").join("-")
+        )
       )}
     </>
   );

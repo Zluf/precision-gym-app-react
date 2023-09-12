@@ -39,13 +39,11 @@ export default function AuthDetails() {
 
   return (
     <div className="auth-details">
-      {context.authUser ? (
+      {context.authUser && (
         <>
           <p>{`Signed in as ${context.authUser}`}</p>
           <button onClick={userSignOut}>Sign Out</button>
         </>
-      ) : (
-        <p>Signed Out</p>
       )}
     </div>
   );

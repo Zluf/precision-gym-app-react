@@ -1,11 +1,13 @@
 .routine > * {
-  margin: 0 2vw 2vw 0;
+  margin-bottom: 2vw;
+}
+
+select {
+  margin-right: 2vw;
 }
 
 .exercises-container {
   display: flex;
-  flex-direction: row;
-  width: inherit;
   transition: transform 0.3s;
 }
 .archive > * {
@@ -47,4 +49,10 @@
 
 .slide-right img {
   transform: rotate(0.5turn);
+}
+
+@media (max-width: 768px) {
+  .slide-right {
+    right: 5%;
+  }
 }

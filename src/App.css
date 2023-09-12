@@ -18,7 +18,6 @@
 
 section {
   position: relative;
-  width: 90vw;
   padding: 5vw 8vw;
   background-color: grey;
   border-radius: 10px;
@@ -50,4 +49,11 @@ section:after {
   cursor: pointer;
   border: none;
   background: none;
+}
+
+@media (max-width: 768px) {
+  section::before,
+  section::after {
+    width: 5%;
+  }
 }

@@ -67,20 +67,22 @@ export default function ExerciseStats(props) {
               onKeyDown={props.onKeyDown}
             ></input>
           </div>
-        </div>
 
-        <button
-          className="btn-transparent expand-stats-btn"
-          onClick={toggleRepsHandler}
-        >
-          <img
-            src={angle}
-            style={{
-              transform: repsAreVisible ? "rotate(-90deg)" : "rotate(-180deg)",
-            }}
-            alt="toggle reps button"
-          />
-        </button>
+          <button
+            className="btn-transparent expand-stats-btn"
+            onClick={toggleRepsHandler}
+          >
+            <img
+              src={angle}
+              style={{
+                transform: repsAreVisible
+                  ? "rotate(-90deg)"
+                  : "rotate(-180deg)",
+              }}
+              alt="toggle reps button"
+            />
+          </button>
+        </div>
 
         <button
           className="exercise-stat delete-set"

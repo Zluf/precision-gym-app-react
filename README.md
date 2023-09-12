@@ -10,9 +10,35 @@ As a gym-goer I'm interested in the progress of my performance. To do that I mak
 
 ## Status
 
-In development...
+### Authentication:
 
-## App preview
+- [x] Basic sign in and log in options with name, email and password
+- [x] Option to explore the app's feature as a guest.
+
+### User Dashboard features:
+
+- [x] Adding routines which would store exercises.
+- [x] Assigning dates to each performed routine.
+- [x] Adding the current date to a routine
+- [x] Adding and deleting exercises
+- [x] Modifying the name of each exercise
+- [x] Adding and removing sets
+- [x] Modifying the used weight in each set
+- [x] Adding and removing reps in each set
+- [x] Modifying the performance of each rep on a 1-5 scale
+
+### Database:
+
+- [x] Fetching the user's stored data upon loggin in
+- [x] Updating the online database whenever user provides or modifies data
+
+### UI:
+
+- [x] Information hierarchy of input data
+- [x] Basic CSS styling of components
+- [ ] Responsive Web Design
+- [ ] Implemented guidelines of app's features
+- [ ] Accessibility
 
 [https://precision-gym.netlify.app/](https://precision-gym.netlify.app/)
 
@@ -22,6 +48,7 @@ In development...
 - Functional Components
 - CSS for each individual Component
 - Realtime Database at Firebase.com
+- Firebase Authntication tools
 
 ## User Stories & Features
 

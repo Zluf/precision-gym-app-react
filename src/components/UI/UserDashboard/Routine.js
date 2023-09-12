@@ -14,7 +14,9 @@ export default function Routine(props) {
   const routineDates = Object.keys(props.routine.logbook);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [sessionIsToday, setSessionIsToday] = useState(false);
-  const [displayedDate, setDisplayedDate] = useState();
+  const [displayedDate, setDisplayedDate] = useState(
+    routineDates[routineDates.length - 1]
+  );
   const todayIsTheNewDate = routineDates.some((date) => date === todaysDate);
   const context = useContext(AppContext);
 
@@ -34,31 +36,32 @@ export default function Routine(props) {
       setCurrentSlide((prevCurrentSlide) => prevCurrentSlide + 1);
   };
 
+  const addNewDateHandler = () => {
+    context.addNewDate(props.routineName, todaysDate);
+    setSessionIsToday(true);
+    setCurrentSlide(0);
+  };
+
   const setCurrentDateHandler = (date, dateListNum) => {
     setDisplayedDate(date);
   };
 
-  const addNewDateHandler = () => {
-    context.addNewDate(props.routineName, todaysDate);
-    setCurrentSlide(0);
-  };
-  console.log(displayedDate);
+  useEffect(() => {
+    if (displayedDate === todaysDate) setSessionIsToday(true);
+    if (displayedDate !== todaysDate) setSessionIsToday(false);
+  }, []);
 
   useEffect(() => {
-    setDisplayedDate(routineDates[routineDates.length - 1]);
-  }, [context.routineList]);
-
-  useEffect(() => {
-    if (routineDates[routineDates.length - 1] === todaysDate)
+    if (routineDates.some((date) => date === todaysDate)) {
       setSessionIsToday(true);
-    if (routineDates[routineDates.length - 1] !== todaysDate)
-      setSessionIsToday(false);
-  }, [displayedDate]);
+      setDisplayedDate(routineDates[routineDates.length - 1]);
+    }
+  }, [routineDates.length]);
 
   return (
     <section
-      onClick={props.onClick}
       className={props.className}
+      id={props.id}
       data-routine-name={props.routineName}
       data-date={displayedDate}
     >
@@ -115,8 +118,11 @@ export default function Routine(props) {
       {props.routine.logbook[displayedDate] && (
         <div
           data-date={displayedDate}
-          className={`exercises-container ${!sessionIsToday ? "archive" : ""}`}
-          style={{ transform: `translateX(-${50 * currentSlide}%)` }}
+          className="exercises-container"
+          style={{
+            transform: `translateX(-${300 * currentSlide}px)`,
+            width: `${props.routine.logbook[displayedDate].length * 300}px`,
+          }}
         >
           {props.routine.logbook[displayedDate].map((exercise, i) => {
             return (

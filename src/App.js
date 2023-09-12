@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "./App.css";
 import Logo from "./components/Logo/Logo";
 import AppContext from "./context/app-context";
@@ -18,9 +18,9 @@ function App() {
 
       {!context.authUser && <Auth />}
 
-      {context.authUser && context.routineList.length <= 0 && <AddNewRoutine />}
-
       {context.authUser && <UserDashboard />}
+
+      {context.authUser && context.routineList.length <= 0 && <AddNewRoutine />}
     </div>
   );
 }

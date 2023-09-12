@@ -134,7 +134,6 @@ export default function AppProvider(props) {
       (r) => r.routineName !== routineName
     );
     newRoutineList.push(allocatedRoutine);
-    console.log(newRoutineList);
     setRoutineList(newRoutineList);
 
     // Updates database
@@ -169,7 +168,7 @@ export default function AppProvider(props) {
   const toggleModal = function (routineDetails) {
     // fired by ExerciseFormModal -> submitHandler()
     // fired by Routine -> button onClick (+ Add Exercise)
-
+    console.log(routineDetails);
     setModalWindow(!modalWindow);
     setCurrentRoutine(routineDetails);
   };

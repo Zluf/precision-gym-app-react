@@ -10,7 +10,6 @@ export default function UserDashboard() {
 
   React.useEffect(() => {
     // executes upon mount, gets stored in memory, therefore does not execute on further re-renders
-    // console.log(`Authed User: ${authUser}`);
     context.fetchExerciseDatabase();
   }, [context.fetchExerciseDatabase]);
 
@@ -29,6 +28,7 @@ export default function UserDashboard() {
               <Routine
                 key={i}
                 className={`routine ${routineClassName}`}
+                id={routineClassName}
                 routineName={routine.routineName}
                 routine={routine}
               />
