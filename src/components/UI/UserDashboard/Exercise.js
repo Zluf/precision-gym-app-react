@@ -17,35 +17,19 @@ export default function Exercise(props) {
     context.updateExerciseList2(props.routineName, props.ex, props.routineDate);
   };
 
-  let sets = [];
-  for (let setIndex = 0; setIndex < props.ex.sets.length; setIndex++) {
-    sets.push(
-      <ExerciseStats
-        key={setIndex}
-        setIndex={setIndex}
-        ex={props.ex}
-        onKeyDown={keyDownHandler}
-        routineName={props.routineName}
-        routineDate={props.routineDate}
-      />
-    );
-  }
-
   return (
     <div className={`exercise ${props.ex.name}`} data-ex-index={props.exIndex}>
-      <div className="exercise-options">
-        <div
-          className="exercise-option"
-          onClick={() => {
-            context.deleteExercise(
-              props.routineName,
-              props.ex.name,
-              props.routineDate
-            );
-          }}
-        >
-          ❌
-        </div>
+      <div
+        className="delete-exercise"
+        onClick={() => {
+          context.deleteExercise(
+            props.routineName,
+            props.ex.name,
+            props.routineDate
+          );
+        }}
+      >
+        ❌
       </div>
 
       <div className="exercise-stat exercise-stats--name">
@@ -63,7 +47,16 @@ export default function Exercise(props) {
         ></input>
       </div>
 
-      {sets.map((set) => set)}
+      {props.ex.sets.map((set, setIndex) => (
+        <ExerciseStats
+          key={setIndex}
+          setIndex={setIndex}
+          ex={props.ex}
+          onKeyDown={keyDownHandler}
+          routineName={props.routineName}
+          routineDate={props.routineDate}
+        />
+      ))}
     </div>
   );
 }

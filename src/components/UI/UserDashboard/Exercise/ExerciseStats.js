@@ -45,53 +45,86 @@ export default function ExerciseStats(props) {
     );
   };
 
+  const setGaugeColor = (rep) => {
+    return rep === 100
+      ? "#008000"
+      : rep === 80
+      ? "#008000bb"
+      : rep === 60
+      ? "#00800090"
+      : rep === 40
+      ? "#0080006c"
+      : rep === 20
+      ? "#0080002c"
+      : "white";
+  };
+
   return (
     <div
       className="exercise-stats"
       key={props.setIndex + 1}
       data-set-num={props.setIndex}
     >
-      <div className="exercise-stats--top">
-        <div className="exercise-stats--set-and-weight">
-          <span className="exercise-stat exercise-stats--set-num">
-            Set {props.setIndex + 1},
-          </span>
+      <div className="exercise-stats--row">
+        {/* Set: Index */}
+        <span className="exercise-stats--set-num">
+          Set {props.setIndex + 1}
+        </span>
 
-          <div className="exercise-stat exercise-stats--weight">
-            <label htmlFor="weight">weight (kg): </label>
-            <input
-              name="weight"
-              defaultValue={props.ex.sets[props.setIndex].weight}
-              onBlur={(event) => weightBlurHandler(event, props.setIndex)}
-              onChange={(event) => event.target.value}
-              onKeyDown={props.onKeyDown}
-            ></input>
-          </div>
-
-          <button
-            className="btn-transparent expand-stats-btn"
-            onClick={toggleRepsHandler}
-          >
-            <img
-              src={angle}
+        {/* Set Gauge */}
+        <div className="exercise-stats--set-gauge">
+          {props.ex.sets[props.setIndex].reps.map((rep, i) => (
+            <div
+              key={i}
+              className="gauge-sector"
               style={{
-                transform: repsAreVisible
-                  ? "rotate(-90deg)"
-                  : "rotate(-180deg)",
+                backgroundColor: setGaugeColor(rep),
               }}
-              alt="toggle reps button"
-            />
-          </button>
+            ></div>
+          ))}
+        </div>
+      </div>
+
+      {/* Set: Index / weight / expand / delete  */}
+      <div className="exercise-stats--row">
+        {/* Set Weight: label / input */}
+        <div className="exercise-stats--weight">
+          <label htmlFor="weight">weight (kg): </label>
+          <input
+            name="weight"
+            type="number"
+            step="0.5"
+            defaultValue={props.ex.sets[props.setIndex].weight}
+            onBlur={(event) => weightBlurHandler(event, props.setIndex)}
+            onChange={(event) => event.target.value}
+            onKeyDown={props.onKeyDown}
+          ></input>
         </div>
 
+        {/* Set: expand reps */}
         <button
-          className="exercise-stat delete-set"
+          className="expand-stats-btn btn-transparent "
+          onClick={toggleRepsHandler}
+        >
+          <img
+            src={angle}
+            style={{
+              transform: repsAreVisible ? "rotate(-90deg)" : "rotate(-180deg)",
+            }}
+            alt="toggle reps button"
+          />
+        </button>
+
+        {/* Set: delete */}
+        <button
+          className="delete-set"
           onClick={addOrDeleteSetHandler.bind(null, "delete", props.setIndex)}
         >
           ❌
         </button>
       </div>
 
+      {/* Reps */}
       <div
         className="exercise-stats--reps"
         style={{
@@ -118,6 +151,7 @@ export default function ExerciseStats(props) {
         ))}
       </div>
 
+      {/* Add Set */}
       <button
         className="add-set"
         onClick={addOrDeleteSetHandler.bind(null, "add", props.setIndex)}

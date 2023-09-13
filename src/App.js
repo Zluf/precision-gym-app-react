@@ -13,13 +13,9 @@ function App() {
   return (
     <div className="app">
       <Logo />
-
       <AuthDetails />
-
       {!context.authUser && <Auth />}
-
       {context.authUser && <UserDashboard />}
-
       {context.authUser && context.routineList.length <= 0 && <AddNewRoutine />}
     </div>
   );

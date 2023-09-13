@@ -51,8 +51,11 @@ select {
   transform: rotate(0.5turn);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 400px) {
+  .slide-left {
+    left: -4%;
+  }
   .slide-right {
-    right: 5%;
+    right: 2%;
   }
 }

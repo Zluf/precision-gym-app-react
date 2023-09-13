@@ -1,17 +1,31 @@
-.exercise-stats--top input,
-.exercise-stats--name input {
+.exercise-stats--row * {
+  font-size: 0.9rem;
+}
+
+.exercise-stats--row,
+.exercise-stats--set-and-weight {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.exercise-stats--weight input {
   background: none;
   border: none;
 }
 
-.exercise-stats--top,
-.exercise-stats--set-and-weight {
-  display: flex;
-  justify-content: space-between;
+.exercise-stats--set-num {
+  margin-right: 1ch;
 }
 
-.exercise-stats--set-and-weight > * {
-  margin-right: 5px;
+.exercise-stats--set-gauge {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  width: 195px;
+  height: 5px;
+  background-color: white;
+  border-radius: 3px;
+  overflow: hidden;
 }
 
 .exercise-stats--weight {
@@ -20,7 +34,7 @@
 .exercise-stats--weight input {
   font-size: 1rem;
   text-align: center;
-  width: 4ch;
+  width: 6ch;
 }
 .exercise-stats--weight input:focus {
   background: white;
@@ -34,11 +48,12 @@
 }
 
 .expand-stats-btn img {
-  width: 10px;
+  width: 15px;
   transition: transform 0.3s opacity 0.3s;
 }
 
 .delete-set {
+  font-size: 0.9rem;
   padding: 0;
   cursor: pointer;
   border: none;

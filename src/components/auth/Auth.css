@@ -20,3 +20,14 @@
   cursor: pointer;
   color: rgb(32, 112, 0);
 }
+
+@media (max-width: 700px) {
+  .signin-login-container {
+    width: 100%;
+    margin-bottom: 5vw;
+  }
+  .auth {
+    display: flex;
+    flex-direction: column;
+  }
+}

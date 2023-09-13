@@ -29,7 +29,7 @@ section::after {
   content: "";
   position: absolute;
   background-color: grey;
-  width: 7%;
+  width: 5%;
   box-shadow: 0px 0px 10px 10px grey;
   z-index: 2;
 }
@@ -51,9 +51,7 @@ section:after {
   background: none;
 }
 
-@media (max-width: 768px) {
-  section::before,
-  section::after {
-    width: 5%;
-  }
+label,
+span {
+  color: rgb(18, 18, 18);
 }
