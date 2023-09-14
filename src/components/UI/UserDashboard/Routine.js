@@ -42,8 +42,8 @@ export default function Routine(props) {
     setCurrentSlide(0);
   };
 
-  const setCurrentDateHandler = (date, dateListNum) => {
-    setDisplayedDate(date);
+  const setCurrentDateHandler = (event) => {
+    setDisplayedDate(event.target.value);
   };
 
   useEffect(() => {
@@ -94,12 +94,16 @@ export default function Routine(props) {
         name="routine-dates"
         value={displayedDate}
         readOnly={displayedDate}
+        onChange={setCurrentDateHandler}
       >
         <option>Select a date</option>
         {routineDates
           .map((date, i) => (
             <option
-              onClick={() => setCurrentDateHandler(date, i)}
+              // onChange={() => {
+              //   console.log(date);
+              //   setCurrentDateHandler(date, i);
+              // }}
               key={date}
               value={date}
             >

@@ -16,12 +16,13 @@
 
 .exercise-stats--set-num {
   margin-right: 1ch;
+  font-size: 1rem;
 }
 
 .exercise-stats--set-gauge {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-  width: 195px;
+  width: 170px;
   height: 5px;
   background-color: white;
   border-radius: 3px;
@@ -49,7 +50,7 @@
 
 .expand-stats-btn img {
   width: 15px;
-  transition: transform 0.3s opacity 0.3s;
+  transition: transform 0.3s;
 }
 
 .delete-set {
