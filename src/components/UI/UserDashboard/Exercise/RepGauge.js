@@ -10,7 +10,7 @@ export default function RepGauge(props) {
   // Reverse iteration because CSS flex-direction: row-reverse
   for (let i = 5; i > 0; i--) {
     innerGauge.push(
-      <span
+      <div
         key={i}
         onClick={props.onRepClick}
         data-value={i * 20}
@@ -18,7 +18,7 @@ export default function RepGauge(props) {
         style={{
           backgroundColor: props.rep >= i * 20 && "green",
         }}
-      ></span>
+      ></div>
     );
   }
 
