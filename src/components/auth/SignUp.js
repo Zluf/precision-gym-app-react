@@ -17,7 +17,7 @@ export default function SignUp() {
         updateProfile(auth.currentUser, {
           displayName: userName,
         });
-        context.setUser(userCredential.user.displayName);
+        context.setUser(userName);
       })
       .catch((error) => console.log(error));
   };
