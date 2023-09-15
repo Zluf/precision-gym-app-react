@@ -1,0 +1,9 @@
+.new-routine-form {
+  display: flex;
+}
+.new-routine-form > * {
+  margin-right: 1vw;
+}
+.new-routine-form input {
+  width: 30ch;
+}

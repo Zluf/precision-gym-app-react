@@ -1,0 +1,35 @@
+.exercise {
+  position: relative;
+  width: 270px;
+  background: linear-gradient(135deg, white, rgb(92, 92, 92));
+  border-radius: 5px;
+  padding: 15px;
+  margin-right: 30px;
+}
+
+.exercise-stats--name {
+  margin-bottom: 1vh;
+}
+.exercise-stats--name label {
+  font-size: 0.8rem;
+}
+.exercise-stats--name input {
+  font-size: 1.2rem;
+  background: none;
+  border: none;
+}
+
+.delete-exercise {
+  position: absolute;
+  display: flex;
+  top: 1vw;
+  right: 1vw;
+  cursor: pointer;
+}
+
+.add-set {
+  /* margin-left: 5.5vw; */
+  border: none;
+  border-radius: 3px;
+  margin: 1vh 0;
+}

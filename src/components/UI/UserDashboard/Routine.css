@@ -1,0 +1,61 @@
+.routine > * {
+  margin-bottom: 2vw;
+}
+
+select {
+  margin-right: 2vw;
+}
+
+.exercises-container {
+  display: flex;
+  transition: transform 0.3s;
+}
+.archive > * {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.slide-btn {
+  position: absolute;
+  z-index: 3;
+  width: 10%;
+  top: 50%;
+  border-radius: 50%;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transform: translateY(0%);
+  transition: width 0.3s;
+}
+
+.slide-btn img {
+  width: 40px;
+  transition: all 0.3s;
+}
+
+.slide-btn:hover {
+  width: 11%;
+}
+.slide-btn:hover img {
+  filter: invert(100%) brightness(1000%);
+}
+
+.slide-left {
+  left: 0;
+}
+.slide-right {
+  right: 0;
+}
+
+.slide-right img {
+  transform: rotate(0.5turn);
+}
+
+@media (max-width: 400px) {
+  .slide-left {
+    left: -4%;
+  }
+  .slide-right {
+    right: 2%;
+  }
+}

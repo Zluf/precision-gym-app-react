@@ -1,0 +1,33 @@
+.signin-login-container {
+  width: 50%;
+  margin-bottom: 2vw;
+}
+
+.signin-login-container * {
+  margin-top: 1vw;
+}
+
+.signin-login-container input {
+  width: 70%;
+}
+
+.auth {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.guest-login:hover {
+  cursor: pointer;
+  color: rgb(32, 112, 0);
+}
+
+@media (max-width: 700px) {
+  .signin-login-container {
+    width: 100%;
+    margin-bottom: 5vw;
+  }
+  .auth {
+    display: flex;
+    flex-direction: column;
+  }
+}

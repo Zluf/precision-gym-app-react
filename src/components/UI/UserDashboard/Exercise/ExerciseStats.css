@@ -1,0 +1,66 @@
+.exercise-stats--row * {
+  font-size: 0.9rem;
+}
+
+.exercise-stats--row,
+.exercise-stats--set-and-weight {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.exercise-stats--weight input {
+  background: none;
+  border: none;
+}
+
+.exercise-stats--set-num {
+  margin-right: 1ch;
+  font-size: 1rem;
+}
+
+.exercise-stats--set-gauge {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  width: 170px;
+  height: 5px;
+  background-color: white;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.exercise-stats--weight {
+  display: flex;
+}
+.exercise-stats--weight input {
+  font-size: 1rem;
+  text-align: center;
+  width: 6ch;
+}
+.exercise-stats--weight input:focus {
+  background: white;
+  border: auto;
+}
+
+.exercise-stats--reps {
+  position: relative;
+  transition: opacity 0.2s, height 0.4s;
+  overflow: hidden;
+}
+
+.expand-stats-btn img {
+  width: 15px;
+  transition: transform 0.3s;
+}
+
+.delete-set {
+  font-size: 0.9rem;
+  padding: 0;
+  cursor: pointer;
+  border: none;
+  background: none;
+  filter: saturate(0%) brightness(100%) contrast(1000%);
+}
+.delete-set:active {
+  filter: none;
+}
