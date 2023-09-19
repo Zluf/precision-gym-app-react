@@ -6,19 +6,20 @@ import Auth from "./components/auth/Auth";
 import AuthDetails from "./components/auth/AuthDetails";
 import UserDashboard from "./components/UI/UserDashboard";
 import AddNewRoutine from "./components/UI/UserDashboard/AddNewRoutine";
-
+console.log(process.env.REACT_APP_TEST);
 function App() {
   const context = React.useContext(AppContext);
-
   return (
     <div className="app">
-      <Logo />
+      {/* <Logo />
       <AuthDetails />
       {!context.authUser && <Auth />}
       {context.authUser && <UserDashboard />}
-      {context.authUser && context.routineList.length <= 0 && <AddNewRoutine />}
+      {context.authUser && context.routineList.length <= 0 && <AddNewRoutine />} */}
+      {/* <DragDropTest /> */}
     </div>
   );
 }
+//
 
 export default App;
