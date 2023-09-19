@@ -55,3 +55,26 @@ label,
 span {
   color: rgb(18, 18, 18);
 }
+
+.stock {
+  width: 330px;
+  display: flex;
+  justify-content: space-around;
+  border: 2px solid white;
+}
+
+.widget {
+  width: 56px;
+  text-align: center;
+  background-color: grey;
+  cursor: grab;
+}
+
+.container {
+  margin-top: 20px;
+  width: 330px;
+  height: 60px;
+  display: flex;
+  justify-content: space-around;
+  border: 2px solid white;
+}

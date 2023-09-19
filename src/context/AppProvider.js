@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import AppContext from "./app-context";
 import App from "../App";
 
@@ -110,7 +110,7 @@ export default function AppProvider(props) {
 
   const addNewDate = async (routineName, todaysDate) => {
     const allocatedRoutine = routineList.find(
-      (r) => r.routineName == routineName
+      (r) => r.routineName === routineName
     );
     const routineLogs = Object.values(allocatedRoutine.logbook);
     const mostRecentDate = routineLogs[routineLogs.length - 1];

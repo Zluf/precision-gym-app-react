@@ -1,8 +1,6 @@
 import React from "react";
 import "./Exercise.css";
 import AppContext from "../../../context/app-context";
-import RepGauge from "./Exercise/RepGauge";
-import angle from "../../../assets/angle-bracket.png";
 import ExerciseStats from "./Exercise/ExerciseStats";
 
 export default function Exercise(props) {
@@ -11,6 +9,7 @@ export default function Exercise(props) {
   const keyDownHandler = (event) => {
     if (event.key === "Enter") event.target.blur();
   };
+  //
 
   const nameBlurHandler = (event) => {
     props.ex["name"] = event.target.value;

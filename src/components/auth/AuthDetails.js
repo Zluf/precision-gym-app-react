@@ -21,6 +21,7 @@ export default function AuthDetails() {
       .catch((error) => console.log(error));
   };
 
+  // Signs out guest on the next page load
   useEffect(() => {
     window.addEventListener("beforeunload", () => {
       if (auth.currentUser && auth.currentUser.displayName === "guest") {

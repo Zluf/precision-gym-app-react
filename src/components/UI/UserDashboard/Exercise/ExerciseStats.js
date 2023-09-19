@@ -36,13 +36,22 @@ export default function ExerciseStats(props) {
 
   const repClickHandler = (event, setIndex, repIndex) => {
     const repPerformance = +event.target.dataset.value;
-    const updatedEx = props.ex;
-    updatedEx.sets[setIndex].reps[repIndex] = repPerformance;
-    context.updateExerciseList2(
-      props.routineName,
-      updatedEx,
-      props.routineDate
-    );
+    const newReps = props.ex.sets[setIndex].reps.map((rep, i) => {
+      if (i !== repIndex && rep > repPerformance) return rep;
+      if (i <= repIndex) return repPerformance;
+      if (i > repIndex) return rep;
+    });
+    props.ex.sets[setIndex].reps = newReps;
+    console.log(props.ex.sets[setIndex].reps);
+    // props.ex.sets[setIndex].reps[repIndex] = repPerformance;
+    context.updateExerciseList2(props.routineName, props.ex, props.routineDate);
+  };
+
+  const repsToggleStyle = {
+    height: repsAreVisible
+      ? `${props.ex.sets[props.setIndex].reps.length * 20}px`
+      : 0,
+    opacity: repsAreVisible ? 1 : 0,
   };
 
   const setGaugeColor = (rep) => {
@@ -65,13 +74,14 @@ export default function ExerciseStats(props) {
       key={props.setIndex + 1}
       data-set-num={props.setIndex}
     >
+      {/* Set: Index / Gauge */}
       <div className="exercise-stats--row">
         {/* Set: Index */}
         <span className="exercise-stats--set-num">
           Set {props.setIndex + 1}
         </span>
 
-        {/* Set Gauge */}
+        {/* Set: Gauge */}
         <div className="exercise-stats--set-gauge">
           {props.ex.sets[props.setIndex].reps.map((rep, i) => (
             <div
@@ -85,9 +95,8 @@ export default function ExerciseStats(props) {
         </div>
       </div>
 
-      {/* Set: Index / weight / expand / delete  */}
+      {/* Set Weight: label / input */}
       <div className="exercise-stats--row">
-        {/* Set Weight: label / input */}
         <div className="exercise-stats--weight">
           <label htmlFor="weight">weight (kg): </label>
           <input
@@ -125,25 +134,17 @@ export default function ExerciseStats(props) {
       </div>
 
       {/* Reps */}
-      <div
-        className="exercise-stats--reps"
-        style={{
-          height: repsAreVisible
-            ? `${props.ex.sets[props.setIndex].reps.length * 20}px`
-            : 0,
-          opacity: repsAreVisible ? 1 : 0,
-        }}
-      >
+      <div className="exercise-stats--reps" style={repsToggleStyle}>
         {props.ex.sets[props.setIndex].reps.map((rep, repIndex) => (
           // rep is a value inside the array
           <RepGauge
             rep={rep}
             key={repIndex}
-            repIndex={repIndex}
-            setIndex={props.setIndex}
-            ex={props.ex}
             routineName={props.routineName}
             routineDate={props.routineDate}
+            ex={props.ex}
+            setIndex={props.setIndex}
+            repIndex={repIndex}
             onRepClick={(event) =>
               repClickHandler(event, props.setIndex, repIndex)
             }
