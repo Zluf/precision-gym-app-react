@@ -8,3 +8,4 @@ database.json
 src/test-code
 src/firebase.js
 environment
+.gitignore
