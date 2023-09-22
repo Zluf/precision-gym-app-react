@@ -1,6 +1,6 @@
 import React from "react";
 import "./Exercise.css";
-import AppContext from "../../../context/app-context";
+import AppContext from "../../../../context/app-context";
 import ExerciseStats from "./Exercise/ExerciseStats";
 
 export default function Exercise(props) {
@@ -13,7 +13,7 @@ export default function Exercise(props) {
 
   const nameBlurHandler = (event) => {
     props.ex["name"] = event.target.value;
-    context.updateExerciseList2(props.routineName, props.ex, props.routineDate);
+    context.updateDatabase(props.routineName, props.ex, props.routineDate);
   };
 
   return (

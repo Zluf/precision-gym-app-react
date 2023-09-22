@@ -27,7 +27,7 @@ export default function ExerciseForm() {
       }),
     };
 
-    context.updateExerciseList2(
+    context.updateDatabase(
       context.currentRoutine.routineName,
       newExInput,
       context.currentRoutine.routineDate
@@ -83,6 +83,7 @@ export default function ExerciseForm() {
               type="number"
               ref={setsInput}
               min="0"
+              max="10"
               defaultValue={""}
               required
             />
@@ -92,6 +93,7 @@ export default function ExerciseForm() {
               name="reps"
               type="number"
               min="0"
+              max="20"
               ref={repsInput}
               defaultValue={""}
               required

@@ -1,0 +1,7 @@
+.date-select {
+  display: flex;
+}
+
+.date-select label {
+  margin-right: 0.5rem;
+}

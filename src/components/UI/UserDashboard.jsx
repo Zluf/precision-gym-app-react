@@ -23,6 +23,7 @@ export default function UserDashboard() {
             .split(" ")
             .join("-");
 
+          // if (routine.logbook)
           return (
             <div className="routine-container" key={`rc${i}`}>
               <Routine

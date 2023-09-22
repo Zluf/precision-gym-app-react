@@ -24,8 +24,8 @@
   z-index: 99;
 }
 
-label,
-input {
+.exercise-form label,
+.exercise-form input {
   display: block;
   width: 100%;
 }

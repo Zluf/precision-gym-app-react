@@ -1,5 +1,7 @@
 # Precision Gym App
 
+[https://precision-gym.netlify.app/](https://precision-gym.netlify.app/)
+
 ## About the app
 
 The purpose of this app is track the progress of a user's performance in the gym. The user would be able to manually add/edit their exercises and input statistics specific for each exercise. Added exercises could then be save in routines. The routines would be displayed in the UI.
@@ -39,8 +41,6 @@ As a gym-goer I'm interested in the progress of my performance. To do that I mak
 - [ ] Responsive Web Design
 - [ ] Implemented guidelines of app's features
 - [ ] Accessibility
-
-[https://precision-gym.netlify.app/](https://precision-gym.netlify.app/)
 
 ## Technologies used
 

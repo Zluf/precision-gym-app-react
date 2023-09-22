@@ -40,7 +40,7 @@ export default function AppProvider(props) {
     }
   }, [authUser]);
 
-  const updateExerciseList2 = async (routineName, updatedEx, routineDate) => {
+  const updateDatabase = async (routineName, updatedEx, routineDate) => {
     console.log(routineName, updatedEx, routineDate);
     let newRoutineList = context.routineList.slice();
 
@@ -112,30 +112,46 @@ export default function AppProvider(props) {
     const allocatedRoutine = routineList.find(
       (r) => r.routineName === routineName
     );
-    const routineLogs = Object.values(allocatedRoutine.logbook);
-    const mostRecentDate = routineLogs[routineLogs.length - 1];
-    const newDate = mostRecentDate.map((ex) => {
-      const newEx = { id: ex.id, name: ex.name, sets: ex.sets };
-      const newSets = [];
-      for (let i = 0; i < ex.sets.length; i++) {
-        newSets.push({
-          weight: ex.sets[i].weight,
-          reps: Array(5)
-            .fill(0)
-            .map((arr) => arr * ex.sets[i].reps.length),
-        });
-      }
-      newEx.sets = newSets;
-      return newEx;
-    });
-    allocatedRoutine.logbook[todaysDate] = newDate;
-
+    let newDate;
+    if (allocatedRoutine.logbook) {
+      const routineLogs = Object.values(allocatedRoutine.logbook);
+      const mostRecentDate = routineLogs[routineLogs.length - 1];
+      newDate = mostRecentDate.map((ex) => {
+        const newEx = { id: ex.id, name: ex.name, sets: ex.sets };
+        const newSets = [];
+        for (let i = 0; i < ex.sets.length; i++) {
+          newSets.push({
+            weight: ex.sets[i].weight,
+            reps: Array(5)
+              .fill(0)
+              .map((arr) => arr * ex.sets[i].reps.length),
+          });
+        }
+        newEx.sets = newSets;
+        return newEx;
+      });
+      allocatedRoutine.logbook[todaysDate] = newDate;
+    }
+    if (!allocatedRoutine.logbook) {
+      newDate = [
+        {
+          id: 1,
+          name: "Enter a new exercise name",
+          sets: [
+            {
+              weight: 0,
+              reps: [Array(5).fill(0)],
+            },
+          ],
+        },
+      ];
+      allocatedRoutine.logbook[todaysDate] = newDate;
+    }
     const newRoutineList = routineList.filter(
       (r) => r.routineName !== routineName
     );
     newRoutineList.push(allocatedRoutine);
     setRoutineList(newRoutineList);
-
     // Updates database
     await fetch(
       `https://precision-gym-default-rtdb.firebaseio.com/users/${authUser}/routines/${routineName}/logbook/${todaysDate}.json`,
@@ -181,7 +197,7 @@ export default function AppProvider(props) {
     deleteExercise: deleteExercise,
     toggleModal: toggleModal,
     currentRoutine: currentRoutine,
-    updateExerciseList2: updateExerciseList2,
+    updateDatabase: updateDatabase,
     fetchExerciseDatabase: fetchExerciseDatabase,
     addNewDate: addNewDate,
     addNewRoutine: addNewRoutine,

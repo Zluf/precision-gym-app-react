@@ -1,8 +1,9 @@
 import { useState, useEffect, useContext } from "react";
 import "./Routine.css";
-import Exercise from "./Exercise";
+import Exercise from "./Routine/Exercise";
 import AppContext from "../../../context/app-context";
 import slideChange from "../../../assets/icon-slide-change.svg";
+import DateSelect from "./Routine/DateSelect";
 
 export default function Routine(props) {
   const date = new Date();
@@ -11,7 +12,10 @@ export default function Routine(props) {
     date.getMonth() < 10 ? `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`;
   const todaysDate = `${date.getFullYear()}-${month}-${day}`;
 
-  const routineDates = Object.keys(props.routine.logbook);
+  const routineDates = props.routine.logbook
+    ? Object.keys(props.routine.logbook)
+    : [];
+
   const [currentSlide, setCurrentSlide] = useState(0);
   const [sessionIsToday, setSessionIsToday] = useState(false);
   const [displayedDate, setDisplayedDate] = useState(
@@ -26,7 +30,7 @@ export default function Routine(props) {
       (key) => updatedEx[key] === updatedEx[event.target.name]
     );
     updatedEx[inputKeyName] = event.target.value;
-    context.updateExerciseList2(props.routineName, updatedEx, displayedDate);
+    context.updateDatabase(props.routineName, updatedEx, displayedDate);
   };
 
   const onSlideChange = (event, direction) => {
@@ -43,7 +47,8 @@ export default function Routine(props) {
   };
 
   const setCurrentDateHandler = (event) => {
-    setDisplayedDate(event.target.value);
+    if (event.target.value !== "Select a date")
+      setDisplayedDate(event.target.value);
   };
 
   useEffect(() => {
@@ -90,28 +95,11 @@ export default function Routine(props) {
 
       <h2>{props.routineName}</h2>
 
-      <select
-        name="routine-dates"
-        value={displayedDate}
-        readOnly={displayedDate}
-        onChange={setCurrentDateHandler}
-      >
-        <option>Select a date</option>
-        {routineDates
-          .map((date, i) => (
-            <option
-              // onChange={() => {
-              //   console.log(date);
-              //   setCurrentDateHandler(date, i);
-              // }}
-              key={date}
-              value={date}
-            >
-              {date}
-            </option>
-          ))
-          .sort((a, b) => a - b)}
-      </select>
+      <DateSelect
+        displayedDate={displayedDate}
+        onSetCurrentDate={setCurrentDateHandler}
+        routineDates={routineDates}
+      />
 
       {!todayIsTheNewDate && (
         <button onClick={addNewDateHandler}>
@@ -119,7 +107,7 @@ export default function Routine(props) {
         </button>
       )}
 
-      {props.routine.logbook[displayedDate] && (
+      {props.routine.logbook && props.routine.logbook[displayedDate] && (
         <div
           data-date={displayedDate}
           className="exercises-container"

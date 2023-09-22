@@ -8,6 +8,8 @@
 }
 
 .exercise-stats--name {
+  display: flex;
+  flex-direction: column;
   margin-bottom: 1vh;
 }
 .exercise-stats--name label {

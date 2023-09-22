@@ -1,7 +1,7 @@
 import React from "react";
 import "./RepGauge.css";
 import { useContext } from "react";
-import AppContext from "../../../../context/app-context";
+import AppContext from "../../../../../context/app-context";
 
 export default function RepGauge(props) {
   const context = useContext(AppContext);
@@ -36,7 +36,7 @@ export default function RepGauge(props) {
       modifiedReps.splice(props.repIndex + 1, 0, 0);
     }
     // 3. Update the database
-    context.updateExerciseList2(props.routineName, ex, props.routineDate);
+    context.updateDatabase(props.routineName, ex, props.routineDate);
   };
 
   return (

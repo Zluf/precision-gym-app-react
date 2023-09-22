@@ -1,8 +1,8 @@
 import React, { useContext, useState } from "react";
 import "./ExerciseStats.css";
-import AppContext from "../../../../context/app-context";
+import AppContext from "../../../../../context/app-context";
 import RepGauge from "./RepGauge";
-import angle from "../../../../assets/angle-bracket.png";
+import angle from "../../../../../assets/angle-bracket.png";
 
 export default function ExerciseStats(props) {
   const context = useContext(AppContext);
@@ -15,7 +15,7 @@ export default function ExerciseStats(props) {
 
   const weightBlurHandler = (event, setIndex) => {
     props.ex.sets[setIndex].weight = +event.target.value;
-    context.updateExerciseList2(props.routineName, props.ex, props.routineDate);
+    context.updateDatabase(props.routineName, props.ex, props.routineDate);
   };
 
   const addOrDeleteSetHandler = (addOrDelete, setIndex) => {
@@ -31,7 +31,7 @@ export default function ExerciseStats(props) {
       newEx.sets.splice(setIndex + 1, 0, newSet);
     }
     // 3. Update the database
-    context.updateExerciseList2(props.routineName, newEx, props.routineDate);
+    context.updateDatabase(props.routineName, newEx, props.routineDate);
   };
 
   const repClickHandler = (event, setIndex, repIndex) => {
@@ -44,7 +44,7 @@ export default function ExerciseStats(props) {
     props.ex.sets[setIndex].reps = newReps;
     console.log(props.ex.sets[setIndex].reps);
     // props.ex.sets[setIndex].reps[repIndex] = repPerformance;
-    context.updateExerciseList2(props.routineName, props.ex, props.routineDate);
+    context.updateDatabase(props.routineName, props.ex, props.routineDate);
   };
 
   const repsToggleStyle = {
