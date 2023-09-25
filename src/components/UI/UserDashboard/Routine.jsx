@@ -4,13 +4,10 @@ import Exercise from "./Routine/Exercise";
 import AppContext from "../../../context/app-context";
 import slideChange from "../../../assets/icon-slide-change.svg";
 import DateSelect from "./Routine/DateSelect";
+import { todaysDate } from "../../../context/AppProvider";
 
 export default function Routine(props) {
-  const date = new Date();
-  const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
-  const month =
-    date.getMonth() < 10 ? `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`;
-  const todaysDate = `${date.getFullYear()}-${month}-${day}`;
+  const context = useContext(AppContext);
 
   const routineDates = props.routine.logbook
     ? Object.keys(props.routine.logbook)
@@ -21,8 +18,7 @@ export default function Routine(props) {
   const [displayedDate, setDisplayedDate] = useState(
     routineDates[routineDates.length - 1]
   );
-  const todayIsTheNewDate = routineDates.some((date) => date === todaysDate);
-  const context = useContext(AppContext);
+  const todayIsTheNewDate = routineDates.some((date) => date === todaysDate());
 
   const onBlurHandler = (event, exercise) => {
     let updatedEx = exercise;
@@ -41,7 +37,7 @@ export default function Routine(props) {
   };
 
   const addNewDateHandler = () => {
-    context.addNewDate(props.routineName, todaysDate);
+    context.addNewDate(props.routineName, todaysDate());
     setSessionIsToday(true);
     setCurrentSlide(0);
   };
@@ -52,12 +48,12 @@ export default function Routine(props) {
   };
 
   useEffect(() => {
-    if (displayedDate === todaysDate) setSessionIsToday(true);
-    if (displayedDate !== todaysDate) setSessionIsToday(false);
-  }, []);
+    if (displayedDate === todaysDate()) setSessionIsToday(true);
+    if (displayedDate !== todaysDate()) setSessionIsToday(false);
+  }, [displayedDate]);
 
   useEffect(() => {
-    if (routineDates.some((date) => date === todaysDate)) {
+    if (routineDates.some((date) => date === todaysDate())) {
       setSessionIsToday(true);
       setDisplayedDate(routineDates[routineDates.length - 1]);
     }

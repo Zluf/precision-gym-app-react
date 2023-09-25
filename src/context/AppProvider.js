@@ -112,7 +112,9 @@ export default function AppProvider(props) {
     const allocatedRoutine = routineList.find(
       (r) => r.routineName === routineName
     );
+
     let newDate;
+
     if (allocatedRoutine.logbook) {
       const routineLogs = Object.values(allocatedRoutine.logbook);
       const mostRecentDate = routineLogs[routineLogs.length - 1];
@@ -130,8 +132,8 @@ export default function AppProvider(props) {
         newEx.sets = newSets;
         return newEx;
       });
-      allocatedRoutine.logbook[todaysDate] = newDate;
     }
+
     if (!allocatedRoutine.logbook) {
       newDate = [
         {
@@ -145,13 +147,18 @@ export default function AppProvider(props) {
           ],
         },
       ];
-      allocatedRoutine.logbook[todaysDate] = newDate;
     }
+
+    allocatedRoutine.logbook[todaysDate] = newDate;
+
     const newRoutineList = routineList.filter(
       (r) => r.routineName !== routineName
     );
+
     newRoutineList.push(allocatedRoutine);
+
     setRoutineList(newRoutineList);
+
     // Updates database
     await fetch(
       `https://precision-gym-default-rtdb.firebaseio.com/users/${authUser}/routines/${routineName}/logbook/${todaysDate}.json`,

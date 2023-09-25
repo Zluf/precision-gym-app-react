@@ -1,14 +1,14 @@
 import "./UserDashboard.css";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useContext } from "react";
 import Routine from "./UserDashboard/Routine";
 import ExerciseFormModal from "./ExerciseFormModal";
 import AppContext from "../../context/app-context";
 import AddNewRoutine from "./UserDashboard/AddNewRoutine";
 
 export default function UserDashboard() {
-  const context = React.useContext(AppContext);
+  const context = useContext(AppContext);
 
-  React.useEffect(() => {
+  useEffect(() => {
     // executes upon mount, gets stored in memory, therefore does not execute on further re-renders
     context.fetchExerciseDatabase();
   }, [context.fetchExerciseDatabase]);
@@ -23,7 +23,6 @@ export default function UserDashboard() {
             .split(" ")
             .join("-");
 
-          // if (routine.logbook)
           return (
             <div className="routine-container" key={`rc${i}`}>
               <Routine
