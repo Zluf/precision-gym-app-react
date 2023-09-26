@@ -29,7 +29,6 @@ export default function RepGauge(props) {
     // 2.1 Remove the targeted rep
     if (addOrDelete === "delete") {
       modifiedReps.splice(props.repIndex, 1);
-      console.log(ex);
     }
     // 2.2 Add a new subsequent rep
     if (addOrDelete === "add") {

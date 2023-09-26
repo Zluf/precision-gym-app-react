@@ -20,14 +20,14 @@ export default function Routine(props) {
   );
   const todayIsTheNewDate = routineDates.some((date) => date === todaysDate());
 
-  const onBlurHandler = (event, exercise) => {
-    let updatedEx = exercise;
-    const inputKeyName = Object.keys(updatedEx).find(
-      (key) => updatedEx[key] === updatedEx[event.target.name]
-    );
-    updatedEx[inputKeyName] = event.target.value;
-    context.updateDatabase(props.routineName, updatedEx, displayedDate);
-  };
+  // const onBlurHandler = (event, exercise) => {
+  //   let updatedEx = exercise;
+  //   const inputKeyName = Object.keys(updatedEx).find(
+  //     (key) => updatedEx[key] === updatedEx[event.target.name]
+  //   );
+  //   updatedEx[inputKeyName] = event.target.value;
+  //   context.updateDatabase(props.routineName, updatedEx, displayedDate);
+  // };
 
   const onSlideChange = (event, direction) => {
     if (direction === "prev")
@@ -45,6 +45,14 @@ export default function Routine(props) {
   const setCurrentDateHandler = (event) => {
     if (event.target.value !== "Select a date")
       setDisplayedDate(event.target.value);
+  };
+
+  const addExerciseHandler = () => {
+    context.toggleModal({
+      routineName: props.routineName,
+      routineDate: displayedDate,
+      exercises: props.routine.logbook[displayedDate],
+    });
   };
 
   useEffect(() => {
@@ -123,7 +131,6 @@ export default function Routine(props) {
                 onEditExercise={() => {
                   context.toggleModal(exercise);
                 }}
-                onBlur={(event) => onBlurHandler(event, exercise)}
                 onDeleteExercise={context.deleteExercise}
               />
             );
@@ -132,16 +139,7 @@ export default function Routine(props) {
       )}
 
       {sessionIsToday && (
-        <button
-          className="add-ex-btn"
-          onClick={() => {
-            context.toggleModal({
-              routineName: props.routineName,
-              routineDate: displayedDate,
-              exercises: props.routine.logbook[displayedDate],
-            });
-          }}
-        >
+        <button className="add-ex-btn" onClick={addExerciseHandler}>
           + Add Exercise
         </button>
       )}

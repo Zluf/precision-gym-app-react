@@ -17,7 +17,13 @@ export default function Exercise(props) {
   };
 
   return (
-    <div className={`exercise ${props.ex.name}`} data-ex-index={props.exIndex}>
+    <div
+      className={`exercise ${props.ex.name}`}
+      data-ex-index={props.exIndex}
+      onClick={() => {
+        console.log(props.ex);
+      }}
+    >
       <div
         className="delete-exercise"
         onClick={() => {
@@ -47,9 +53,11 @@ export default function Exercise(props) {
       </div>
 
       {props.ex.sets.map((set, setIndex) => (
+        // <p>{set.weight}</p>
         <ExerciseStats
           key={setIndex}
           setIndex={setIndex}
+          set={set}
           ex={props.ex}
           onKeyDown={keyDownHandler}
           routineName={props.routineName}

@@ -14,8 +14,9 @@ export default function ExerciseStats(props) {
   };
 
   const weightBlurHandler = (event, setIndex) => {
-    props.ex.sets[setIndex].weight = +event.target.value;
-    context.updateDatabase(props.routineName, props.ex, props.routineDate);
+    const newEx = props.ex;
+    newEx.sets[setIndex].weight = +event.target.value;
+    context.updateDatabase(props.routineName, newEx, props.routineDate);
   };
 
   const addOrDeleteSetHandler = (addOrDelete, setIndex) => {
@@ -42,8 +43,6 @@ export default function ExerciseStats(props) {
       if (i > repIndex) return rep;
     });
     props.ex.sets[setIndex].reps = newReps;
-    console.log(props.ex.sets[setIndex].reps);
-    // props.ex.sets[setIndex].reps[repIndex] = repPerformance;
     context.updateDatabase(props.routineName, props.ex, props.routineDate);
   };
 
@@ -103,7 +102,7 @@ export default function ExerciseStats(props) {
             name="weight"
             type="number"
             step="0.5"
-            defaultValue={props.ex.sets[props.setIndex].weight}
+            defaultValue={props.set.weight}
             onBlur={(event) => weightBlurHandler(event, props.setIndex)}
             onChange={(event) => event.target.value}
             onKeyDown={props.onKeyDown}
