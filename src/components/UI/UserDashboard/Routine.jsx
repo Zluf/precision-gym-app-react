@@ -4,8 +4,9 @@ import { useState, useEffect, useContext } from "react";
 import "./Routine.css";
 import Exercise from "./Routine/Exercise";
 import AppContext from "../../../context/app-context";
-import slideChange from "../../../assets/icon-slide-change.svg";
+import SlideButton from "./Routine/SlideButton";
 import { todaysDate } from "../../../context/AppProvider";
+import DateSelect from "./Routine/DateSelect";
 
 export default function Routine(props) {
   const routineDates = Object.keys(props.routine.logbook);
@@ -14,22 +15,15 @@ export default function Routine(props) {
   const [displayedDate, setDisplayedDate] = useState(
     routineDates[routineDates.length - 1]
   );
-  const todayIsTheNewDate = routineDates.some((date) => date === todaysDate);
+  const exercisesArr = props.routine.logbook[displayedDate];
+  const todayIsTheNewDate = routineDates.some((date) => date === todaysDate());
+
   const context = useContext(AppContext);
 
-  const onBlurHandler = (event, exercise) => {
-    let updatedEx = exercise;
-    const inputKeyName = Object.keys(updatedEx).find(
-      (key) => updatedEx[key] === updatedEx[event.target.name]
-    );
-    updatedEx[inputKeyName] = event.target.value;
-    context.updateDatabase(props.routineName, updatedEx, displayedDate);
-  };
-
-  const onSlideChange = (event, direction) => {
-    if (direction === "prev")
+  const onSlideChange = (direction) => {
+    if (direction === "left")
       setCurrentSlide((prevCurrentSlide) => prevCurrentSlide - 1);
-    if (direction === "next")
+    if (direction === "right")
       setCurrentSlide((prevCurrentSlide) => prevCurrentSlide + 1);
   };
 
@@ -39,21 +33,16 @@ export default function Routine(props) {
     setCurrentSlide(0);
   };
 
-  const setCurrentDateHandler = (event) => {
-    if (event.target.value !== "Select a date")
-      setDisplayedDate(event.target.value);
-  };
-
   const addExerciseHandler = () => {
     context.toggleModal({
       routineName: props.routineName,
       routineDate: displayedDate,
-      exercises: props.routine.logbook[displayedDate],
+      exercises: exercisesArr,
     });
   };
 
   useEffect(() => {
-    if (displayedDate !== todaysDate) setSessionIsToday(false);
+    if (displayedDate !== todaysDate()) setSessionIsToday(false);
     if (routineDates.some((date) => date === todaysDate())) {
       setSessionIsToday(true);
       setDisplayedDate(routineDates[routineDates.length - 1]);
@@ -61,52 +50,27 @@ export default function Routine(props) {
   }, [routineDates.length]);
 
   return (
-    <section
-      className={props.className}
-      id={props.id}
-      data-routine-name={props.routineName}
-      data-date={displayedDate}
-    >
-      <button
-        className="slide-btn slide-left"
-        style={{
-          visibility: currentSlide === 0 && "hidden",
-        }}
-        onClick={(event) => onSlideChange(event, "prev")}
-      >
-        <img src={slideChange} alt="slide-left arrow" />
-      </button>
-
-      <button
-        className="slide-btn slide-right"
-        style={{
-          visibility:
-            displayedDate &&
-            currentSlide === props.routine.logbook[displayedDate].length - 1 &&
-            "hidden",
-        }}
-        onClick={(event) => onSlideChange(event, "next")}
-      >
-        <img src={slideChange} alt="slide-right arrow" />
-      </button>
+    <section className={props.className} id={props.id}>
+      {currentSlide !== 0 && (
+        <SlideButton
+          leftOrRight="left"
+          onClick={onSlideChange.bind(null, "left")}
+        />
+      )}
+      {currentSlide !== exercisesArr.length - 1 && (
+        <SlideButton
+          leftOrRight="right"
+          onClick={onSlideChange.bind(null, "right")}
+        />
+      )}
 
       <h2>{props.routineName}</h2>
 
-      <select
-        name="routine-dates"
-        value={displayedDate}
-        readOnly={displayedDate}
-        onChange={setCurrentDateHandler}
-      >
-        <option>Select a date</option>
-        {routineDates
-          .map((date, i) => (
-            <option key={date} value={date}>
-              {date}
-            </option>
-          ))
-          .sort((a, b) => a - b)}
-      </select>
+      <DateSelect
+        displayedDate={displayedDate}
+        onChange={(event) => setDisplayedDate(event.target.value)}
+        routineDates={routineDates}
+      />
 
       {!todayIsTheNewDate && (
         <button onClick={addNewDateHandler}>
@@ -114,16 +78,16 @@ export default function Routine(props) {
         </button>
       )}
 
-      {props.routine.logbook && props.routine.logbook[displayedDate] && (
+      {props.routine.logbook && exercisesArr && (
         <div
           data-date={displayedDate}
           className="exercises-container"
           style={{
             transform: `translateX(-${300 * currentSlide}px)`,
-            width: `${props.routine.logbook[displayedDate].length * 300}px`,
+            width: `${exercisesArr.length * 300}px`,
           }}
         >
-          {props.routine.logbook[displayedDate].map((exercise, i) => {
+          {exercisesArr.map((exercise, i) => {
             return (
               <Exercise
                 key={`${exercise.name}-${i + 1}`}

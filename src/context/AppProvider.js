@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React from "react";
+import { useEffect } from "react";
 import AppContext from "./app-context";
 import App from "../App";
 
@@ -40,8 +41,11 @@ export default function AppProvider(props) {
     }
   }, [authUser]);
 
+  //
+  //
+
   const updateDatabase = async (routineName, updatedEx, routineDate) => {
-    console.log(routineName, updatedEx, routineDate);
+    // console.log(routineName, updatedEx, routineDate);
     let newRoutineList = context.routineList.slice();
 
     const routineIndex = context.routineList.findIndex(
@@ -108,6 +112,9 @@ export default function AppProvider(props) {
     );
   };
 
+  //
+  //
+
   const addNewDate = async (routineName, todaysDate) => {
     // 1. Get exercise list from th most recent date
     const allocatedRoutine = routineList.find(
@@ -117,15 +124,13 @@ export default function AppProvider(props) {
     const mostRecentDate = routineLogs[routineLogs.length - 1];
     const copiedExercises = mostRecentDate.map((ex) => {
       const newEx = { id: ex.id, name: ex.name, sets: ex.sets };
-      const newSets = [];
-      for (let i = 0; i < ex.sets.length; i++) {
-        newSets.push({
-          weight: ex.sets[i].weight,
-          reps: Array(5)
-            .fill(0)
-            .map((arr) => arr * ex.sets[i].reps.length),
-        });
-      }
+      // Resets values of each rep
+      const newSets = ex.sets.map((set) => {
+        return {
+          weight: set.weight,
+          reps: Array(set.reps.length).fill(0),
+        };
+      });
       newEx.sets = newSets;
       return newEx;
     });
@@ -137,11 +142,8 @@ export default function AppProvider(props) {
     const newRoutineList = routineList.filter(
       (r) => r.routineName !== routineName
     );
-
     newRoutineList.push(allocatedRoutine);
-
     setRoutineList(newRoutineList);
-
     await fetch(
       `https://precision-gym-default-rtdb.firebaseio.com/users/${authUser}/routines/${routineName}/logbook/${todaysDate}.json`,
       {
@@ -151,6 +153,9 @@ export default function AppProvider(props) {
       }
     );
   };
+
+  //
+  //
 
   const addNewRoutine = (prevRoutineIndex, newRoutine) => {
     const newRoutineList = [...routineList];

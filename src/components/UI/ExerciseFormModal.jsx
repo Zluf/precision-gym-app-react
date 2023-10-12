@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
+import { useEffect, useRef } from "react";
 import reactDom from "react-dom";
 import AppContext from "../../context/app-context";
 import "./ExerciseFormModal.css";

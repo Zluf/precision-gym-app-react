@@ -1,3 +1,4 @@
+import React from "react";
 import "./DateSelect.css";
 
 export default function DateSelect(props) {
@@ -8,7 +9,7 @@ export default function DateSelect(props) {
         name="routine-dates"
         value={props.displayedDate}
         readOnly={props.displayedDate}
-        onChange={props.onSetCurrentDate}
+        onChange={props.onChange}
       >
         {props.routineDates
           .map((date, i) => (

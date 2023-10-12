@@ -1,22 +1,29 @@
 import React from "react";
-import AppContext from "../../../../../../context/app-context";
 import "../ExerciseStats.css";
 
 function SetGauge(props) {
-  const context = React.useContext(AppContext);
-
   const setGaugeColor = (rep) => {
-    return rep === 100
-      ? "#008000"
-      : rep === 80
-      ? "#008000bb"
-      : rep === 60
-      ? "#00800090"
-      : rep === 40
-      ? "#0080006c"
-      : rep === 20
-      ? "#0080002c"
-      : "white";
+    let color;
+    switch (rep) {
+      case 100:
+        color = "#008000";
+        break;
+      case 80:
+        color = "#008000bb";
+        break;
+      case 60:
+        color = "#00800090";
+        break;
+      case 40:
+        color = "#0080006c";
+        break;
+      case 20:
+        color = "#0080002c";
+        break;
+      default:
+        color = "white";
+    }
+    return color;
   };
 
   return (

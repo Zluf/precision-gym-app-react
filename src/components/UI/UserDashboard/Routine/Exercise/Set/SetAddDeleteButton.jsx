@@ -1,5 +1,4 @@
 import React from "react";
-
 import { useContext } from "react";
 import "../ExerciseStats.css";
 import AppContext from "../../../../../../context/app-context";

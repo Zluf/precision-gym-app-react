@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import React from "react";
 import "./UserDashboard.css";
-import React, { useEffect, useContext } from "react";
+import { useEffect, useContext } from "react";
 import Routine from "./UserDashboard/Routine";
 import ExerciseFormModal from "./ExerciseFormModal";
 import AppContext from "../../context/app-context";
