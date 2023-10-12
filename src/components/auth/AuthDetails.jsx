@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { onAuthStateChanged, signOut, updateProfile } from "firebase/auth";
+import React, { useEffect } from "react";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../../firebase";
 import AppContext from "../../context/app-context";
 

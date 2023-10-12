@@ -1,3 +1,15 @@
+.exercise-stats--name {
+  margin-bottom: 1vh;
+}
+.exercise-stats--name label {
+  font-size: 0.8rem;
+}
+.exercise-stats--name input {
+  font-size: 1.2rem;
+  background: none;
+  border: none;
+}
+
 .exercise-stats--row * {
   font-size: 0.9rem;
 }
@@ -7,11 +19,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.exercise-stats--weight input {
-  background: none;
-  border: none;
 }
 
 .exercise-stats--set-num {
@@ -36,6 +43,8 @@
   font-size: 1rem;
   text-align: center;
   width: 6ch;
+  background: none;
+  border: none;
 }
 .exercise-stats--weight input:focus {
   background: white;

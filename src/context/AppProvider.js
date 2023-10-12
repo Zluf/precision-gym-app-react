@@ -6,7 +6,7 @@ export const todaysDate = () => {
   const date = new Date();
   const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
   const month =
-    date.getMonth() < 10 ? `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`;
+    date.getMonth() < 9 ? `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`;
   return `${date.getFullYear()}-${month}-${day}`;
 };
 
@@ -109,9 +109,28 @@ export default function AppProvider(props) {
   };
 
   const addNewDate = async (routineName, todaysDate) => {
+    // 1. Get exercise list from th most recent date
     const allocatedRoutine = routineList.find(
       (r) => r.routineName === routineName
     );
+<<<<<<< HEAD
+    const routineLogs = Object.values(allocatedRoutine.logbook);
+    const mostRecentDate = routineLogs[routineLogs.length - 1];
+    const copiedExercises = mostRecentDate.map((ex) => {
+      const newEx = { id: ex.id, name: ex.name, sets: ex.sets };
+      const newSets = [];
+      for (let i = 0; i < ex.sets.length; i++) {
+        newSets.push({
+          weight: ex.sets[i].weight,
+          reps: Array(5)
+            .fill(0)
+            .map((arr) => arr * ex.sets[i].reps.length),
+        });
+      }
+      newEx.sets = newSets;
+      return newEx;
+    });
+=======
 
     let newDate;
 
@@ -150,7 +169,12 @@ export default function AppProvider(props) {
     }
 
     allocatedRoutine.logbook[todaysDate] = newDate;
+>>>>>>> 502cd4b9399d46015c4ee0cf19d966cf3c21266a
 
+    // 2. Copy the ex.list from the most recent date to the new date
+    allocatedRoutine.logbook[todaysDate] = copiedExercises;
+
+    // 3. Update state and database
     const newRoutineList = routineList.filter(
       (r) => r.routineName !== routineName
     );
@@ -159,12 +183,11 @@ export default function AppProvider(props) {
 
     setRoutineList(newRoutineList);
 
-    // Updates database
     await fetch(
       `https://precision-gym-default-rtdb.firebaseio.com/users/${authUser}/routines/${routineName}/logbook/${todaysDate}.json`,
       {
         method: "PUT",
-        body: JSON.stringify(newDate),
+        body: JSON.stringify(copiedExercises),
         headers: { "Content-Type": "application-json" },
       }
     );

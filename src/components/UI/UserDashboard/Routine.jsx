@@ -1,33 +1,34 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useContext } from "react";
 import "./Routine.css";
 import Exercise from "./Routine/Exercise";
 import AppContext from "../../../context/app-context";
 import slideChange from "../../../assets/icon-slide-change.svg";
-import DateSelect from "./Routine/DateSelect";
-import { todaysDate } from "../../../context/AppProvider";
 
 export default function Routine(props) {
-  const context = useContext(AppContext);
+  const date = new Date();
+  const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
+  const month =
+    date.getMonth() < 10 ? `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`;
+  const todaysDate = `${date.getFullYear()}-${month}-${day}`;
 
-  const routineDates = props.routine.logbook
-    ? Object.keys(props.routine.logbook)
-    : [];
-
+  const routineDates = Object.keys(props.routine.logbook);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [sessionIsToday, setSessionIsToday] = useState(false);
   const [displayedDate, setDisplayedDate] = useState(
     routineDates[routineDates.length - 1]
   );
-  const todayIsTheNewDate = routineDates.some((date) => date === todaysDate());
+  const todayIsTheNewDate = routineDates.some((date) => date === todaysDate);
+  const context = useContext(AppContext);
 
-  // const onBlurHandler = (event, exercise) => {
-  //   let updatedEx = exercise;
-  //   const inputKeyName = Object.keys(updatedEx).find(
-  //     (key) => updatedEx[key] === updatedEx[event.target.name]
-  //   );
-  //   updatedEx[inputKeyName] = event.target.value;
-  //   context.updateDatabase(props.routineName, updatedEx, displayedDate);
-  // };
+  const onBlurHandler = (event, exercise) => {
+    let updatedEx = exercise;
+    const inputKeyName = Object.keys(updatedEx).find(
+      (key) => updatedEx[key] === updatedEx[event.target.name]
+    );
+    updatedEx[inputKeyName] = event.target.value;
+    context.updateExerciseList2(props.routineName, updatedEx, displayedDate);
+  };
 
   const onSlideChange = (event, direction) => {
     if (direction === "prev")
@@ -56,9 +57,9 @@ export default function Routine(props) {
   };
 
   useEffect(() => {
-    if (displayedDate === todaysDate()) setSessionIsToday(true);
-    if (displayedDate !== todaysDate()) setSessionIsToday(false);
-  }, [displayedDate]);
+    if (displayedDate === todaysDate) setSessionIsToday(true);
+    if (displayedDate !== todaysDate) setSessionIsToday(false);
+  }, []);
 
   useEffect(() => {
     if (routineDates.some((date) => date === todaysDate())) {
@@ -99,11 +100,28 @@ export default function Routine(props) {
 
       <h2>{props.routineName}</h2>
 
-      <DateSelect
-        displayedDate={displayedDate}
-        onSetCurrentDate={setCurrentDateHandler}
-        routineDates={routineDates}
-      />
+      <select
+        name="routine-dates"
+        value={displayedDate}
+        readOnly={displayedDate}
+        onChange={setCurrentDateHandler}
+      >
+        <option>Select a date</option>
+        {routineDates
+          .map((date, i) => (
+            <option
+              // onChange={() => {
+              //   console.log(date);
+              //   setCurrentDateHandler(date, i);
+              // }}
+              key={date}
+              value={date}
+            >
+              {date}
+            </option>
+          ))
+          .sort((a, b) => a - b)}
+      </select>
 
       {!todayIsTheNewDate && (
         <button onClick={addNewDateHandler}>
