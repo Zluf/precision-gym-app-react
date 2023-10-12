@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import "./ExerciseStats.css";
-import AppContext from "../../../../context/app-context";
+import AppContext from "../../../../../context/app-context";
 import RepGauge from "./RepGauge";
 import SetGauge from "./Set/SetGauge";
 import SetWeight from "./Set/SetWeight";
@@ -11,6 +11,7 @@ export default function ExSet(props) {
   const context = useContext(AppContext);
 
   const [repsAreVisible, setRepsAreVisible] = useState(false);
+
   const toggleRepsHandler = () => {
     setRepsAreVisible((prevRepsAreVisible) => !prevRepsAreVisible);
   };
@@ -23,7 +24,7 @@ export default function ExSet(props) {
       if (i > repIndex) return rep;
     });
     props.ex.sets[setIndex].reps = newReps;
-    context.updateExerciseList2(props.routineName, props.ex, props.routineDate);
+    context.updateDatabase(props.routineName, props.ex, props.routineDate);
   };
 
   const repsToggleStyle = {

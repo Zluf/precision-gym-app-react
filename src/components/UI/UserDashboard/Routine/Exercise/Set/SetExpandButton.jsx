@@ -1,4 +1,5 @@
-import angle from "../../../../../assets/angle-bracket.png";
+import React from "react";
+import angle from "../../../../../../assets/angle-bracket.png";
 import "../ExerciseStats.css";
 
 function SetExpandButton(props) {

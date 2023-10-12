@@ -1,17 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import React from "react";
 import { useState, useEffect, useContext } from "react";
 import "./Routine.css";
 import Exercise from "./Routine/Exercise";
 import AppContext from "../../../context/app-context";
 import slideChange from "../../../assets/icon-slide-change.svg";
+import { todaysDate } from "../../../context/AppProvider";
 
 export default function Routine(props) {
-  const date = new Date();
-  const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
-  const month =
-    date.getMonth() < 10 ? `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`;
-  const todaysDate = `${date.getFullYear()}-${month}-${day}`;
-
   const routineDates = Object.keys(props.routine.logbook);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [sessionIsToday, setSessionIsToday] = useState(false);
@@ -27,7 +23,7 @@ export default function Routine(props) {
       (key) => updatedEx[key] === updatedEx[event.target.name]
     );
     updatedEx[inputKeyName] = event.target.value;
-    context.updateExerciseList2(props.routineName, updatedEx, displayedDate);
+    context.updateDatabase(props.routineName, updatedEx, displayedDate);
   };
 
   const onSlideChange = (event, direction) => {
@@ -57,11 +53,7 @@ export default function Routine(props) {
   };
 
   useEffect(() => {
-    if (displayedDate === todaysDate) setSessionIsToday(true);
     if (displayedDate !== todaysDate) setSessionIsToday(false);
-  }, []);
-
-  useEffect(() => {
     if (routineDates.some((date) => date === todaysDate())) {
       setSessionIsToday(true);
       setDisplayedDate(routineDates[routineDates.length - 1]);
@@ -109,14 +101,7 @@ export default function Routine(props) {
         <option>Select a date</option>
         {routineDates
           .map((date, i) => (
-            <option
-              // onChange={() => {
-              //   console.log(date);
-              //   setCurrentDateHandler(date, i);
-              // }}
-              key={date}
-              value={date}
-            >
+            <option key={date} value={date}>
               {date}
             </option>
           ))

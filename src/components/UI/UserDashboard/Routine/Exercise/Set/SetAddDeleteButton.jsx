@@ -1,6 +1,8 @@
+import React from "react";
+
 import { useContext } from "react";
 import "../ExerciseStats.css";
-import AppContext from "../../../../../context/app-context";
+import AppContext from "../../../../../../context/app-context";
 
 function SetAddDeleteButton(props) {
   const context = useContext(AppContext);
@@ -18,7 +20,7 @@ function SetAddDeleteButton(props) {
       newEx.sets.splice(setIndex + 1, 0, newSet);
     }
     // 3. Update the database
-    context.updateExerciseList2(props.routineName, newEx, props.routineDate);
+    context.updateDatabase(props.routineName, newEx, props.routineDate);
   };
 
   return (

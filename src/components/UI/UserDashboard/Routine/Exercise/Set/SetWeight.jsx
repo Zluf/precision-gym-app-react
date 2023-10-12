@@ -1,5 +1,6 @@
+import React from "react";
 import { useState, useEffect, useContext } from "react";
-import AppContext from "../../../../../context/app-context";
+import AppContext from "../../../../../../context/app-context";
 import { keyDownHandler } from "../../Exercise";
 import "../ExerciseStats.css";
 
@@ -9,7 +10,7 @@ function SetWeight(props) {
 
   const weightBlurHandler = (event, setIndex) => {
     props.ex.sets[setIndex].weight = +event.target.value;
-    context.updateExerciseList2(props.routineName, props.ex, props.routineDate);
+    context.updateDatabase(props.routineName, props.ex, props.routineDate);
   };
 
   useEffect(() => {

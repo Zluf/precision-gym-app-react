@@ -1,14 +1,14 @@
-import React from "react";
-import AppContext from "../../../../context/app-context";
+import React, { useContext } from "react";
+import AppContext from "../../../../../context/app-context";
 import "./ExerciseStats.css";
 import { keyDownHandler } from "../Exercise";
 
 function ExName(props) {
-  const context = React.useContext(AppContext);
+  const context = useContext(AppContext);
 
   const nameBlurHandler = (event) => {
     props.ex["name"] = event.target.value;
-    context.updateExerciseList2(props.routineName, props.ex, props.routineDate);
+    context.updateDatabase(props.routineName, props.ex, props.routineDate);
   };
 
   return (
