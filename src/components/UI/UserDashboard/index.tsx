@@ -2,10 +2,17 @@
 import React from "react";
 import "./UserDashboard.css";
 import { useEffect, useContext } from "react";
-import Routine from "./UserDashboard/Routine";
-import ExerciseFormModal from "./ExerciseFormModal";
-import AppContext from "../../context/app-context";
-import AddNewRoutine from "./UserDashboard/AddNewRoutine";
+import RoutineComponent from "./Routine";
+import ExerciseFormModal from "../ExerciseFormModal";
+import { AppContext } from "../../../context/AppProvider";
+import AddNewRoutine from "./AddNewRoutine";
+import { Routine } from "../../../../types";
+
+interface Context {
+  fetchExerciseDatabase: () => void;
+  routineList: Routine[];
+  modalWindowIsOpen: boolean;
+}
 
 export default function UserDashboard() {
   const context = useContext(AppContext);
@@ -27,7 +34,7 @@ export default function UserDashboard() {
 
           return (
             <div className="routine-container" key={`rc${i}`}>
-              <Routine
+              <RoutineComponent
                 key={i}
                 className={`routine ${routineClassName}`}
                 id={routineClassName}

@@ -3,9 +3,8 @@ import React from "react";
 import { useState, useEffect, useContext } from "react";
 import "./Routine.css";
 import Exercise from "./Routine/Exercise";
-import AppContext from "../../../context/app-context";
 import SlideButton from "./Routine/SlideButton";
-import { todaysDate } from "../../../context/AppProvider";
+import { todaysDate, AppContext } from "../../../context/AppProvider";
 import DateSelect from "./Routine/DateSelect";
 
 export default function Routine(props) {

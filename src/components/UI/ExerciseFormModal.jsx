@@ -1,7 +1,7 @@
 import React from "react";
 import { useEffect, useRef } from "react";
 import reactDom from "react-dom";
-import AppContext from "../../context/app-context";
+import AppContext from "../../context/AppProvider";
 import "./ExerciseFormModal.css";
 
 export default function ExerciseForm() {

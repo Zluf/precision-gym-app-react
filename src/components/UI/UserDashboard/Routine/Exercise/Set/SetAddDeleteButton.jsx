@@ -1,7 +1,7 @@
 import React from "react";
 import { useContext } from "react";
 import "../ExerciseStats.css";
-import AppContext from "../../../../../../context/app-context";
+import AppContext from "../../../../../../context/AppProvider";
 
 function SetAddDeleteButton(props) {
   const context = useContext(AppContext);

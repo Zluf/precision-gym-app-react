@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import "./ExerciseStats.css";
-import AppContext from "../../../../../context/app-context";
+import AppContext from "../../../../../context/AppProvider";
 import RepGauge from "./Set/RepGauge";
 import SetGauge from "./Set/SetGauge";
 import SetWeight from "./Set/SetWeight";

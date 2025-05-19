@@ -2,9 +2,6 @@ node_modules
 .vscode
 .eslintcache
 build
-notes.txt
-database-backup.json
-database.json
+/notes
 src/test-code
-src/firebase.js
-environment
+.env

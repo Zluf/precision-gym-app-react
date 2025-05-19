@@ -1,7 +1,6 @@
 import React from "react";
 import { useRef, useState } from "react";
-import AppContext from "../../../context/app-context";
-import { todaysDate } from "../../../context/AppProvider";
+import { todaysDate, AppContext } from "../../../context/AppProvider";
 import "./AddNewRoutine.css";
 
 export default function AddNewRoutine(props) {

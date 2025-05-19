@@ -1,9 +1,27 @@
-import React from "react";
-import { useEffect } from "react";
-import AppContext from "./app-context";
+import React, { useEffect, useState, useCallback, createContext } from "react";
 import App from "../App";
+import {
+  Exercise,
+  AppContextType,
+  Routine,
+  AppProviderProps,
+} from "../../types";
 
-export const todaysDate = () => {
+export const AppContext = createContext<AppContextType>({
+  authUser: "",
+  setUser: () => {},
+  routineList: [],
+  modalWindowIsOpen: false,
+  deleteExercise: async () => {},
+  toggleModal: () => {},
+  currentRoutine: null,
+  updateDatabase: async () => {},
+  fetchExerciseDatabase: async () => {},
+  addNewDate: async () => {},
+  addNewRoutine: async () => {},
+});
+
+export const todaysDate = (): string => {
   const date = new Date();
   const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
   const month =
@@ -11,25 +29,27 @@ export const todaysDate = () => {
   return `${date.getFullYear()}-${month}-${day}`;
 };
 
-export default function AppProvider(props) {
-  const [authUser, setAuthUser] = React.useState(null);
-  const [routineList, setRoutineList] = React.useState([]);
-  const [modalWindow, setModalWindow] = React.useState(false);
-  const [currentRoutine, setCurrentRoutine] = React.useState({
-    name: "",
-    date: "",
-    exercises: [],
+export default function AppProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const [authUser, setAuthUser] = useState<string | null>(null);
+  const [routineList, setRoutineList] = useState<Routine[]>([]);
+  const [modalWindow, setModalWindow] = useState<boolean>(false);
+  const [currentRoutine, setCurrentRoutine] = useState<Routine>({
+    routineName: "",
+    logbook: {},
   });
 
-  const setUser = (user) => setAuthUser(user);
+  const setUser = (user: string | null): void => setAuthUser(user);
 
-  const fetchExerciseDatabase = React.useCallback(async () => {
+  const fetchExerciseDatabase = useCallback(async (): Promise<void> => {
     try {
       const response = await fetch(
         `https://precision-gym-default-rtdb.firebaseio.com/users/${authUser}/routines.json`
       );
       if (!response.ok) {
-        // for some reason response is always ok
         throw new Error("Could not reach database...");
       }
       const data = await response.json();
@@ -41,23 +61,21 @@ export default function AppProvider(props) {
     }
   }, [authUser]);
 
-  //
-  //
+  const updateDatabase = async (
+    routineName: string,
+    updatedEx: Exercise | null,
+    routineDate: string
+  ): Promise<void> => {
+    let newRoutineList = routineList.slice();
 
-  const updateDatabase = async (routineName, updatedEx, routineDate) => {
-    // console.log(routineName, updatedEx, routineDate);
-    let newRoutineList = context.routineList.slice();
-
-    const routineIndex = context.routineList.findIndex(
+    const routineIndex = routineList.findIndex(
       (r) => r.routineName === routineName
     );
 
     if (updatedEx) {
-      // Updates local context
       newRoutineList[routineIndex].logbook[routineDate][updatedEx.id - 1] =
         updatedEx;
 
-      // Assigns new IDs to the updated exercise list
       newRoutineList[routineIndex].logbook[routineDate].forEach(
         (ex, i) => (ex.id = i + 1)
       );
@@ -65,7 +83,6 @@ export default function AppProvider(props) {
 
     setRoutineList(newRoutineList);
 
-    // Updates targeted routine in database
     const newRoutine = newRoutineList.find(
       (r) => r.routineName === routineName
     );
@@ -79,26 +96,30 @@ export default function AppProvider(props) {
     );
   };
 
-  const deleteExercise = async (routineName, exName, routineDate) => {
+  const deleteExercise = async (
+    routineName: string,
+    exName: string,
+    routineDate: string
+  ): Promise<void> => {
     const updatedDay = routineList
       .find((r) => r.routineName === routineName)
-      .logbook[routineDate].filter((ex) => ex.name !== exName);
+      ?.logbook[routineDate].filter((ex) => ex.name !== exName);
 
     const routineIndex = routineList.findIndex(
       (r) => r.routineName === routineName
     );
 
     const newRoutineList = routineList.slice();
-    newRoutineList[routineIndex].logbook[routineDate] = updatedDay;
+    if (updatedDay) {
+      newRoutineList[routineIndex].logbook[routineDate] = updatedDay;
 
-    // Assigns new IDs to the updated exercise list
-    newRoutineList[routineIndex].logbook[routineDate].forEach(
-      (ex, i) => (ex.id = i + 1)
-    );
+      newRoutineList[routineIndex].logbook[routineDate].forEach(
+        (ex, i) => (ex.id = i + 1)
+      );
+    }
 
     setRoutineList(newRoutineList);
 
-    // Updates targeted routine in database
     const newRoutine = newRoutineList.find(
       (r) => r.routineName === routineName
     );
@@ -112,19 +133,19 @@ export default function AppProvider(props) {
     );
   };
 
-  //
-  //
-
-  const addNewDate = async (routineName, todaysDate) => {
-    // 1. Get exercise list from th most recent date
+  const addNewDate = async (
+    routineName: string,
+    todaysDate: string
+  ): Promise<void> => {
     const allocatedRoutine = routineList.find(
       (r) => r.routineName === routineName
     );
+    if (!allocatedRoutine) return;
+
     const routineLogs = Object.values(allocatedRoutine.logbook);
     const mostRecentDate = routineLogs[routineLogs.length - 1];
     const copiedExercises = mostRecentDate.map((ex) => {
       const newEx = { id: ex.id, name: ex.name, sets: ex.sets };
-      // Resets values of each rep
       const newSets = ex.sets.map((set) => {
         return {
           weight: set.weight,
@@ -135,10 +156,8 @@ export default function AppProvider(props) {
       return newEx;
     });
 
-    // 2. Copy the ex.list from the most recent date to the new date
     allocatedRoutine.logbook[todaysDate] = copiedExercises;
 
-    // 3. Update state and database
     const newRoutineList = routineList.filter(
       (r) => r.routineName !== routineName
     );
@@ -154,16 +173,16 @@ export default function AppProvider(props) {
     );
   };
 
-  //
-  //
-
-  const addNewRoutine = (prevRoutineIndex, newRoutine) => {
+  const addNewRoutine = async (
+    prevRoutineIndex: number,
+    newRoutine: Routine
+  ) => {
     const newRoutineList = [...routineList];
     newRoutineList.splice(prevRoutineIndex + 1, 0, newRoutine);
     newRoutineList.forEach((r, i) => (r.routineId = i + 1));
     setRoutineList(newRoutineList);
 
-    newRoutineList.forEach((r, i) =>
+    newRoutineList.forEach((r) =>
       fetch(
         `https://precision-gym-default-rtdb.firebaseio.com/users/${authUser}/routines/${r.routineName}.json`,
         {
@@ -175,36 +194,32 @@ export default function AppProvider(props) {
     );
   };
 
-  const toggleModal = function (routineDetails) {
-    // fired by ExerciseFormModal -> submitHandler()
-    // fired by Routine -> button onClick (+ Add Exercise)
-    console.log(routineDetails);
+  const toggleModal = (routineDetails: Routine): void => {
     setModalWindow(!modalWindow);
     setCurrentRoutine(routineDetails);
   };
 
-  const context = {
-    authUser: authUser,
-    setUser: setUser,
-    routineList: routineList,
+  const context: AppContextType = {
+    authUser,
+    setUser,
+    routineList,
     modalWindowIsOpen: modalWindow,
-    deleteExercise: deleteExercise,
-    toggleModal: toggleModal,
-    currentRoutine: currentRoutine,
-    updateDatabase: updateDatabase,
-    fetchExerciseDatabase: fetchExerciseDatabase,
-    addNewDate: addNewDate,
-    addNewRoutine: addNewRoutine,
+    deleteExercise,
+    toggleModal,
+    currentRoutine,
+    updateDatabase,
+    fetchExerciseDatabase,
+    addNewDate,
+    addNewRoutine,
   };
 
   useEffect(() => {
     console.log("Stored Routine List:", routineList);
-    // console.log("Currently edited routine is:", currentRoutine);
   }, [routineList, currentRoutine]);
 
   return (
     <AppContext.Provider value={context}>
-      <App>{props.children}</App>
+      <App>{children}</App>
     </AppContext.Provider>
   );
 }

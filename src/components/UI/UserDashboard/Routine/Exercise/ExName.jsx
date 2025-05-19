@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import AppContext from "../../../../../context/app-context";
+import AppContext from "../../../../../context/AppProvider";
 import "./ExerciseStats.css";
 import { keyDownHandler } from "../Exercise";
 

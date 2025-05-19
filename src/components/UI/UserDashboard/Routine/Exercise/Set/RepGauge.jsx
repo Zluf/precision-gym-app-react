@@ -1,7 +1,7 @@
 import React from "react";
 import "./RepGauge.css";
 import { useContext } from "react";
-import AppContext from "../../../../../../context/app-context";
+import AppContext from "../../../../../../context/AppProvider";
 
 export default function RepGauge(props) {
   const context = useContext(AppContext);

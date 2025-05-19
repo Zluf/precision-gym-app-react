@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect, useContext } from "react";
-import AppContext from "../../../../../../context/app-context";
+import AppContext from "../../../../../../context/AppProvider";
 import { keyDownHandler } from "../../Exercise";
 import "../ExerciseStats.css";
 
