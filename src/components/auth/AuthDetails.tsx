@@ -25,20 +25,18 @@ export default function AuthDetails() {
   useEffect(() => {
     window.addEventListener("beforeunload", () => {
       if (auth.currentUser && auth.currentUser.displayName === "guest") {
-        userSignOut(auth);
+        userSignOut();
       }
     });
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
         context.setUser(
-          user.displayName ? user.displayName : user.email.split("@")[0]
+          user.displayName ? user.displayName : user.email!.split("@")[0]
         );
       } else context.setUser(null);
     });
   }, []);
-
-  console.log("AUTH DETAILS, CONTEXT", context);
 
   return (
     <div className="auth-details">

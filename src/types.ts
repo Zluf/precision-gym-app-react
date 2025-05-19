@@ -39,7 +39,3 @@ export interface AppContextType {
     newRoutine: Routine
   ) => Promise<void>;
 }
-
-export interface AppProviderProps {
-  children: React.ReactNode;
-}

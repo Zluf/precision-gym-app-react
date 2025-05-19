@@ -6,13 +6,6 @@ import RoutineComponent from "./Routine";
 import ExerciseFormModal from "../ExerciseFormModal";
 import { AppContext } from "../../../context/AppProvider";
 import AddNewRoutine from "./AddNewRoutine";
-import { Routine } from "../../../../types";
-
-interface Context {
-  fetchExerciseDatabase: () => void;
-  routineList: Routine[];
-  modalWindowIsOpen: boolean;
-}
 
 export default function UserDashboard() {
   const context = useContext(AppContext);
@@ -25,7 +18,7 @@ export default function UserDashboard() {
   return (
     <div className="user-dashboard">
       {context.routineList
-        .sort((a, b) => a.routineId - b.routineId)
+        .sort((a, b) => (a.routineId ?? 0) - (b.routineId ?? 0))
         .map((routine, i) => {
           const routineClassName = routine.routineName
             .toLowerCase()

@@ -1,11 +1,6 @@
 import React, { useEffect, useState, useCallback, createContext } from "react";
 import App from "../App";
-import {
-  Exercise,
-  AppContextType,
-  Routine,
-  AppProviderProps,
-} from "../../types";
+import { Exercise, AppContextType, Routine } from "../types";
 
 export const AppContext = createContext<AppContextType>({
   authUser: "",
@@ -53,7 +48,7 @@ export default function AppProvider({
         throw new Error("Could not reach database...");
       }
       const data = await response.json();
-      const newRoutineList = data ? Object.values(data) : [];
+      const newRoutineList: Routine[] = data ? Object.values(data) : [];
 
       setRoutineList(newRoutineList);
     } catch (err) {

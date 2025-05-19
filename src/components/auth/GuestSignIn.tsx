@@ -1,13 +1,13 @@
 import React from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase";
-import AppContext from "../../context/AppProvider";
+import { AppContext } from "../../context/AppProvider";
 import "./Auth.css";
 
 export default function SignIn() {
   const context = React.useContext(AppContext);
 
-  const signInAsGuest = (event) => {
+  const signInAsGuest = (event: React.MouseEvent<HTMLHeadingElement>) => {
     event.preventDefault();
 
     signInWithEmailAndPassword(auth, "guest@no-email.com", "no-password")

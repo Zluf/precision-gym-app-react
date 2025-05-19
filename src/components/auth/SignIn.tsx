@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase";
-import AppContext from "../../context/AppProvider";
+import { AppContext } from "../../context/AppProvider";
 import "./Auth.css";
 
 export default function SignIn() {
@@ -10,7 +10,7 @@ export default function SignIn() {
   const [error, setError] = useState(false);
   const context = React.useContext(AppContext);
 
-  const signIn = (event) => {
+  const signIn = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
