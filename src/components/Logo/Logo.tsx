@@ -1,4 +1,3 @@
-import React from "react";
 import "./Logo.css";
 import PGLogo from "./PrecisionGym.png";
 

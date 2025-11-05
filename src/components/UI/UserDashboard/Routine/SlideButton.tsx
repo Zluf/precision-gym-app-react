@@ -1,7 +1,11 @@
-import React from "react";
 import slideChange from "../../../../assets/icon-slide-change.svg";
 
-export default function SlideButton(props) {
+interface SlideButtonProps {
+  leftOrRight: "left" | "right";
+  onClick: () => void;
+}
+
+export default function SlideButton(props: SlideButtonProps) {
   return (
     <button
       className={`slide-btn slide-${props.leftOrRight}`}

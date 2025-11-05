@@ -1,12 +1,24 @@
 import React from "react";
 import { useContext } from "react";
 import "../ExerciseStats.css";
-import AppContext from "../../../../../../context/AppProvider";
+import AppContext from "../../../../../../context/app-context";
+import { Exercise } from "../../../../../../types";
 
-function SetAddDeleteButton(props) {
+interface SetAddDeleteButtonProps {
+  ex?: Exercise;
+  routineName: string;
+  routineDate: string;
+  setIndex: number;
+  addOrDelete: "add-set" | "delete-set";
+  children: React.ReactNode;
+}
+
+function SetAddDeleteButton(props: SetAddDeleteButtonProps) {
   const context = useContext(AppContext);
 
-  const addOrDeleteSetHandler = (addOrDelete, setIndex) => {
+  const addOrDeleteSetHandler = (addOrDelete: string, setIndex: number) => {
+    if (!props.ex) return;
+
     const newEx = Object.assign({}, props.ex);
     // Remove the targeted set
     if (addOrDelete === "delete-set") {

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../../firebase";
-import { AppContext } from "../../context/AppProvider";
+import AppContext from "../../context/app-context";
 
 export default function AuthDetails() {
   const context = React.useContext(AppContext);

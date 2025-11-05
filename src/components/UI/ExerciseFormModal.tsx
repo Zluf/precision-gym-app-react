@@ -1,46 +1,47 @@
 import React from "react";
 import { useEffect, useRef } from "react";
 import reactDom from "react-dom";
-import AppContext from "../../context/AppProvider";
+import AppContext from "../../context/app-context";
 import "./ExerciseFormModal.css";
 
 export default function ExerciseForm() {
   const context = React.useContext(AppContext);
-  const nameInput = useRef();
-  const weightInput = useRef();
-  const setsInput = useRef();
-  const repsInput = useRef();
+  const nameInput = useRef<HTMLInputElement>(null);
+  const weightInput = useRef<HTMLInputElement>(null);
+  const setsInput = useRef<HTMLInputElement>(null);
+  const repsInput = useRef<HTMLInputElement>(null);
 
-  const submitHandler = (event) => {
+  const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (!nameInput.current || !weightInput.current || !setsInput.current || !repsInput.current) {
+      return;
+    }
 
     const exName = nameInput.current.value;
     const exWeight = weightInput.current.value;
     const exSets = setsInput.current.value;
     const exReps = repsInput.current.value;
-
     const newExInput = {
-      id: context.currentRoutine.exercises.length + 1,
+      id: (context.currentRoutine as any).exercises.length + 1,
       name: exName,
       sets: Array(+exSets).fill({
         weight: exWeight,
         reps: Array(+exReps).fill(0),
       }),
     };
-
     context.updateDatabase(
-      context.currentRoutine.routineName,
+      (context.currentRoutine as any).routineName,
       newExInput,
-      context.currentRoutine.routineDate
+      (context.currentRoutine as any).routineDate
     );
-
     context.toggleModal();
   };
 
-  const formRef = useRef(null);
+  const formRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (formRef.current && !formRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (formRef.current && !formRef.current.contains(event.target as Node)) {
         context.toggleModal();
       }
     };
@@ -54,7 +55,7 @@ export default function ExerciseForm() {
     <>
       {reactDom.createPortal(
         <div className="exercise-form" ref={formRef}>
-          <div className="close" onClick={context.toggleModal}>
+          <div className="close" onClick={() => context.toggleModal()}>
             ❌
           </div>
           <form onSubmit={submitHandler}>
@@ -106,8 +107,8 @@ export default function ExerciseForm() {
           </form>
         </div>,
         document.getElementById(
-          context.currentRoutine.routineName.toLowerCase().split(" ").join("-")
-        )
+          (context.currentRoutine as any).routineName.toLowerCase().split(" ").join("-")
+        )!
       )}
     </>
   );

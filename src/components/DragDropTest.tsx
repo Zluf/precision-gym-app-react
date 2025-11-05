@@ -2,19 +2,19 @@ import React from "react";
 import { useState } from "react";
 
 export default function DragDropTest() {
-  const [widgets, setWidgets] = useState([]);
+  const [widgets, setWidgets] = useState<string[]>([]);
 
-  const handleOnDrag = (e, widgetType) => {
+  const handleOnDrag = (e: React.DragEvent<HTMLDivElement>, widgetType: string) => {
     e.dataTransfer.setData("widgetType", widgetType);
   };
 
-  const handleOnDrop = (e) => {
+  const handleOnDrop = (e: React.DragEvent<HTMLDivElement>) => {
     const widgetType = e.dataTransfer.getData("widgetType");
     console.log("widgetType", widgetType);
     setWidgets([...widgets, widgetType]);
   };
 
-  const handleOnDragOver = (e) => {
+  const handleOnDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
   };
 

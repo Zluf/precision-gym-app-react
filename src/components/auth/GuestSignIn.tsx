@@ -1,7 +1,7 @@
 import React from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase";
-import { AppContext } from "../../context/AppProvider";
+import AppContext from "../../context/app-context";
 import "./Auth.css";
 
 export default function SignIn() {
@@ -11,7 +11,7 @@ export default function SignIn() {
     event.preventDefault();
 
     signInWithEmailAndPassword(auth, "guest@no-email.com", "no-password")
-      .then((userCredential) => {
+      .then(() => {
         context.setUser("guest");
       })
       .catch((error) => console.log(error));

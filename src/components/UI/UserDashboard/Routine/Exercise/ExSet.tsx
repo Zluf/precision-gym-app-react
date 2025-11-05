@@ -1,13 +1,22 @@
 import React, { useContext, useState } from "react";
 import "./ExerciseStats.css";
-import AppContext from "../../../../../context/AppProvider";
+import AppContext from "../../../../../context/app-context";
 import RepGauge from "./Set/RepGauge";
 import SetGauge from "./Set/SetGauge";
 import SetWeight from "./Set/SetWeight";
 import SetExpandButton from "./Set/SetExpandButton";
 import SetAddDeleteButton from "./Set/SetAddDeleteButton";
+import { Exercise } from "../../../../../types";
 
-export default function ExSet(props) {
+interface ExSetProps {
+  ex: Exercise;
+  set: { weight: number; reps: number[] };
+  setIndex: number;
+  routineName: string;
+  routineDate: string;
+}
+
+export default function ExSet(props: ExSetProps) {
   const context = useContext(AppContext);
 
   const [repsAreVisible, setRepsAreVisible] = useState(false);
@@ -16,18 +25,19 @@ export default function ExSet(props) {
     setRepsAreVisible((prevRepsAreVisible) => !prevRepsAreVisible);
   };
 
-  const repClickHandler = (event, setIndex, repIndex) => {
-    const repPerformance = +event.target.dataset.value;
+  const repClickHandler = (event: React.MouseEvent<HTMLDivElement>, setIndex: number, repIndex: number) => {
+    const repPerformance = +(event.target as HTMLDivElement).dataset.value!;
     const newReps = props.ex.sets[setIndex].reps.map((rep, i) => {
       if (i !== repIndex && rep > repPerformance) return rep;
       if (i <= repIndex) return repPerformance;
       if (i > repIndex) return rep;
+      return rep;
     });
     props.ex.sets[setIndex].reps = newReps;
     context.updateDatabase(props.routineName, props.ex, props.routineDate);
   };
 
-  const repsToggleStyle = {
+  const repsToggleStyle: React.CSSProperties = {
     height: repsAreVisible
       ? `${props.ex.sets[props.setIndex].reps.length * 20}px`
       : 0,
@@ -59,6 +69,7 @@ export default function ExSet(props) {
         />
 
         <SetAddDeleteButton
+          ex={props.ex}
           setIndex={props.setIndex}
           addOrDelete="delete-set"
           routineName={props.routineName}
@@ -88,6 +99,7 @@ export default function ExSet(props) {
       </div>
 
       <SetAddDeleteButton
+        ex={props.ex}
         routineName={props.routineName}
         routineDate={props.routineDate}
         setIndex={props.setIndex}

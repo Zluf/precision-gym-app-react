@@ -1,5 +1,20 @@
-import React from "react";
+import { createContext } from "react";
+import { AppContextType } from "../types";
 
-const AppContext = React.createContext({ a: 1, b: 2 });
+const AppContext = createContext<AppContextType>({
+  authUser: "",
+  setUser: () => {},
+  routineList: [],
+  modalWindowIsOpen: false,
+  deleteExercise: async () => {},
+  toggleModal: () => {},
+  currentRoutine: null,
+  updateDatabase: async () => {},
+  fetchExerciseDatabase: async () => {},
+  addNewDate: async () => {},
+  addNewRoutine: async () => {},
+  testBool: false,
+  setTestBool: () => {},
+});
 
 export default AppContext;

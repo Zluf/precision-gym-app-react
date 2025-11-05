@@ -1,21 +1,30 @@
 import React from "react";
 import { useState, useEffect, useContext } from "react";
-import AppContext from "../../../../../../context/AppProvider";
+import AppContext from "../../../../../../context/app-context";
 import { keyDownHandler } from "../../Exercise";
 import "../ExerciseStats.css";
+import { Exercise } from "../../../../../../types";
 
-function SetWeight(props) {
+interface SetWeightProps {
+  routineDate: string;
+  routineName: string;
+  set: { weight: number; reps: number[] };
+  ex: Exercise;
+  setIndex: number;
+}
+
+function SetWeight(props: SetWeightProps) {
   const context = useContext(AppContext);
   const [weight, setWeight] = useState(props.set.weight);
 
-  const weightBlurHandler = (event, setIndex) => {
+  const weightBlurHandler = (event: React.FocusEvent<HTMLInputElement>, setIndex: number) => {
     props.ex.sets[setIndex].weight = +event.target.value;
     context.updateDatabase(props.routineName, props.ex, props.routineDate);
   };
 
   useEffect(() => {
     setWeight(props.set.weight);
-  }, [props.routineDate]);
+  }, [props.routineDate, props.set.weight]);
 
   return (
     <div className="exercise-stats--weight">

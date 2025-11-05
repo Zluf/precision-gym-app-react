@@ -1,20 +1,7 @@
-import React, { useEffect, useState, useCallback, createContext } from "react";
+import { useEffect, useState, useCallback } from "react";
 import App from "../App";
 import { Exercise, AppContextType, Routine } from "../types";
-
-export const AppContext = createContext<AppContextType>({
-  authUser: "",
-  setUser: () => {},
-  routineList: [],
-  modalWindowIsOpen: false,
-  deleteExercise: async () => {},
-  toggleModal: () => {},
-  currentRoutine: null,
-  updateDatabase: async () => {},
-  fetchExerciseDatabase: async () => {},
-  addNewDate: async () => {},
-  addNewRoutine: async () => {},
-});
+import AppContext from "./app-context";
 
 export const todaysDate = (): string => {
   const date = new Date();
@@ -24,18 +11,11 @@ export const todaysDate = (): string => {
   return `${date.getFullYear()}-${month}-${day}`;
 };
 
-export default function AppProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AppProvider() {
   const [authUser, setAuthUser] = useState<string | null>(null);
   const [routineList, setRoutineList] = useState<Routine[]>([]);
-  const [modalWindow, setModalWindow] = useState<boolean>(false);
-  const [currentRoutine, setCurrentRoutine] = useState<Routine>({
-    routineName: "",
-    logbook: {},
-  });
+  const [modalWindow, setModalWindow] = useState(false);
+  const [currentRoutine] = useState<any>();
 
   const setUser = (user: string | null): void => setAuthUser(user);
 
@@ -189,32 +169,40 @@ export default function AppProvider({
     );
   };
 
-  const toggleModal = (routineDetails: Routine): void => {
-    setModalWindow(!modalWindow);
-    setCurrentRoutine(routineDetails);
+  const toggleModal = () => {
+    // console.log("context.toggleModal", routineDetails);
+    // setCurrentRoutine(routineDetails);
+    setModalWindow((prevModalWindow) => !prevModalWindow);
   };
+
+  const handletestBool = () => setTestBool((prevTestBool) => !prevTestBool);
+
+  const [testBool, setTestBool] = useState(false);
 
   const context: AppContextType = {
     authUser,
     setUser,
     routineList,
     modalWindowIsOpen: modalWindow,
-    deleteExercise,
     toggleModal,
+    deleteExercise,
     currentRoutine,
     updateDatabase,
     fetchExerciseDatabase,
     addNewDate,
     addNewRoutine,
+    testBool,
+    setTestBool: handletestBool,
   };
 
   useEffect(() => {
-    console.log("Stored Routine List:", routineList);
-  }, [routineList, currentRoutine]);
+    // console.log("Stored Routine List:", routineList);
+    console.log("Modal Window is Open:", context.modalWindowIsOpen);
+  }, [modalWindow]);
 
   return (
     <AppContext.Provider value={context}>
-      <App>{children}</App>
+      <App />
     </AppContext.Provider>
   );
 }

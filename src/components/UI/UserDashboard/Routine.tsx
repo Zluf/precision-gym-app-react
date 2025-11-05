@@ -4,10 +4,19 @@ import { useState, useEffect, useContext } from "react";
 import "./Routine.css";
 import Exercise from "./Routine/Exercise";
 import SlideButton from "./Routine/SlideButton";
-import { todaysDate, AppContext } from "../../../context/AppProvider";
+import { todaysDate } from "../../../context/AppProvider";
 import DateSelect from "./Routine/DateSelect";
+import { Routine as RoutineObj } from "../../../types";
+import AppContext from "../../../context/app-context";
 
-export default function Routine(props) {
+interface RoutineProps {
+  routine: RoutineObj;
+  routineName: string;
+  className?: string;
+  id?: string;
+}
+
+export default function Routine(props: RoutineProps) {
   const routineDates = Object.keys(props.routine.logbook);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [sessionIsToday, setSessionIsToday] = useState(false);
@@ -19,7 +28,7 @@ export default function Routine(props) {
 
   const context = useContext(AppContext);
 
-  const onSlideChange = (direction) => {
+  const onSlideChange = (direction: "left" | "right") => {
     if (direction === "left")
       setCurrentSlide((prevCurrentSlide) => prevCurrentSlide - 1);
     if (direction === "right")
@@ -33,11 +42,13 @@ export default function Routine(props) {
   };
 
   const addExerciseHandler = () => {
-    context.toggleModal({
-      routineName: props.routineName,
-      routineDate: displayedDate,
-      exercises: exercisesArr,
-    });
+    console.log("AddExerciseHandler");
+    // context.toggleModal({
+    //   routineDate: displayedDate,
+    //   routineName: props.routineName,
+    //   exercises: exercisesArr,
+    // });
+    context.toggleModal();
   };
 
   useEffect(() => {
@@ -67,7 +78,7 @@ export default function Routine(props) {
 
       <DateSelect
         displayedDate={displayedDate}
-        onChange={(event) => setDisplayedDate(event.target.value)}
+        onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setDisplayedDate(event.target.value)}
         routineDates={routineDates}
       />
 
@@ -91,7 +102,6 @@ export default function Routine(props) {
               <Exercise
                 key={`${exercise.name}-${i + 1}`}
                 routineName={props.routineName}
-                routineIndex={props.routineIndex}
                 routineDate={displayedDate}
                 ex={exercise}
                 onEditExercise={() => {
@@ -103,6 +113,18 @@ export default function Routine(props) {
           })}
         </div>
       )}
+
+      {/* <button onClick={() => context.setTestBool()}>Change testBool</button>
+
+      {context.testBool && (
+        <div
+          style={{
+            width: "100px",
+            height: "100px",
+            backgroundColor: "blue",
+          }}
+        ></div>
+      )} */}
 
       {sessionIsToday && (
         <button className="add-ex-btn" onClick={addExerciseHandler}>

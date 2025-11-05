@@ -1,8 +1,12 @@
-import React from "react";
 import angle from "../../../../../../assets/angle-bracket.png";
 import "../ExerciseStats.css";
 
-function SetExpandButton(props) {
+interface SetExpandButtonProps {
+  repsAreVisible: boolean;
+  toggleRepsHandler: () => void;
+}
+
+function SetExpandButton(props: SetExpandButtonProps) {
   return (
     <button
       className="expand-stats-btn btn-transparent "

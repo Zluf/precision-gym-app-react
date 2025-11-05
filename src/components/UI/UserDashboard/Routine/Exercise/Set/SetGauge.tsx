@@ -1,9 +1,14 @@
-import React from "react";
 import "../ExerciseStats.css";
+import { Exercise } from "../../../../../../types";
 
-function SetGauge(props) {
-  const setGaugeColor = (rep) => {
-    let color;
+interface SetGaugeProps {
+  ex: Exercise;
+  setIndex: number;
+}
+
+function SetGauge(props: SetGaugeProps) {
+  const setGaugeColor = (rep: number): string => {
+    let color: string;
     switch (rep) {
       case 100:
         color = "#008000";

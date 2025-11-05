@@ -25,7 +25,7 @@ export interface AppContextType {
     exName: string,
     routineDate: string
   ) => Promise<void>;
-  toggleModal: (routineDetails: Routine) => void;
+  toggleModal: (exercise?: Exercise) => void;
   currentRoutine: Routine | null;
   updateDatabase: (
     routineName: string,
@@ -38,4 +38,6 @@ export interface AppContextType {
     prevRoutineIndex: number,
     newRoutine: Routine
   ) => Promise<void>;
+  testBool: boolean;
+  setTestBool: () => void;
 }

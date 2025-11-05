@@ -1,19 +1,27 @@
 import React from "react";
 import { useRef, useState } from "react";
-import { todaysDate, AppContext } from "../../../context/AppProvider";
+import { todaysDate } from "../../../context/AppProvider";
 import "./AddNewRoutine.css";
+import AppContext from "../../../context/app-context";
+import { Routine } from "../../../types";
 
-export default function AddNewRoutine(props) {
+interface AddNewRoutineProps {
+  routineIndex?: number;
+}
+
+export default function AddNewRoutine(props: AddNewRoutineProps) {
   const context = React.useContext(AppContext);
   const [addingNewRoutine, setAddingNewRoutine] = useState(false);
-  const newRoutineInputRef = useRef();
+  const newRoutineInputRef = useRef<HTMLInputElement>(null);
 
-  const addNewRoutineHandler = (event) => {
+  const addNewRoutineHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const newRoutine = {
+    if (!newRoutineInputRef.current) return;
+
+    const newRoutine: Routine = {
       routineName: newRoutineInputRef.current.value.toString(),
-      routineId: null,
+      routineId: undefined,
       logbook: {
         [todaysDate()]: [
           {
@@ -22,7 +30,7 @@ export default function AddNewRoutine(props) {
             sets: [
               {
                 weight: 0,
-                reps: [Array(5).fill(0)],
+                reps: Array(5).fill(0),
               },
             ],
           },
@@ -30,7 +38,7 @@ export default function AddNewRoutine(props) {
       },
     };
 
-    context.addNewRoutine(props.routineIndex, newRoutine);
+    context.addNewRoutine(props.routineIndex ?? -1, newRoutine);
     setAddingNewRoutine(false);
   };
 

@@ -1,10 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React from "react";
 import "./UserDashboard.css";
 import { useEffect, useContext } from "react";
 import RoutineComponent from "./Routine";
 import ExerciseFormModal from "../ExerciseFormModal";
-import { AppContext } from "../../../context/AppProvider";
+import AppContext from "../../../context/app-context";
 import AddNewRoutine from "./AddNewRoutine";
 
 export default function UserDashboard() {
@@ -40,6 +39,15 @@ export default function UserDashboard() {
           );
         })}
 
+      {/* {context.modalWindowIsOpen && (
+        <div
+          style={{
+            width: "100px",
+            height: "100px",
+            backgroundColor: "blue",
+          }}
+        ></div>
+      )} */}
       {context.modalWindowIsOpen && <ExerciseFormModal />}
     </div>
   );

@@ -1,12 +1,23 @@
 import React from "react";
 import "./RepGauge.css";
 import { useContext } from "react";
-import AppContext from "../../../../../../context/AppProvider";
+import AppContext from "../../../../../../context/app-context";
+import { Exercise } from "../../../../../../types";
 
-export default function RepGauge(props) {
+interface RepGaugeProps {
+  rep: number;
+  routineName: string;
+  routineDate: string;
+  ex: Exercise;
+  setIndex: number;
+  repIndex: number;
+  onRepClick: (event: React.MouseEvent<HTMLDivElement>) => void;
+}
+
+export default function RepGauge(props: RepGaugeProps) {
   const context = useContext(AppContext);
 
-  let innerGauge = [];
+  let innerGauge: React.ReactElement[] = [];
   // Reverse iteration because CSS flex-direction: row-reverse
   for (let i = 5; i > 0; i--) {
     innerGauge.push(
@@ -16,13 +27,13 @@ export default function RepGauge(props) {
         data-value={i * 20}
         className="circle"
         style={{
-          backgroundColor: props.rep >= i * 20 && "green",
+          backgroundColor: props.rep >= i * 20 ? "green" : undefined,
         }}
       ></div>
     );
   }
 
-  const addOrDeleteRepHandler = (addOrDelete) => {
+  const addOrDeleteRepHandler = (addOrDelete: "add" | "delete") => {
     // 1. Locate the targeted rep
     const ex = props.ex;
     const modifiedReps = ex.sets[props.setIndex].reps;

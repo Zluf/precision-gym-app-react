@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "ES6",
-    "outDir": "./dist", // Specify output directory for compiled files
-    "rootDir": "./src", // Specify the root directory of input files
+    "outDir": "./dist",
+    "rootDir": "./src",
     "module": "ESNext",
     "jsx": "react-jsx",
     "strict": true,
@@ -10,9 +10,15 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "allowJs": true, // ← let TS parse .js/.jsx files
-    "checkJs": false, // ← don’t report errors inside them (set true later)
-    "isolatedModules": true // ← keeps Babel/esbuild/SWC happy
+    "allowJs": true,
+    "checkJs": false,
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "allowSyntheticDefaultImports": true
   },
-  "exclude": ["node_modules", "dist", "vite.config.ts"] // Exclude the output directory and vite.config.ts to prevent overwriting
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "vite.config.ts"]
 }

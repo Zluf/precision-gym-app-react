@@ -1,13 +1,20 @@
 import React, { useContext } from "react";
-import AppContext from "../../../../../context/AppProvider";
+import AppContext from "../../../../../context/app-context";
 import "./ExerciseStats.css";
 import { keyDownHandler } from "../Exercise";
+import { Exercise } from "../../../../../types";
 
-function ExName(props) {
+interface ExNameProps {
+  ex: Exercise;
+  routineName: string;
+  routineDate: string;
+}
+
+function ExName(props: ExNameProps) {
   const context = useContext(AppContext);
 
-  const nameBlurHandler = (event) => {
-    props.ex["name"] = event.target.value;
+  const nameBlurHandler = (event: React.FocusEvent<HTMLInputElement>) => {
+    props.ex.name = event.target.value;
     context.updateDatabase(props.routineName, props.ex, props.routineDate);
   };
 
