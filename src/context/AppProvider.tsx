@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import App from "../App";
-import { Exercise, AppContextType, Routine } from "../types";
+import { Exercise, AppContextType, Routine, CurrentRoutine } from "../types";
 import AppContext from "./app-context";
 
 export const todaysDate = (): string => {
@@ -15,26 +15,34 @@ export default function AppProvider() {
   const [authUser, setAuthUser] = useState<string | null>(null);
   const [routineList, setRoutineList] = useState<Routine[]>([]);
   const [modalWindow, setModalWindow] = useState(false);
-  const [currentRoutine] = useState<any>();
+  const [currentRoutine, setCurrentRoutine] = useState<CurrentRoutine | null>(
+    null
+  );
 
   const setUser = (user: string | null): void => setAuthUser(user);
 
-  const fetchExerciseDatabase = useCallback(async (): Promise<void> => {
-    try {
-      const response = await fetch(
-        `https://precision-gym-default-rtdb.firebaseio.com/users/${authUser}/routines.json`
-      );
-      if (!response.ok) {
-        throw new Error("Could not reach database...");
-      }
-      const data = await response.json();
-      const newRoutineList: Routine[] = data ? Object.values(data) : [];
+  const fetchExerciseDatabase = useCallback(
+    async (uid: string): Promise<void> => {
+      console.log("fetchExDB");
+      try {
+        const response = await fetch(
+          `https://precision-gym-default-rtdb.firebaseio.com/users/${uid}/routines.json`
+        );
+        if (!response.ok) {
+          throw new Error("Could not reach database...");
+        }
+        const data = await response.json();
+        const newRoutineList: Routine[] = data ? Object.values(data) : [];
 
-      setRoutineList(newRoutineList);
-    } catch (err) {
-      console.log(`💥 ${err}`);
-    }
-  }, [authUser]);
+        console.log("Fetched Routine List:", newRoutineList);
+
+        setRoutineList(newRoutineList);
+      } catch (err) {
+        console.log(`💥 ${err}`);
+      }
+    },
+    [authUser]
+  );
 
   const updateDatabase = async (
     routineName: string,
@@ -66,7 +74,7 @@ export default function AppProvider() {
       {
         method: "PUT",
         body: JSON.stringify(newRoutine),
-        headers: { "Content-Type": "application-json" },
+        headers: { "Content-Type": "application/json" },
       }
     );
   };
@@ -169,15 +177,13 @@ export default function AppProvider() {
     );
   };
 
-  const toggleModal = () => {
-    // console.log("context.toggleModal", routineDetails);
-    // setCurrentRoutine(routineDetails);
-    setModalWindow((prevModalWindow) => !prevModalWindow);
+  const toggleModal = (currentRoutine?: CurrentRoutine) => {
+    currentRoutine && setCurrentRoutine(currentRoutine);
+    setModalWindow((prevModalWindow) => {
+      console.log("Modal window is now:", modalWindow);
+      return !prevModalWindow;
+    });
   };
-
-  const handletestBool = () => setTestBool((prevTestBool) => !prevTestBool);
-
-  const [testBool, setTestBool] = useState(false);
 
   const context: AppContextType = {
     authUser,
@@ -187,18 +193,17 @@ export default function AppProvider() {
     toggleModal,
     deleteExercise,
     currentRoutine,
+    setCurrentRoutine,
     updateDatabase,
     fetchExerciseDatabase,
     addNewDate,
     addNewRoutine,
-    testBool,
-    setTestBool: handletestBool,
   };
 
-  useEffect(() => {
-    // console.log("Stored Routine List:", routineList);
-    console.log("Modal Window is Open:", context.modalWindowIsOpen);
-  }, [modalWindow]);
+  // useEffect(() => {
+  //   console.log("Stored Routine List:", routineList);
+  //   console.log("Modal Window is Open:", context.modalWindowIsOpen);
+  // }, [modalWindow]);
 
   return (
     <AppContext.Provider value={context}>

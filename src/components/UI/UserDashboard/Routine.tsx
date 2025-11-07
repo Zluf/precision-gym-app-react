@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
 import { useState, useEffect, useContext } from "react";
 import "./Routine.css";
@@ -20,13 +19,14 @@ export default function Routine(props: RoutineProps) {
   const routineDates = Object.keys(props.routine.logbook);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [sessionIsToday, setSessionIsToday] = useState(false);
+
+  const context = useContext(AppContext);
+
   const [displayedDate, setDisplayedDate] = useState(
     routineDates[routineDates.length - 1]
   );
   const exercisesArr = props.routine.logbook[displayedDate];
   const todayIsTheNewDate = routineDates.some((date) => date === todaysDate());
-
-  const context = useContext(AppContext);
 
   const onSlideChange = (direction: "left" | "right") => {
     if (direction === "left")
@@ -41,14 +41,14 @@ export default function Routine(props: RoutineProps) {
     setCurrentSlide(0);
   };
 
-  const addExerciseHandler = () => {
-    console.log("AddExerciseHandler");
-    // context.toggleModal({
-    //   routineDate: displayedDate,
-    //   routineName: props.routineName,
-    //   exercises: exercisesArr,
-    // });
-    context.toggleModal();
+  const addExerciseHandler = (e: React.MouseEvent) => {
+    e.stopPropagation(); // prevents the modal from closing immediately due to it's own outside click handler
+    const currentRoutine = {
+      routineDate: displayedDate,
+      routineName: props.routineName,
+      exercises: exercisesArr,
+    };
+    context.toggleModal(currentRoutine);
   };
 
   useEffect(() => {
@@ -78,7 +78,9 @@ export default function Routine(props: RoutineProps) {
 
       <DateSelect
         displayedDate={displayedDate}
-        onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setDisplayedDate(event.target.value)}
+        onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
+          setDisplayedDate(event.target.value)
+        }
         routineDates={routineDates}
       />
 
@@ -104,27 +106,12 @@ export default function Routine(props: RoutineProps) {
                 routineName={props.routineName}
                 routineDate={displayedDate}
                 ex={exercise}
-                onEditExercise={() => {
-                  context.toggleModal(exercise);
-                }}
                 onDeleteExercise={context.deleteExercise}
               />
             );
           })}
         </div>
       )}
-
-      {/* <button onClick={() => context.setTestBool()}>Change testBool</button>
-
-      {context.testBool && (
-        <div
-          style={{
-            width: "100px",
-            height: "100px",
-            backgroundColor: "blue",
-          }}
-        ></div>
-      )} */}
 
       {sessionIsToday && (
         <button className="add-ex-btn" onClick={addExerciseHandler}>

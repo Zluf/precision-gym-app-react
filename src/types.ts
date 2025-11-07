@@ -15,6 +15,12 @@ export interface Routine {
   routineId?: number;
 }
 
+export interface CurrentRoutine {
+  routineDate: string;
+  routineName: string;
+  exercises: Exercise[];
+}
+
 export interface AppContextType {
   authUser: string | null;
   setUser: (user: string | null) => void;
@@ -25,19 +31,18 @@ export interface AppContextType {
     exName: string,
     routineDate: string
   ) => Promise<void>;
-  toggleModal: (exercise?: Exercise) => void;
-  currentRoutine: Routine | null;
+  toggleModal: (currentRoutine?: CurrentRoutine) => void;
+  currentRoutine: CurrentRoutine | null;
+  setCurrentRoutine: (currentRoutine: CurrentRoutine) => void;
   updateDatabase: (
     routineName: string,
     updatedEx: Exercise | null,
     routineDate: string
   ) => Promise<void>;
-  fetchExerciseDatabase: () => Promise<void>;
+  fetchExerciseDatabase: (uid: string) => Promise<void>;
   addNewDate: (routineName: string, todaysDate: string) => Promise<void>;
   addNewRoutine: (
     prevRoutineIndex: number,
     newRoutine: Routine
   ) => Promise<void>;
-  testBool: boolean;
-  setTestBool: () => void;
 }

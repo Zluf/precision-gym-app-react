@@ -7,14 +7,13 @@ const AppContext = createContext<AppContextType>({
   routineList: [],
   modalWindowIsOpen: false,
   deleteExercise: async () => {},
-  toggleModal: () => {},
   currentRoutine: null,
+  setCurrentRoutine: () => {},
+  toggleModal: () => {},
   updateDatabase: async () => {},
   fetchExerciseDatabase: async () => {},
   addNewDate: async () => {},
   addNewRoutine: async () => {},
-  testBool: false,
-  setTestBool: () => {},
 });
 
 export default AppContext;

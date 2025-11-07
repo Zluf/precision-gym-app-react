@@ -10,10 +10,16 @@ export default function ExerciseForm() {
   const weightInput = useRef<HTMLInputElement>(null);
   const setsInput = useRef<HTMLInputElement>(null);
   const repsInput = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLDivElement>(null);
 
   const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!nameInput.current || !weightInput.current || !setsInput.current || !repsInput.current) {
+    if (
+      !nameInput.current ||
+      !weightInput.current ||
+      !setsInput.current ||
+      !repsInput.current
+    ) {
       return;
     }
 
@@ -21,6 +27,7 @@ export default function ExerciseForm() {
     const exWeight = weightInput.current.value;
     const exSets = setsInput.current.value;
     const exReps = repsInput.current.value;
+
     const newExInput = {
       id: (context.currentRoutine as any).exercises.length + 1,
       name: exName,
@@ -29,6 +36,7 @@ export default function ExerciseForm() {
         reps: Array(+exReps).fill(0),
       }),
     };
+
     context.updateDatabase(
       (context.currentRoutine as any).routineName,
       newExInput,
@@ -36,8 +44,6 @@ export default function ExerciseForm() {
     );
     context.toggleModal();
   };
-
-  const formRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -107,8 +113,11 @@ export default function ExerciseForm() {
           </form>
         </div>,
         document.getElementById(
-          (context.currentRoutine as any).routineName.toLowerCase().split(" ").join("-")
-        )!
+          (context.currentRoutine as any).routineName
+            .toLowerCase()
+            .split(" ")
+            .join("-")
+        ) as HTMLElement
       )}
     </>
   );

@@ -31,6 +31,7 @@ export default function AuthDetails() {
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
+        console.log("User:", user);
         context.setUser(
           user.displayName ? user.displayName : user.email!.split("@")[0]
         );

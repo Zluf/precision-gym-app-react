@@ -5,13 +5,14 @@ import RoutineComponent from "./Routine";
 import ExerciseFormModal from "../ExerciseFormModal";
 import AppContext from "../../../context/app-context";
 import AddNewRoutine from "./AddNewRoutine";
+import { auth } from "../../../firebase";
 
 export default function UserDashboard() {
   const context = useContext(AppContext);
 
   useEffect(() => {
     // executes upon mount, gets stored in memory, therefore does not execute on further re-renders
-    context.fetchExerciseDatabase();
+    auth.currentUser && context.fetchExerciseDatabase(auth.currentUser!.uid);
   }, [context.fetchExerciseDatabase]);
 
   return (
@@ -39,15 +40,6 @@ export default function UserDashboard() {
           );
         })}
 
-      {/* {context.modalWindowIsOpen && (
-        <div
-          style={{
-            width: "100px",
-            height: "100px",
-            backgroundColor: "blue",
-          }}
-        ></div>
-      )} */}
       {context.modalWindowIsOpen && <ExerciseFormModal />}
     </div>
   );
