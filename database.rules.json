@@ -1,0 +1,52 @@
+{
+  "rules": {
+    "users": {
+      "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || $uid === 'guest')",
+        ".write": "auth != null && (auth.uid === $uid || $uid === 'guest')",
+
+        "routines": {
+          "$routineName": {
+            ".validate": "newData.hasChildren(['routineName', 'logbook'])",
+
+            "routineName": {
+              ".validate": "newData.isString()"
+            },
+
+            "routineId": {
+              ".validate": "newData.isNumber()"
+            },
+
+            "logbook": {
+              "$date": {
+                "$exerciseIndex": {
+                  ".validate": "newData.hasChildren(['id', 'name', 'sets'])",
+
+                  "id": {
+                    ".validate": "newData.isNumber()"
+                  },
+
+                  "name": {
+                    ".validate": "newData.isString()"
+                  },
+
+                  "sets": {
+                    "$setIndex": {
+                      ".validate": "newData.hasChildren(['weight', 'reps'])",
+
+                      "weight": {
+                        ".validate": "newData.isNumber()"
+                      },
+
+                      "reps": {}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

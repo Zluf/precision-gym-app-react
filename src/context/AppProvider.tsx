@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import App from "../App";
 import { Exercise, AppContextType, Routine, CurrentRoutine } from "../types";
 import AppContext from "./app-context";
+import { auth } from "../firebase";
 
 export const todaysDate = (): string => {
   const date = new Date();
@@ -9,6 +10,40 @@ export const todaysDate = (): string => {
   const month =
     date.getMonth() < 9 ? `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`;
   return `${date.getFullYear()}-${month}-${day}`;
+};
+
+// Helper function to get user ID for database operations
+const getUserId = (): string => {
+  const currentUser = auth.currentUser;
+  if (!currentUser) return "";
+  // Keep "guest" as identifier for guest users
+  if (currentUser.displayName === "guest") return "guest";
+  // Use Firebase UID for all other users
+  return currentUser.uid;
+};
+
+// Helper function to get auth token for Firebase REST API
+const getAuthToken = async (): Promise<string> => {
+  const currentUser = auth.currentUser;
+  if (!currentUser) return "";
+
+  try {
+    const token = await currentUser.getIdToken();
+    return token;
+  } catch (error) {
+    console.error("Error getting auth token:", error);
+    return "";
+  }
+};
+
+// Helper to build authenticated URL with token as query param
+const buildAuthUrl = async (baseUrl: string): Promise<string> => {
+  const token = await getAuthToken();
+  if (!token) return baseUrl;
+
+  // Add auth token as query parameter for Firebase REST API
+  const separator = baseUrl.includes("?") ? "&" : "?";
+  return `${baseUrl}${separator}auth=${token}`;
 };
 
 export default function AppProvider() {
@@ -25,9 +60,10 @@ export default function AppProvider() {
     async (uid: string): Promise<void> => {
       console.log("fetchExDB");
       try {
-        const response = await fetch(
+        const url = await buildAuthUrl(
           `https://precision-gym-default-rtdb.firebaseio.com/users/${uid}/routines.json`
         );
+        const response = await fetch(url);
         if (!response.ok) {
           throw new Error("Could not reach database...");
         }
@@ -69,14 +105,15 @@ export default function AppProvider() {
     const newRoutine = newRoutineList.find(
       (r) => r.routineName === routineName
     );
-    await fetch(
-      `https://precision-gym-default-rtdb.firebaseio.com/users/${authUser}/routines/${routineName}/.json`,
-      {
-        method: "PUT",
-        body: JSON.stringify(newRoutine),
-        headers: { "Content-Type": "application/json" },
-      }
+    const uid = getUserId();
+    const url = await buildAuthUrl(
+      `https://precision-gym-default-rtdb.firebaseio.com/users/${uid}/routines/${routineName}/.json`
     );
+    await fetch(url, {
+      method: "PUT",
+      body: JSON.stringify(newRoutine),
+      headers: { "Content-Type": "application/json" },
+    });
   };
 
   const deleteExercise = async (
@@ -106,14 +143,15 @@ export default function AppProvider() {
     const newRoutine = newRoutineList.find(
       (r) => r.routineName === routineName
     );
-    await fetch(
-      `https://precision-gym-default-rtdb.firebaseio.com/users/${authUser}/routines/${routineName}/.json`,
-      {
-        method: "PUT",
-        body: JSON.stringify(newRoutine),
-        headers: { "Content-Type": "application-json" },
-      }
+    const uid = getUserId();
+    const url = await buildAuthUrl(
+      `https://precision-gym-default-rtdb.firebaseio.com/users/${uid}/routines/${routineName}/.json`
     );
+    await fetch(url, {
+      method: "PUT",
+      body: JSON.stringify(newRoutine),
+      headers: { "Content-Type": "application/json" },
+    });
   };
 
   const addNewDate = async (
@@ -146,14 +184,15 @@ export default function AppProvider() {
     );
     newRoutineList.push(allocatedRoutine);
     setRoutineList(newRoutineList);
-    await fetch(
-      `https://precision-gym-default-rtdb.firebaseio.com/users/${authUser}/routines/${routineName}/logbook/${todaysDate}.json`,
-      {
-        method: "PUT",
-        body: JSON.stringify(copiedExercises),
-        headers: { "Content-Type": "application-json" },
-      }
+    const uid = getUserId();
+    const url = await buildAuthUrl(
+      `https://precision-gym-default-rtdb.firebaseio.com/users/${uid}/routines/${routineName}/logbook/${todaysDate}.json`
     );
+    await fetch(url, {
+      method: "PUT",
+      body: JSON.stringify(copiedExercises),
+      headers: { "Content-Type": "application/json" },
+    });
   };
 
   const addNewRoutine = async (
@@ -165,15 +204,19 @@ export default function AppProvider() {
     newRoutineList.forEach((r, i) => (r.routineId = i + 1));
     setRoutineList(newRoutineList);
 
-    newRoutineList.forEach((r) =>
-      fetch(
-        `https://precision-gym-default-rtdb.firebaseio.com/users/${authUser}/routines/${r.routineName}.json`,
-        {
+    const uid = getUserId();
+    // Update all routines with their new IDs
+    await Promise.all(
+      newRoutineList.map(async (r) => {
+        const url = await buildAuthUrl(
+          `https://precision-gym-default-rtdb.firebaseio.com/users/${uid}/routines/${r.routineName}.json`
+        );
+        return fetch(url, {
           method: "PUT",
           body: JSON.stringify(r),
-          headers: { "Content-Type": "application-json" },
-        }
-      )
+          headers: { "Content-Type": "application/json" },
+        });
+      })
     );
   };
 

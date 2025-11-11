@@ -6,19 +6,30 @@ import AppContext from "../../context/app-context";
 export default function AuthDetails() {
   const context = React.useContext(AppContext);
 
-  const userSignOut = () => {
-    signOut(auth)
-      .then(() => {
-        fetch(
-          `https://precision-gym-default-rtdb.firebaseio.com/users/guest.json`,
+  const userSignOut = async () => {
+    const isGuest =
+      auth.currentUser && auth.currentUser.displayName === "guest";
+
+    try {
+      // Get auth token before signing out
+      const token = isGuest ? await auth.currentUser?.getIdToken() : null;
+
+      await signOut(auth);
+
+      // Only delete guest data if user was a guest
+      if (isGuest && token) {
+        await fetch(
+          `https://precision-gym-default-rtdb.firebaseio.com/users/guest.json?auth=${token}`,
           {
             method: "DELETE",
           }
         );
+      }
 
-        console.log("Sign Out Successful 🔒");
-      })
-      .catch((error) => console.log(error));
+      console.log("Sign Out Successful 🔒");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   // Signs out guest on the next page load
