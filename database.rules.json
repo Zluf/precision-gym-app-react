@@ -38,7 +38,11 @@
                         ".validate": "newData.isNumber()"
                       },
 
-                      "reps": {}
+                      "reps": {
+                        "$repIndex": {
+                          ".validate": "newData.isNumber()"
+                        }
+                      }
                     }
                   }
                 }

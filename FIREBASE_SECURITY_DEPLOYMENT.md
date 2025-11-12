@@ -5,6 +5,7 @@ This guide will walk you through deploying the Firebase Realtime Database securi
 ## Overview
 
 The security rules have been created in `database.rules.json` and the application code has been updated to:
+
 - Use Firebase UID instead of display names for database paths
 - Include authentication tokens in all database requests
 - Properly handle guest user access
@@ -48,24 +49,28 @@ Before going live, test the rules using Firebase's built-in simulator:
 2. Test the following scenarios:
 
 **Test 1: Authenticated User Read (Should Succeed)**
+
 - Location: `/users/{your-uid}/routines`
 - Type: Read
 - Authentication: Authenticated (your UID)
 - Expected: ✅ Allowed
 
 **Test 2: Unauthorized Access (Should Fail)**
+
 - Location: `/users/other-user-id/routines`
 - Type: Read
 - Authentication: Authenticated (your UID)
 - Expected: ❌ Denied
 
 **Test 3: Guest User Access (Should Succeed)**
+
 - Location: `/users/guest/routines`
 - Type: Read
 - Authentication: Authenticated (any UID)
 - Expected: ✅ Allowed
 
 **Test 4: Unauthenticated Access (Should Fail)**
+
 - Location: `/users/{any-uid}/routines`
 - Type: Read
 - Authentication: None
@@ -79,28 +84,33 @@ After publishing rules, test your application:
 2. Test the following workflows:
 
 **Sign Up / Sign In:**
-- [ ] Create new account
-- [ ] Sign in with existing account
-- [ ] See your routines loaded correctly
+
+- [x] Create new account
+- [x] Sign in with existing account
+- [x] See your routines loaded correctly
 
 **Create & Read Data:**
-- [ ] Create a new routine
-- [ ] Add exercises to a routine
-- [ ] View existing routines
+
+- [x] Create a new routine
+- [x] Add exercises to a routine
+- [x] View existing routines
 
 **Update Data:**
-- [ ] Update exercise name
-- [ ] Update weight/reps
-- [ ] Add a new workout day
+
+- [x] Update exercise name
+- [x] Update weight/reps
+- [x] Add a new workout day
 
 **Delete Data:**
-- [ ] Delete an exercise
-- [ ] Verify data is removed
+
+- [x] Delete an exercise
+- [x] Verify data is removed
 
 **Guest Access:**
-- [ ] Sign in as guest
-- [ ] Create routine as guest
-- [ ] Sign out (guest data should be deleted)
+
+- [x] Sign in as guest
+- [x] Create routine as guest
+- [x] Sign out (guest data should be deleted)
 
 ### Step 7: Check Browser Console
 
@@ -130,6 +140,7 @@ The deployed security rules:
 **Cause**: User trying to access data without proper authentication
 
 **Solution**:
+
 - Check that user is signed in
 - Verify auth token is being sent in requests
 - Check browser console for authentication errors
@@ -139,6 +150,7 @@ The deployed security rules:
 **Cause**: Data structure doesn't match security rules validation
 
 **Solution**:
+
 - Check that all required fields are present (id, name, sets for exercises)
 - Verify data types (numbers are numbers, strings are strings)
 - Check that array sizes are within limits
@@ -148,6 +160,7 @@ The deployed security rules:
 **Cause**: User might be trying to access wrong path or rules are too restrictive
 
 **Solution**:
+
 - Check browser Network tab to see the actual database URL being requested
 - Verify the URL uses Firebase UID (not display name)
 - Check that response status is 200 (not 401 or 403)
@@ -157,6 +170,7 @@ The deployed security rules:
 **Cause**: Guest path might not be set up correctly
 
 **Solution**:
+
 - Verify guest users have displayName set to "guest"
 - Check that code uses "guest" string as path (not Firebase UID)
 - Look in Firebase Console → Authentication to see guest user details
@@ -174,12 +188,14 @@ If you need to rollback to previous rules:
 ## Important Security Notes
 
 ⚠️ **Do NOT**:
+
 - Share your Firebase API keys publicly (they're in `.env` file - keep it private)
 - Modify rules to allow unauthenticated access
 - Remove data validation rules
 - Increase limits excessively (can impact performance)
 
 ✅ **Do**:
+
 - Keep `.env` file in `.gitignore`
 - Regularly review Firebase Console → Authentication for suspicious users
 - Monitor Firebase Console → Realtime Database → Usage for unusual patterns
@@ -190,9 +206,11 @@ If you need to rollback to previous rules:
 The following files were modified to work with the security rules:
 
 1. **database.rules.json** (new file)
+
    - Contains all security rules
 
 2. **src/context/AppProvider.tsx**
+
    - Added Firebase auth import
    - Created `getUserId()` helper function
    - Created `getAuthHeaders()` helper function
@@ -216,6 +234,7 @@ After successful deployment:
 ## Support
 
 If you encounter issues:
+
 - Check Firebase Console → Realtime Database → Usage for error logs
 - Review browser console for client-side errors
 - Check Network tab to see actual requests being made
@@ -223,7 +242,7 @@ If you encounter issues:
 
 ---
 
-**Deployment Date**: _________________
-**Deployed By**: _________________
+**Deployment Date**: ********\_********
+**Deployed By**: ********\_********
 **Rules Version**: 1.0.0
 **Status**: ⬜ Not Deployed | ⬜ Deployed | ⬜ Verified
