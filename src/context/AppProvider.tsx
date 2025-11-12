@@ -106,9 +106,19 @@ export default function AppProvider() {
       (r) => r.routineName === routineName
     );
     const uid = getUserId();
+    try {
+      const freshToken = await auth.currentUser?.getIdToken(true); // true = force refresh
+      console.log("Fresh token obtained:", freshToken ? "Yes" : "No");
+    } catch (error) {
+      console.error("Token refresh error:", error);
+    }
+
     const url = await buildAuthUrl(
-      `https://precision-gym-default-rtdb.firebaseio.com/users/${uid}/routines/${routineName}/.json`
+      `https://precision-gym-default-rtdb.firebaseio.com/users/${uid}/routines/${routineName}.json`
     );
+
+    console.log("New Routine:", newRoutine);
+
     await fetch(url, {
       method: "PUT",
       body: JSON.stringify(newRoutine),
@@ -143,6 +153,9 @@ export default function AppProvider() {
     const newRoutine = newRoutineList.find(
       (r) => r.routineName === routineName
     );
+
+    console.log("New routine", newRoutine);
+
     const uid = getUserId();
     const url = await buildAuthUrl(
       `https://precision-gym-default-rtdb.firebaseio.com/users/${uid}/routines/${routineName}/.json`
@@ -243,10 +256,10 @@ export default function AppProvider() {
     addNewRoutine,
   };
 
-  // useEffect(() => {
-  //   console.log("Stored Routine List:", routineList);
-  //   console.log("Modal Window is Open:", context.modalWindowIsOpen);
-  // }, [modalWindow]);
+  useEffect(() => {
+    console.log("Current user:", auth.currentUser);
+    console.log("User UID:", auth.currentUser?.uid);
+  }, []);
 
   return (
     <AppContext.Provider value={context}>

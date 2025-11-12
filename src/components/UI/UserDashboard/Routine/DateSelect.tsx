@@ -15,13 +15,11 @@ export default function DateSelect(props: DateSelectProps) {
         value={props.displayedDate}
         onChange={props.onChange}
       >
-        {props.routineDates
-          .map((date) => (
-            <option key={date} value={date}>
-              {date}
-            </option>
-          ))
-          .sort((a, b) => (a as any) - (b as any))}
+        {props.routineDates.sort().map((date) => (
+          <option key={date} value={date}>
+            {date}
+          </option>
+        ))}
       </select>
     </div>
   );
