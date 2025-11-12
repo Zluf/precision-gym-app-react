@@ -1,8 +1,8 @@
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import App from "../App";
 import { Exercise, AppContextType, Routine, CurrentRoutine } from "../types";
 import AppContext from "./app-context";
-import { auth } from "../firebase";
+import { useFirebaseApi } from "../hooks/useFirebaseApi";
 
 export const todaysDate = (): string => {
   const date = new Date();
@@ -12,40 +12,6 @@ export const todaysDate = (): string => {
   return `${date.getFullYear()}-${month}-${day}`;
 };
 
-// Helper function to get user ID for database operations
-const getUserId = (): string => {
-  const currentUser = auth.currentUser;
-  if (!currentUser) return "";
-  // Keep "guest" as identifier for guest users
-  if (currentUser.displayName === "guest") return "guest";
-  // Use Firebase UID for all other users
-  return currentUser.uid;
-};
-
-// Helper function to get auth token for Firebase REST API
-const getAuthToken = async (): Promise<string> => {
-  const currentUser = auth.currentUser;
-  if (!currentUser) return "";
-
-  try {
-    const token = await currentUser.getIdToken();
-    return token;
-  } catch (error) {
-    console.error("Error getting auth token:", error);
-    return "";
-  }
-};
-
-// Helper to build authenticated URL with token as query param
-const buildAuthUrl = async (baseUrl: string): Promise<string> => {
-  const token = await getAuthToken();
-  if (!token) return baseUrl;
-
-  // Add auth token as query parameter for Firebase REST API
-  const separator = baseUrl.includes("?") ? "&" : "?";
-  return `${baseUrl}${separator}auth=${token}`;
-};
-
 export default function AppProvider() {
   const [authUser, setAuthUser] = useState<string | null>(null);
   const [routineList, setRoutineList] = useState<Routine[]>([]);
@@ -53,14 +19,14 @@ export default function AppProvider() {
   const [currentRoutine, setCurrentRoutine] = useState<CurrentRoutine | null>(
     null
   );
+  const firebaseApi = useFirebaseApi();
 
   const setUser = (user: string | null): void => setAuthUser(user);
 
   const fetchExerciseDatabase = useCallback(
     async (uid: string): Promise<void> => {
-      console.log("fetchExDB");
       try {
-        const url = await buildAuthUrl(
+        const url = await firebaseApi.fetchRoutine(
           `https://precision-gym-default-rtdb.firebaseio.com/users/${uid}/routines.json`
         );
         const response = await fetch(url);
@@ -70,14 +36,12 @@ export default function AppProvider() {
         const data = await response.json();
         const newRoutineList: Routine[] = data ? Object.values(data) : [];
 
-        console.log("Fetched Routine List:", newRoutineList);
-
         setRoutineList(newRoutineList);
       } catch (err) {
         console.log(`💥 ${err}`);
       }
     },
-    [authUser]
+    [firebaseApi, authUser]
   );
 
   const updateDatabase = async (
@@ -94,7 +58,6 @@ export default function AppProvider() {
     if (updatedEx) {
       newRoutineList[routineIndex].logbook[routineDate][updatedEx.id - 1] =
         updatedEx;
-
       newRoutineList[routineIndex].logbook[routineDate].forEach(
         (ex, i) => (ex.id = i + 1)
       );
@@ -105,25 +68,11 @@ export default function AppProvider() {
     const newRoutine = newRoutineList.find(
       (r) => r.routineName === routineName
     );
-    const uid = getUserId();
-    try {
-      const freshToken = await auth.currentUser?.getIdToken(true); // true = force refresh
-      console.log("Fresh token obtained:", freshToken ? "Yes" : "No");
-    } catch (error) {
-      console.error("Token refresh error:", error);
-    }
 
-    const url = await buildAuthUrl(
-      `https://precision-gym-default-rtdb.firebaseio.com/users/${uid}/routines/${routineName}.json`
+    await firebaseApi.updateRoutine(
+      `routines/${routineName}/.json`,
+      newRoutine
     );
-
-    console.log("New Routine:", newRoutine);
-
-    await fetch(url, {
-      method: "PUT",
-      body: JSON.stringify(newRoutine),
-      headers: { "Content-Type": "application/json" },
-    });
   };
 
   const deleteExercise = async (
@@ -154,17 +103,10 @@ export default function AppProvider() {
       (r) => r.routineName === routineName
     );
 
-    console.log("New routine", newRoutine);
-
-    const uid = getUserId();
-    const url = await buildAuthUrl(
-      `https://precision-gym-default-rtdb.firebaseio.com/users/${uid}/routines/${routineName}/.json`
+    await firebaseApi.updateRoutine(
+      `routines/${routineName}/.json`,
+      newRoutine
     );
-    await fetch(url, {
-      method: "PUT",
-      body: JSON.stringify(newRoutine),
-      headers: { "Content-Type": "application/json" },
-    });
   };
 
   const addNewDate = async (
@@ -197,15 +139,11 @@ export default function AppProvider() {
     );
     newRoutineList.push(allocatedRoutine);
     setRoutineList(newRoutineList);
-    const uid = getUserId();
-    const url = await buildAuthUrl(
-      `https://precision-gym-default-rtdb.firebaseio.com/users/${uid}/routines/${routineName}/logbook/${todaysDate}.json`
+
+    await firebaseApi.updateRoutine(
+      `routines/${routineName}/.json`,
+      copiedExercises
     );
-    await fetch(url, {
-      method: "PUT",
-      body: JSON.stringify(copiedExercises),
-      headers: { "Content-Type": "application/json" },
-    });
   };
 
   const addNewRoutine = async (
@@ -217,26 +155,17 @@ export default function AppProvider() {
     newRoutineList.forEach((r, i) => (r.routineId = i + 1));
     setRoutineList(newRoutineList);
 
-    const uid = getUserId();
     // Update all routines with their new IDs
     await Promise.all(
-      newRoutineList.map(async (r) => {
-        const url = await buildAuthUrl(
-          `https://precision-gym-default-rtdb.firebaseio.com/users/${uid}/routines/${r.routineName}.json`
-        );
-        return fetch(url, {
-          method: "PUT",
-          body: JSON.stringify(r),
-          headers: { "Content-Type": "application/json" },
-        });
-      })
+      newRoutineList.map((r) =>
+        firebaseApi.updateRoutine(`routines/${r.routineName}/.json`, r)
+      )
     );
   };
 
   const toggleModal = (currentRoutine?: CurrentRoutine) => {
     currentRoutine && setCurrentRoutine(currentRoutine);
     setModalWindow((prevModalWindow) => {
-      console.log("Modal window is now:", modalWindow);
       return !prevModalWindow;
     });
   };
@@ -255,11 +184,6 @@ export default function AppProvider() {
     addNewDate,
     addNewRoutine,
   };
-
-  useEffect(() => {
-    console.log("Current user:", auth.currentUser);
-    console.log("User UID:", auth.currentUser?.uid);
-  }, []);
 
   return (
     <AppContext.Provider value={context}>

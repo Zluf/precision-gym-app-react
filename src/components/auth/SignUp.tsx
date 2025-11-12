@@ -13,11 +13,12 @@ export default function SignUp() {
   const signUp = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     createUserWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        updateProfile(auth.currentUser!, {
+      .then((userCredential) => {
+        return updateProfile(userCredential.user, {
           displayName: userName,
+        }).then(() => {
+          context.setUser(userName);
         });
-        context.setUser(userName);
       })
       .catch((error) => console.log(error));
   };

@@ -25,14 +25,26 @@ export default function ExSet(props: ExSetProps) {
     setRepsAreVisible((prevRepsAreVisible) => !prevRepsAreVisible);
   };
 
-  const repClickHandler = (event: React.MouseEvent<HTMLDivElement>, setIndex: number, repIndex: number) => {
-    const repPerformance = +(event.target as HTMLDivElement).dataset.value!;
+  const repClickHandler = (
+    event: React.MouseEvent<HTMLDivElement>,
+    setIndex: number,
+    repIndex: number
+  ) => {
+    const value = event.currentTarget.dataset.value;
+    if (!value) {
+      console.error("Missing data-value attribute on rep element");
+      return;
+    }
+
+    const repPerformance = +value;
+
     const newReps = props.ex.sets[setIndex].reps.map((rep, i) => {
       if (i !== repIndex && rep > repPerformance) return rep;
       if (i <= repIndex) return repPerformance;
       if (i > repIndex) return rep;
       return rep;
     });
+
     props.ex.sets[setIndex].reps = newReps;
     context.updateDatabase(props.routineName, props.ex, props.routineDate);
   };

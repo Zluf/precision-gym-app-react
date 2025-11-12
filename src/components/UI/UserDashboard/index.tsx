@@ -12,7 +12,10 @@ export default function UserDashboard() {
 
   useEffect(() => {
     // executes upon mount, gets stored in memory, therefore does not execute on further re-renders
-    auth.currentUser && context.fetchExerciseDatabase(auth.currentUser!.uid);
+    const user = auth.currentUser;
+    if (user) {
+      context.fetchExerciseDatabase(user.uid);
+    }
   }, [context.fetchExerciseDatabase]);
 
   return (

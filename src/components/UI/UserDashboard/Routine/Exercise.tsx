@@ -7,7 +7,7 @@ import { Exercise as ExerciseType } from "../../../../types";
 export const keyDownHandler = (
   event: React.KeyboardEvent<HTMLInputElement>
 ) => {
-  if (event.key === "Enter") (event.target as HTMLInputElement).blur();
+  if (event.key === "Enter") event.currentTarget.blur();
 };
 
 interface ExerciseProps {

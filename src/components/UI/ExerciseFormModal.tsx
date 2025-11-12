@@ -12,6 +12,10 @@ export default function ExerciseForm() {
   const repsInput = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
 
+  if (!context.currentRoutine) {
+    return null; // Don't render modal if there's no current routine
+  }
+
   const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (
@@ -24,12 +28,12 @@ export default function ExerciseForm() {
     }
 
     const exName = nameInput.current.value;
-    const exWeight = weightInput.current.value;
+    const exWeight = +weightInput.current.value;
     const exSets = setsInput.current.value;
     const exReps = repsInput.current.value;
 
     const newExInput = {
-      id: (context.currentRoutine as any).exercises.length + 1,
+      id: context.currentRoutine!.exercises.length + 1,
       name: exName,
       sets: Array(+exSets).fill({
         weight: exWeight,
@@ -38,9 +42,9 @@ export default function ExerciseForm() {
     };
 
     context.updateDatabase(
-      (context.currentRoutine as any).routineName,
+      context.currentRoutine!.routineName,
       newExInput,
-      (context.currentRoutine as any).routineDate
+      context.currentRoutine!.routineDate
     );
     context.toggleModal();
   };
@@ -56,6 +60,17 @@ export default function ExerciseForm() {
       window.removeEventListener("click", handleClickOutside);
     };
   }, []);
+
+  const portalTargetId = context.currentRoutine.routineName
+    .toLowerCase()
+    .split(" ")
+    .join("-");
+  const portalTarget = document.getElementById(portalTargetId);
+  // If portal target doesn't exist, don't render
+  if (!portalTarget) {
+    console.error(`Portal target element not found: ${portalTargetId}`);
+    return null;
+  }
 
   return (
     <>
@@ -81,7 +96,7 @@ export default function ExerciseForm() {
               step="any"
               min="0"
               ref={weightInput}
-              defaultValue={""}
+              defaultValue={0}
               required
             />
 
@@ -112,12 +127,7 @@ export default function ExerciseForm() {
             </button>
           </form>
         </div>,
-        document.getElementById(
-          (context.currentRoutine as any).routineName
-            .toLowerCase()
-            .split(" ")
-            .join("-")
-        ) as HTMLElement
+        portalTarget
       )}
     </>
   );
