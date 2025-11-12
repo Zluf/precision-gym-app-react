@@ -24,11 +24,11 @@ const getAuthToken = async (): Promise<string> => {
 
 // Helper to build authenticated URL
 const buildAuthUrl = async (baseUrl: string): Promise<string> => {
-  const token = getAuthToken();
+  const token = await getAuthToken();
   if (!token) return baseUrl;
   // Add auth token as query parameter for Firebase REST API
   const separator = baseUrl.includes("?") ? "&" : "?";
-  return `${baseUrl}${separator}auth?=${token}`;
+  return `${baseUrl}${separator}auth=${token}`;
 };
 
 // Base Firebase URL

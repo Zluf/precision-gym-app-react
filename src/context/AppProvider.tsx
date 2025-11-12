@@ -23,26 +23,15 @@ export default function AppProvider() {
 
   const setUser = (user: string | null): void => setAuthUser(user);
 
-  const fetchExerciseDatabase = useCallback(
-    async (uid: string): Promise<void> => {
-      try {
-        const url = await firebaseApi.fetchRoutine(
-          `https://precision-gym-default-rtdb.firebaseio.com/users/${uid}/routines.json`
-        );
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error("Could not reach database...");
-        }
-        const data = await response.json();
-        const newRoutineList: Routine[] = data ? Object.values(data) : [];
-
-        setRoutineList(newRoutineList);
-      } catch (err) {
-        console.log(`💥 ${err}`);
-      }
-    },
-    [firebaseApi, authUser]
-  );
+  const fetchExerciseDatabase = useCallback(async (): Promise<void> => {
+    try {
+      const data = await firebaseApi.fetchRoutine("routines.json");
+      const newRoutineList: Routine[] = data ? Object.values(data) : [];
+      setRoutineList(newRoutineList);
+    } catch (err) {
+      console.log(`💥 ${err}`);
+    }
+  }, [authUser]);
 
   const updateDatabase = async (
     routineName: string,
