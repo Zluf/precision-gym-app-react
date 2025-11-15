@@ -130,7 +130,7 @@ export default function AppProvider() {
     setRoutineList(newRoutineList);
 
     await firebaseApi.updateRoutine(
-      `routines/${routineName}/.json`,
+      `routines/${routineName}/logbook/${todaysDate}.json`,
       copiedExercises
     );
   };
