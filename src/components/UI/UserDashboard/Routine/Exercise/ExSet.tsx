@@ -86,9 +86,8 @@ export default function ExSet(props: ExSetProps) {
           addOrDelete="delete-set"
           routineName={props.routineName}
           routineDate={props.routineDate}
-        >
-          ✖️
-        </SetAddDeleteButton>
+          output="✖️"
+        />
       </div>
 
       {/* Reps */}
@@ -116,9 +115,8 @@ export default function ExSet(props: ExSetProps) {
         routineDate={props.routineDate}
         setIndex={props.setIndex}
         addOrDelete="add-set"
-      >
-        + Add Set
-      </SetAddDeleteButton>
+        output="+ Add Set"
+      />
     </div>
   );
 }

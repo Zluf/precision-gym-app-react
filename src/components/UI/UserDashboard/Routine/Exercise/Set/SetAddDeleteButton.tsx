@@ -10,7 +10,7 @@ interface SetAddDeleteButtonProps {
   routineDate: string;
   setIndex: number;
   addOrDelete: "add-set" | "delete-set";
-  children: React.ReactNode;
+  output: "+ Add Set" | "✖️";
 }
 
 function SetAddDeleteButton(props: SetAddDeleteButtonProps) {
@@ -42,9 +42,7 @@ function SetAddDeleteButton(props: SetAddDeleteButtonProps) {
         props.addOrDelete,
         props.setIndex
       )}
-    >
-      {props.children}
-    </button>
+    />
   );
 }
 
