@@ -1,4 +1,3 @@
-import React from "react";
 import { useContext } from "react";
 import "../ExerciseStats.css";
 import AppContext from "../../../../../../context/app-context";
@@ -10,7 +9,7 @@ interface SetAddDeleteButtonProps {
   routineDate: string;
   setIndex: number;
   addOrDelete: "add-set" | "delete-set";
-  children: React.ReactNode;
+  output: "+ Add Set" | "✖️";
 }
 
 function SetAddDeleteButton(props: SetAddDeleteButtonProps) {
@@ -43,7 +42,7 @@ function SetAddDeleteButton(props: SetAddDeleteButtonProps) {
         props.setIndex
       )}
     >
-      {props.children}
+      {props.output}
     </button>
   );
 }
