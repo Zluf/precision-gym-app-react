@@ -1,13 +1,18 @@
 import { createContext } from "react";
-import { AppContextType } from "../types";
+import { AppDataContextType, AppActionsContextType } from "../types";
 
-const AppContext = createContext<AppContextType>({
-  authUser: "",
-  setUser: () => {},
+// Data context - subscribing components re-render when data changes
+export const AppDataContext = createContext<AppDataContextType>({
+  authUser: null,
   routineList: [],
   modalWindowIsOpen: false,
-  deleteExercise: async () => {},
   currentRoutine: null,
+});
+
+// Actions context - stable functions, won't cause re-renders
+export const AppActionsContext = createContext<AppActionsContextType>({
+  setUser: () => {},
+  deleteExercise: async () => {},
   setCurrentRoutine: () => {},
   toggleModal: () => {},
   updateDatabase: async () => {},
@@ -15,5 +20,3 @@ const AppContext = createContext<AppContextType>({
   addNewDate: async () => {},
   addNewRoutine: async () => {},
 });
-
-export default AppContext;

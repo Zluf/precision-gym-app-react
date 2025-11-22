@@ -1,7 +1,7 @@
 import React from "react";
 import "./RepGauge.css";
 import { useContext } from "react";
-import AppContext from "../../../../../../context/app-context";
+import { AppActionsContext } from "../../../../../../context/app-context";
 import { Exercise } from "../../../../../../types";
 
 interface RepGaugeProps {
@@ -15,7 +15,7 @@ interface RepGaugeProps {
 }
 
 export default function RepGauge(props: RepGaugeProps) {
-  const context = useContext(AppContext);
+  const { updateDatabase } = useContext(AppActionsContext);
 
   let innerGauge: React.ReactElement[] = [];
   // Reverse iteration because CSS flex-direction: row-reverse
@@ -34,19 +34,28 @@ export default function RepGauge(props: RepGaugeProps) {
   }
 
   const addOrDeleteRepHandler = (addOrDelete: "add" | "delete") => {
-    // 1. Locate the targeted rep
-    const ex = props.ex;
-    const modifiedReps = ex.sets[props.setIndex].reps;
-    // 2.1 Remove the targeted rep
+    const currentReps = props.ex.sets[props.setIndex].reps;
+    let newReps: number[];
+
     if (addOrDelete === "delete") {
-      modifiedReps.splice(props.repIndex, 1);
+      newReps = currentReps.filter((_, i) => i !== props.repIndex);
+    } else {
+      newReps = [
+        ...currentReps.slice(0, props.repIndex + 1),
+        0,
+        ...currentReps.slice(props.repIndex + 1),
+      ];
     }
-    // 2.2 Add a new subsequent rep
-    if (addOrDelete === "add") {
-      modifiedReps.splice(props.repIndex + 1, 0, 0);
-    }
-    // 3. Update the database
-    context.updateDatabase(props.routineName, ex, props.routineDate);
+
+    // Create immutable update
+    const updatedEx: Exercise = {
+      ...props.ex,
+      sets: props.ex.sets.map((set, i) =>
+        i === props.setIndex ? { ...set, reps: newReps } : set
+      ),
+    };
+
+    updateDatabase(props.routineName, updatedEx, props.routineDate);
   };
 
   return (

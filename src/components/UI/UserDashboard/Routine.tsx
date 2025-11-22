@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { useState, useEffect, useContext } from "react";
 import "./Routine.css";
 import Exercise from "./Routine/Exercise";
@@ -6,7 +6,7 @@ import SlideButton from "./Routine/SlideButton";
 import { todaysDate } from "../../../context/AppProvider";
 import DateSelect from "./Routine/DateSelect";
 import { Routine as RoutineObj } from "../../../types";
-import AppContext from "../../../context/app-context";
+import { AppActionsContext } from "../../../context/app-context";
 
 interface RoutineProps {
   routine: RoutineObj;
@@ -15,12 +15,15 @@ interface RoutineProps {
   id?: string;
 }
 
-export default function Routine(props: RoutineProps) {
+const Routine = memo((props: RoutineProps) => {
+  console.log(`Routine component for ${props.routineName} rendered`);
+
   const routineDates = Object.keys(props.routine.logbook);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [sessionIsToday, setSessionIsToday] = useState(false);
 
-  const context = useContext(AppContext);
+  // Only use actions context - won't cause re-renders when data changes
+  const { addNewDate, toggleModal, deleteExercise } = useContext(AppActionsContext);
 
   const [displayedDate, setDisplayedDate] = useState(
     routineDates[routineDates.length - 1]
@@ -36,7 +39,7 @@ export default function Routine(props: RoutineProps) {
   };
 
   const addNewDateHandler = () => {
-    context.addNewDate(props.routineName, todaysDate());
+    addNewDate(props.routineName, todaysDate());
     setSessionIsToday(true);
     setCurrentSlide(0);
   };
@@ -48,7 +51,7 @@ export default function Routine(props: RoutineProps) {
       routineName: props.routineName,
       exercises: exercisesArr,
     };
-    context.toggleModal(currentRoutine);
+    toggleModal(currentRoutine);
   };
 
   useEffect(() => {
@@ -106,7 +109,7 @@ export default function Routine(props: RoutineProps) {
                 routineName={props.routineName}
                 routineDate={displayedDate}
                 ex={exercise}
-                onDeleteExercise={context.deleteExercise}
+                onDeleteExercise={deleteExercise}
               />
             );
           })}
@@ -120,4 +123,6 @@ export default function Routine(props: RoutineProps) {
       )}
     </section>
   );
-}
+});
+
+export default Routine;

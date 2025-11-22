@@ -1,7 +1,7 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo, useRef } from "react";
 import App from "../App";
-import { Exercise, AppContextType, Routine, CurrentRoutine } from "../types";
-import AppContext from "./app-context";
+import { Exercise, Routine, CurrentRoutine } from "../types";
+import { AppDataContext, AppActionsContext } from "./app-context";
 import { useFirebaseApi } from "../hooks/useFirebaseApi";
 
 export const todaysDate = (): string => {
@@ -21,7 +21,14 @@ export default function AppProvider() {
   );
   const firebaseApi = useFirebaseApi();
 
-  const setUser = (user: string | null): void => setAuthUser(user);
+  // Use ref to access current routineList in callbacks without causing re-creation
+  const routineListRef = useRef(routineList);
+  routineListRef.current = routineList;
+
+  const setUser = useCallback(
+    (user: string | null): void => setAuthUser(user),
+    []
+  );
 
   const fetchExerciseDatabase = useCallback(async (): Promise<void> => {
     try {
@@ -31,152 +38,199 @@ export default function AppProvider() {
     } catch (err) {
       console.log(`💥 ${err}`);
     }
-  }, [authUser]);
+  }, [firebaseApi]);
 
-  const updateDatabase = async (
-    routineName: string,
-    updatedEx: Exercise | null,
-    routineDate: string
-  ): Promise<void> => {
-    let newRoutineList = routineList.slice();
-
-    const routineIndex = routineList.findIndex(
-      (r) => r.routineName === routineName
-    );
-
-    if (updatedEx) {
-      newRoutineList[routineIndex].logbook[routineDate][updatedEx.id - 1] =
-        updatedEx;
-      newRoutineList[routineIndex].logbook[routineDate].forEach(
-        (ex, i) => (ex.id = i + 1)
+  const updateDatabase = useCallback(
+    async (
+      routineName: string,
+      updatedEx: Exercise | null,
+      routineDate: string
+    ): Promise<void> => {
+      const currentList = routineListRef.current;
+      const routineIndex = currentList.findIndex(
+        (r) => r.routineName === routineName
       );
-    }
 
-    setRoutineList(newRoutineList);
+      const newRoutineList = currentList.map((routine, i) => {
+        if (i !== routineIndex) return routine;
+        if (!updatedEx) return routine;
 
-    const newRoutine = newRoutineList.find(
-      (r) => r.routineName === routineName
-    );
-
-    await firebaseApi.updateRoutine(
-      `routines/${routineName}/.json`,
-      newRoutine
-    );
-  };
-
-  const deleteExercise = async (
-    routineName: string,
-    exName: string,
-    routineDate: string
-  ): Promise<void> => {
-    const updatedDay = routineList
-      .find((r) => r.routineName === routineName)
-      ?.logbook[routineDate].filter((ex) => ex.name !== exName);
-
-    const routineIndex = routineList.findIndex(
-      (r) => r.routineName === routineName
-    );
-
-    const newRoutineList = routineList.slice();
-    if (updatedDay) {
-      newRoutineList[routineIndex].logbook[routineDate] = updatedDay;
-
-      newRoutineList[routineIndex].logbook[routineDate].forEach(
-        (ex, i) => (ex.id = i + 1)
-      );
-    }
-
-    setRoutineList(newRoutineList);
-
-    const newRoutine = newRoutineList.find(
-      (r) => r.routineName === routineName
-    );
-
-    await firebaseApi.updateRoutine(
-      `routines/${routineName}/.json`,
-      newRoutine
-    );
-  };
-
-  const addNewDate = async (
-    routineName: string,
-    todaysDate: string
-  ): Promise<void> => {
-    const allocatedRoutine = routineList.find(
-      (r) => r.routineName === routineName
-    );
-    if (!allocatedRoutine) return;
-
-    const routineLogs = Object.values(allocatedRoutine.logbook);
-    const mostRecentDate = routineLogs[routineLogs.length - 1];
-    const copiedExercises = mostRecentDate.map((ex) => {
-      const newEx = { id: ex.id, name: ex.name, sets: ex.sets };
-      const newSets = ex.sets.map((set) => {
         return {
-          weight: set.weight,
-          reps: Array(set.reps.length).fill(0),
+          ...routine,
+          logbook: {
+            ...routine.logbook,
+            [routineDate]: routine.logbook[routineDate].map((ex, j) =>
+              j === updatedEx.id - 1 ? updatedEx : ex
+            ),
+          },
         };
       });
-      newEx.sets = newSets;
-      return newEx;
-    });
 
-    allocatedRoutine.logbook[todaysDate] = copiedExercises;
+      setRoutineList(newRoutineList);
 
-    const newRoutineList = routineList.filter(
-      (r) => r.routineName !== routineName
-    );
-    newRoutineList.push(allocatedRoutine);
-    setRoutineList(newRoutineList);
+      const newRoutine = newRoutineList.find(
+        (r) => r.routineName === routineName
+      );
 
-    await firebaseApi.updateRoutine(
-      `routines/${routineName}/logbook/${todaysDate}.json`,
-      copiedExercises
-    );
-  };
+      await firebaseApi.updateRoutine(
+        `routines/${routineName}/.json`,
+        newRoutine
+      );
+    },
+    [firebaseApi]
+  );
 
-  const addNewRoutine = async (
-    prevRoutineIndex: number,
-    newRoutine: Routine
-  ) => {
-    const newRoutineList = [...routineList];
-    newRoutineList.splice(prevRoutineIndex + 1, 0, newRoutine);
-    newRoutineList.forEach((r, i) => (r.routineId = i + 1));
-    setRoutineList(newRoutineList);
+  const deleteExercise = useCallback(
+    async (
+      routineName: string,
+      exName: string,
+      routineDate: string
+    ): Promise<void> => {
+      const currentList = routineListRef.current;
+      const routineIndex = currentList.findIndex(
+        (r) => r.routineName === routineName
+      );
 
-    // Update all routines with their new IDs
-    await Promise.all(
-      newRoutineList.map((r) =>
-        firebaseApi.updateRoutine(`routines/${r.routineName}/.json`, r)
-      )
-    );
-  };
+      const newRoutineList = currentList.map((routine, i) => {
+        if (i !== routineIndex) return routine;
 
-  const toggleModal = (currentRoutine?: CurrentRoutine) => {
-    currentRoutine && setCurrentRoutine(currentRoutine);
-    setModalWindow((prevModalWindow) => {
-      return !prevModalWindow;
-    });
-  };
+        const updatedDay = routine.logbook[routineDate]
+          .filter((ex) => ex.name !== exName)
+          .map((ex, idx) => ({ ...ex, id: idx + 1 }));
 
-  const context: AppContextType = {
-    authUser,
-    setUser,
-    routineList,
-    modalWindowIsOpen: modalWindow,
-    toggleModal,
-    deleteExercise,
-    currentRoutine,
-    setCurrentRoutine,
-    updateDatabase,
-    fetchExerciseDatabase,
-    addNewDate,
-    addNewRoutine,
-  };
+        return {
+          ...routine,
+          logbook: {
+            ...routine.logbook,
+            [routineDate]: updatedDay,
+          },
+        };
+      });
+
+      setRoutineList(newRoutineList);
+
+      const newRoutine = newRoutineList.find(
+        (r) => r.routineName === routineName
+      );
+
+      await firebaseApi.updateRoutine(
+        `routines/${routineName}/.json`,
+        newRoutine
+      );
+    },
+    [firebaseApi]
+  );
+
+  const addNewDate = useCallback(
+    async (routineName: string, todaysDateStr: string): Promise<void> => {
+      const currentList = routineListRef.current;
+      const allocatedRoutine = currentList.find(
+        (r) => r.routineName === routineName
+      );
+      if (!allocatedRoutine) return;
+
+      const routineLogs = Object.values(allocatedRoutine.logbook);
+      const mostRecentDate = routineLogs[routineLogs.length - 1];
+      const copiedExercises = mostRecentDate.map((ex) => ({
+        id: ex.id,
+        name: ex.name,
+        sets: ex.sets.map((set) => ({
+          weight: set.weight,
+          reps: Array(set.reps.length).fill(0),
+        })),
+      }));
+
+      const newRoutineList = currentList.map((routine) => {
+        if (routine.routineName !== routineName) return routine;
+
+        return {
+          ...routine,
+          logbook: {
+            ...routine.logbook,
+            [todaysDateStr]: copiedExercises,
+          },
+        };
+      });
+
+      setRoutineList(newRoutineList);
+
+      await firebaseApi.updateRoutine(
+        `routines/${routineName}/logbook/${todaysDateStr}.json`,
+        copiedExercises
+      );
+    },
+    [firebaseApi]
+  );
+
+  const addNewRoutine = useCallback(
+    async (prevRoutineIndex: number, newRoutine: Routine) => {
+      const currentList = routineListRef.current;
+      const newRoutineList = [
+        ...currentList.slice(0, prevRoutineIndex + 1),
+        newRoutine,
+        ...currentList.slice(prevRoutineIndex + 1),
+      ].map((r, i) => ({ ...r, routineId: i + 1 }));
+
+      setRoutineList(newRoutineList);
+
+      await Promise.all(
+        newRoutineList.map((r) =>
+          firebaseApi.updateRoutine(`routines/${r.routineName}/.json`, r)
+        )
+      );
+    },
+    [firebaseApi]
+  );
+
+  const toggleModal = useCallback((routine?: CurrentRoutine) => {
+    if (routine) setCurrentRoutine(routine);
+    setModalWindow((prev) => !prev);
+  }, []);
+
+  const handleSetCurrentRoutine = useCallback((routine: CurrentRoutine) => {
+    setCurrentRoutine(routine);
+  }, []);
+
+  // Data context value - changes when data changes
+  const dataContext = useMemo(
+    () => ({
+      authUser,
+      routineList,
+      modalWindowIsOpen: modalWindow,
+      currentRoutine,
+    }),
+    [authUser, routineList, modalWindow, currentRoutine]
+  );
+
+  // Actions context value - stable, never changes
+  const actionsContext = useMemo(
+    () => ({
+      setUser,
+      fetchExerciseDatabase,
+      updateDatabase,
+      deleteExercise,
+      addNewDate,
+      addNewRoutine,
+      toggleModal,
+      setCurrentRoutine: handleSetCurrentRoutine,
+    }),
+    [
+      setUser,
+      fetchExerciseDatabase,
+      updateDatabase,
+      deleteExercise,
+      addNewDate,
+      addNewRoutine,
+      toggleModal,
+      handleSetCurrentRoutine,
+    ]
+  );
 
   return (
-    <AppContext.Provider value={context}>
-      <App />
-    </AppContext.Provider>
+    <AppActionsContext.Provider value={actionsContext}>
+      <AppDataContext.Provider value={dataContext}>
+        <App />
+      </AppDataContext.Provider>
+    </AppActionsContext.Provider>
   );
 }

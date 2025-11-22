@@ -1,20 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase";
 import "./Auth.css";
-import AppContext from "../../context/app-context";
+import { AppActionsContext } from "../../context/app-context";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
-  const context = React.useContext(AppContext);
+  const { setUser } = useContext(AppActionsContext);
 
   const signIn = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        context.setUser(userCredential.user.displayName);
+        setUser(userCredential.user.displayName);
       })
       .catch((error) => {
         setError(true);

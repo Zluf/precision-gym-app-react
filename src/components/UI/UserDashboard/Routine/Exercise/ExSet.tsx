@@ -1,6 +1,5 @@
-import React, { useContext, useState } from "react";
+import React, { memo, useState } from "react";
 import "./ExerciseStats.css";
-import AppContext from "../../../../../context/app-context";
 import RepGauge from "./Set/RepGauge";
 import SetGauge from "./Set/SetGauge";
 import SetWeight from "./Set/SetWeight";
@@ -14,11 +13,10 @@ interface ExSetProps {
   setIndex: number;
   routineName: string;
   routineDate: string;
+  onRepClick: (setIndex: number, repIndex: number, newValue: number) => void;
 }
 
-export default function ExSet(props: ExSetProps) {
-  const context = useContext(AppContext);
-
+const ExSet = memo((props: ExSetProps) => {
   const [repsAreVisible, setRepsAreVisible] = useState(false);
 
   const toggleRepsHandler = () => {
@@ -38,21 +36,12 @@ export default function ExSet(props: ExSetProps) {
 
     const repPerformance = +value;
 
-    const newReps = props.ex.sets[setIndex].reps.map((rep, i) => {
-      if (i !== repIndex && rep > repPerformance) return rep;
-      if (i <= repIndex) return repPerformance;
-      if (i > repIndex) return rep;
-      return rep;
-    });
-
-    props.ex.sets[setIndex].reps = newReps;
-    context.updateDatabase(props.routineName, props.ex, props.routineDate);
+    // Call parent's callback instead of creating updatedEx here
+    props.onRepClick(setIndex, repIndex, repPerformance);
   };
 
   const repsToggleStyle: React.CSSProperties = {
-    height: repsAreVisible
-      ? `${props.ex.sets[props.setIndex].reps.length * 20}px`
-      : 0,
+    height: repsAreVisible ? `${props.set.reps.length * 20}px` : 0,
     opacity: repsAreVisible ? 1 : 0,
   };
 
@@ -92,8 +81,7 @@ export default function ExSet(props: ExSetProps) {
 
       {/* Reps */}
       <div className="exercise-stats--reps" style={repsToggleStyle}>
-        {props.ex.sets[props.setIndex].reps.map((rep, repIndex) => (
-          // rep is a value inside the array
+        {props.set.reps.map((rep, repIndex) => (
           <RepGauge
             rep={rep}
             key={repIndex}
@@ -119,4 +107,18 @@ export default function ExSet(props: ExSetProps) {
       />
     </div>
   );
-}
+}, (prevProps, nextProps) => {
+  // Custom comparison: only re-render if THIS set's data actually changed
+  // Ignore changes to the `ex` prop (entire exercise object)
+  return (
+    prevProps.set === nextProps.set &&
+    prevProps.setIndex === nextProps.setIndex &&
+    prevProps.routineName === nextProps.routineName &&
+    prevProps.routineDate === nextProps.routineDate
+    // Note: We intentionally ignore `ex` and `onRepClick` props
+    // - `ex` changes on every update but we don't need to re-render for that
+    // - `onRepClick` should be stable from parent
+  );
+});
+
+export default ExSet;

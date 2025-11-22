@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import "../ExerciseStats.css";
-import AppContext from "../../../../../../context/app-context";
+import { AppActionsContext } from "../../../../../../context/app-context";
 import { Exercise } from "../../../../../../types";
 
 interface SetAddDeleteButtonProps {
@@ -13,24 +13,32 @@ interface SetAddDeleteButtonProps {
 }
 
 function SetAddDeleteButton(props: SetAddDeleteButtonProps) {
-  const context = useContext(AppContext);
+  const { updateDatabase } = useContext(AppActionsContext);
 
   const addOrDeleteSetHandler = (addOrDelete: string, setIndex: number) => {
     if (!props.ex) return;
 
-    const newEx = Object.assign({}, props.ex);
-    // Remove the targeted set
+    let newSets;
     if (addOrDelete === "delete-set") {
-      newEx.sets.splice(setIndex, 1);
+      newSets = props.ex.sets.filter((_, i) => i !== setIndex);
+    } else {
+      const newSet = {
+        weight: props.ex.sets[setIndex].weight,
+        reps: Array(props.ex.sets[setIndex].reps.length).fill(0),
+      };
+      newSets = [
+        ...props.ex.sets.slice(0, setIndex + 1),
+        newSet,
+        ...props.ex.sets.slice(setIndex + 1),
+      ];
     }
-    // Add a new subsequent set with new rep stats
-    if (addOrDelete === "add-set") {
-      const newSet = Object.assign({}, newEx.sets[setIndex]);
-      newSet.reps = Array(newSet.reps.length).fill(0);
-      newEx.sets.splice(setIndex + 1, 0, newSet);
-    }
-    // 3. Update the database
-    context.updateDatabase(props.routineName, newEx, props.routineDate);
+
+    const updatedEx: Exercise = {
+      ...props.ex,
+      sets: newSets,
+    };
+
+    updateDatabase(props.routineName, updatedEx, props.routineDate);
   };
 
   return (

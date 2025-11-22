@@ -1,18 +1,19 @@
 import React from "react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useContext } from "react";
 import reactDom from "react-dom";
-import AppContext from "../../context/app-context";
+import { AppDataContext, AppActionsContext } from "../../context/app-context";
 import "./ExerciseFormModal.css";
 
 export default function ExerciseForm() {
-  const context = React.useContext(AppContext);
+  const { currentRoutine } = useContext(AppDataContext);
+  const { updateDatabase, toggleModal } = useContext(AppActionsContext);
   const nameInput = useRef<HTMLInputElement>(null);
   const weightInput = useRef<HTMLInputElement>(null);
   const setsInput = useRef<HTMLInputElement>(null);
   const repsInput = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
 
-  if (!context.currentRoutine) {
+  if (!currentRoutine) {
     return null; // Don't render modal if there's no current routine
   }
 
@@ -33,7 +34,7 @@ export default function ExerciseForm() {
     const exReps = repsInput.current.value;
 
     const newExInput = {
-      id: context.currentRoutine!.exercises.length + 1,
+      id: currentRoutine.exercises.length + 1,
       name: exName,
       sets: Array(+exSets).fill({
         weight: exWeight,
@@ -41,27 +42,27 @@ export default function ExerciseForm() {
       }),
     };
 
-    context.updateDatabase(
-      context.currentRoutine!.routineName,
+    updateDatabase(
+      currentRoutine.routineName,
       newExInput,
-      context.currentRoutine!.routineDate
+      currentRoutine.routineDate
     );
-    context.toggleModal();
+    toggleModal();
   };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (formRef.current && !formRef.current.contains(event.target as Node)) {
-        context.toggleModal();
+        toggleModal();
       }
     };
     window.addEventListener("click", handleClickOutside);
     return () => {
       window.removeEventListener("click", handleClickOutside);
     };
-  }, []);
+  }, [toggleModal]);
 
-  const portalTargetId = context.currentRoutine.routineName
+  const portalTargetId = currentRoutine.routineName
     .toLowerCase()
     .split(" ")
     .join("-");
@@ -76,7 +77,7 @@ export default function ExerciseForm() {
     <>
       {reactDom.createPortal(
         <div className="exercise-form" ref={formRef}>
-          <div className="close" onClick={() => context.toggleModal()}>
+          <div className="close" onClick={() => toggleModal()}>
             ❌
           </div>
           <form onSubmit={submitHandler}>

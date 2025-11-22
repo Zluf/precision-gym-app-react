@@ -1,21 +1,22 @@
 import React from "react";
 import "./App.css";
 import Logo from "./components/Logo/Logo";
-import AppContext from "./context/app-context";
+import { AppDataContext } from "./context/app-context";
 import Auth from "./components/auth/Auth";
 import AuthDetails from "./components/auth/AuthDetails";
 import UserDashboard from "./components/UI/UserDashboard/index";
 import AddNewRoutine from "./components/UI/UserDashboard/AddNewRoutine";
 
 function App() {
-  const context = React.useContext(AppContext);
+  console.log("App component rendered");
+  const { authUser, routineList } = React.useContext(AppDataContext);
   return (
     <div className="app">
       <Logo />
       <AuthDetails />
-      {!context.authUser && <Auth />}
-      {context.authUser && <UserDashboard />}
-      {context.authUser && context.routineList.length <= 0 && <AddNewRoutine />}
+      {!authUser && <Auth />}
+      {authUser && <UserDashboard />}
+      {authUser && routineList.length <= 0 && <AddNewRoutine />}
     </div>
   );
 }

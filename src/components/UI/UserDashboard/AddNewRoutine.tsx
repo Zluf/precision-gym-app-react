@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useRef, useState } from "react";
 import { todaysDate } from "../../../context/AppProvider";
 import "./AddNewRoutine.css";
-import AppContext from "../../../context/app-context";
+import { AppActionsContext } from "../../../context/app-context";
 import { Routine } from "../../../types";
 
 interface AddNewRoutineProps {
@@ -10,7 +10,7 @@ interface AddNewRoutineProps {
 }
 
 export default function AddNewRoutine(props: AddNewRoutineProps) {
-  const context = React.useContext(AppContext);
+  const { addNewRoutine } = useContext(AppActionsContext);
   const [addingNewRoutine, setAddingNewRoutine] = useState(false);
   const newRoutineInputRef = useRef<HTMLInputElement>(null);
 
@@ -38,7 +38,7 @@ export default function AddNewRoutine(props: AddNewRoutineProps) {
       },
     };
 
-    context.addNewRoutine(props.routineIndex ?? -1, newRoutine);
+    addNewRoutine(props.routineIndex ?? -1, newRoutine);
     setAddingNewRoutine(false);
   };
 

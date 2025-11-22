@@ -1,6 +1,6 @@
 import React from "react";
 import { useContext } from "react";
-import AppContext from "../../../../../../context/app-context";
+import { AppActionsContext } from "../../../../../../context/app-context";
 import { keyDownHandler } from "../../Exercise";
 import "../ExerciseStats.css";
 import { Exercise } from "../../../../../../types";
@@ -14,14 +14,20 @@ interface SetWeightProps {
 }
 
 function SetWeight(props: SetWeightProps) {
-  const context = useContext(AppContext);
+  const { updateDatabase } = useContext(AppActionsContext);
 
   const weightBlurHandler = (
     event: React.FocusEvent<HTMLInputElement>,
     setIndex: number
   ) => {
-    props.ex.sets[setIndex].weight = +event.target.value;
-    context.updateDatabase(props.routineName, props.ex, props.routineDate);
+    // Create immutable update
+    const updatedEx: Exercise = {
+      ...props.ex,
+      sets: props.ex.sets.map((set, i) =>
+        i === setIndex ? { ...set, weight: +event.target.value } : set
+      ),
+    };
+    updateDatabase(props.routineName, updatedEx, props.routineDate);
   };
 
   return (

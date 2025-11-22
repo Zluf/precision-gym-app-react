@@ -21,18 +21,23 @@ export interface CurrentRoutine {
   exercises: Exercise[];
 }
 
-export interface AppContextType {
+// Data that changes frequently - causes re-renders
+export interface AppDataContextType {
   authUser: string | null;
-  setUser: (user: string | null) => void;
   routineList: Routine[];
   modalWindowIsOpen: boolean;
+  currentRoutine: CurrentRoutine | null;
+}
+
+// Stable action functions - won't cause re-renders
+export interface AppActionsContextType {
+  setUser: (user: string | null) => void;
   deleteExercise: (
     routineName: string,
     exName: string,
     routineDate: string
   ) => Promise<void>;
   toggleModal: (currentRoutine?: CurrentRoutine) => void;
-  currentRoutine: CurrentRoutine | null;
   setCurrentRoutine: (currentRoutine: CurrentRoutine) => void;
   updateDatabase: (
     routineName: string,
@@ -46,3 +51,6 @@ export interface AppContextType {
     newRoutine: Routine
   ) => Promise<void>;
 }
+
+// Combined type for backwards compatibility during migration
+export interface AppContextType extends AppDataContextType, AppActionsContextType {}

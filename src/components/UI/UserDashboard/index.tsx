@@ -1,49 +1,52 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import "./UserDashboard.css";
 import { useEffect, useContext } from "react";
 import RoutineComponent from "./Routine";
 import ExerciseFormModal from "../ExerciseFormModal";
-import AppContext from "../../../context/app-context";
+import { AppDataContext, AppActionsContext } from "../../../context/app-context";
 import AddNewRoutine from "./AddNewRoutine";
 import { auth } from "../../../firebase";
 
 export default function UserDashboard() {
-  const context = useContext(AppContext);
+  console.log("UserDashboard component rendered");
+  const { routineList, modalWindowIsOpen } = useContext(AppDataContext);
+  const { fetchExerciseDatabase } = useContext(AppActionsContext);
 
   useEffect(() => {
-    // executes upon mount, gets stored in memory, therefore does not execute on further re-renders
     const user = auth.currentUser;
     if (user) {
-      context.fetchExerciseDatabase(user.uid);
+      fetchExerciseDatabase(user.uid);
     }
-  }, [context.fetchExerciseDatabase]);
+  }, [fetchExerciseDatabase]);
+
+  // Use toSorted() to avoid mutating the original array
+  const sortedRoutines = [...routineList].sort(
+    (a, b) => (a.routineId ?? 0) - (b.routineId ?? 0)
+  );
 
   return (
     <div className="user-dashboard">
-      {context.routineList
-        .sort((a, b) => (a.routineId ?? 0) - (b.routineId ?? 0))
-        .map((routine, i) => {
-          const routineClassName = routine.routineName
-            .toLowerCase()
-            .split(" ")
-            .join("-");
+      {sortedRoutines.map((routine, i) => {
+        const routineClassName = routine.routineName
+          .toLowerCase()
+          .split(" ")
+          .join("-");
 
-          return (
-            <div className="routine-container" key={`rc${i}`}>
-              <RoutineComponent
-                key={i}
-                className={`routine ${routineClassName}`}
-                id={routineClassName}
-                routineName={routine.routineName}
-                routine={routine}
-              />
+        return (
+          <div className="routine-container" key={`rc${i}`}>
+            <RoutineComponent
+              key={routine.routineName}
+              className={`routine ${routineClassName}`}
+              id={routineClassName}
+              routineName={routine.routineName}
+              routine={routine}
+            />
 
-              <AddNewRoutine routineIndex={i} />
-            </div>
-          );
-        })}
+            <AddNewRoutine routineIndex={i} />
+          </div>
+        );
+      })}
 
-      {context.modalWindowIsOpen && <ExerciseFormModal />}
+      {modalWindowIsOpen && <ExerciseFormModal />}
     </div>
   );
 }

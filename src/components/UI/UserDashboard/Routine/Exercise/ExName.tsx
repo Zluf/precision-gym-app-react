@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import AppContext from "../../../../../context/app-context";
+import { AppActionsContext } from "../../../../../context/app-context";
 import "./ExerciseStats.css";
 import { keyDownHandler } from "../Exercise";
 import { Exercise } from "../../../../../types";
@@ -11,11 +11,15 @@ interface ExNameProps {
 }
 
 function ExName(props: ExNameProps) {
-  const context = useContext(AppContext);
+  const { updateDatabase, deleteExercise } = useContext(AppActionsContext);
 
   const nameBlurHandler = (event: React.FocusEvent<HTMLInputElement>) => {
-    props.ex.name = event.target.value;
-    context.updateDatabase(props.routineName, props.ex, props.routineDate);
+    // Create immutable update
+    const updatedEx: Exercise = {
+      ...props.ex,
+      name: event.target.value,
+    };
+    updateDatabase(props.routineName, updatedEx, props.routineDate);
   };
 
   return (
@@ -23,7 +27,7 @@ function ExName(props: ExNameProps) {
       <div
         className="delete-exercise"
         onClick={() => {
-          context.deleteExercise(
+          deleteExercise(
             props.routineName,
             props.ex.name,
             props.routineDate

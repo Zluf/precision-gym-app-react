@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../../firebase";
-import AppContext from "../../context/app-context";
+import { AppDataContext, AppActionsContext } from "../../context/app-context";
 
 export default function AuthDetails() {
-  const context = React.useContext(AppContext);
+  const { authUser } = useContext(AppDataContext);
+  const { setUser } = useContext(AppActionsContext);
 
   const userSignOut = async () => {
     const isGuest =
@@ -42,20 +43,20 @@ export default function AuthDetails() {
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        context.setUser(
+        setUser(
           user.displayName
             ? user.displayName
             : user.email?.split("@")[0] ?? "User"
         );
-      } else context.setUser(null);
+      } else setUser(null);
     });
-  }, []);
+  }, [setUser]);
 
   return (
     <div className="auth-details">
-      {context.authUser && (
+      {authUser && (
         <>
-          <p>{`Signed in as ${context.authUser}`}</p>
+          <p>{`Signed in as ${authUser}`}</p>
           <button onClick={userSignOut}>Sign Out</button>
         </>
       )}

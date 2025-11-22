@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../../firebase";
 import "./Auth.css";
-import AppContext from "../../context/app-context";
+import { AppActionsContext } from "../../context/app-context";
 
 export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userName, setUserName] = useState("");
-  const context = React.useContext(AppContext);
+  const { setUser } = useContext(AppActionsContext);
 
   const signUp = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -17,7 +17,7 @@ export default function SignUp() {
         return updateProfile(userCredential.user, {
           displayName: userName,
         }).then(() => {
-          context.setUser(userName);
+          setUser(userName);
         });
       })
       .catch((error) => console.log(error));
