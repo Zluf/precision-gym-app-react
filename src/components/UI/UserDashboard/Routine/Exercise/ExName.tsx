@@ -11,15 +11,18 @@ interface ExNameProps {
 }
 
 function ExName(props: ExNameProps) {
-  const { updateDatabase, deleteExercise } = useContext(AppActionsContext);
+  const { updateExercise, deleteExercise } = useContext(AppActionsContext);
 
   const nameBlurHandler = (event: React.FocusEvent<HTMLInputElement>) => {
-    // Create immutable update
-    const updatedEx: Exercise = {
-      ...props.ex,
-      name: event.target.value,
-    };
-    updateDatabase(props.routineName, updatedEx, props.routineDate);
+    updateExercise(
+      props.routineName,
+      props.ex.id,
+      {
+        type: "updateExerciseName",
+        newName: event.target.value,
+      },
+      props.routineDate
+    );
   };
 
   return (
@@ -27,11 +30,7 @@ function ExName(props: ExNameProps) {
       <div
         className="delete-exercise"
         onClick={() => {
-          deleteExercise(
-            props.routineName,
-            props.ex.name,
-            props.routineDate
-          );
+          deleteExercise(props.routineName, props.ex.name, props.routineDate);
         }}
       >
         ❌
@@ -43,7 +42,6 @@ function ExName(props: ExNameProps) {
           name="name"
           type="text"
           defaultValue={props.ex.name}
-          onChange={(event) => event.target.value}
           onKeyDown={keyDownHandler}
           onBlur={(event) => nameBlurHandler(event)}
           style={{

@@ -16,7 +16,20 @@ interface ExSetProps {
   onRepClick: (setIndex: number, repIndex: number, newValue: number) => void;
 }
 
+// Custom comparator function for memo() defined outside
+const arePropsEqual = (
+  prevProps: ExSetProps,
+  nextProps: ExSetProps
+): boolean => {
+  return prevProps.set === nextProps.set;
+};
+
 const ExSet = memo((props: ExSetProps) => {
+  console.log(
+    `RNDR ${props.routineName} / ${props.ex.name} / set ${props.setIndex}`,
+    props.set
+  );
+
   const [repsAreVisible, setRepsAreVisible] = useState(false);
 
   const toggleRepsHandler = () => {
@@ -52,7 +65,7 @@ const ExSet = memo((props: ExSetProps) => {
           Set {props.setIndex + 1}
         </span>
 
-        <SetGauge ex={props.ex} setIndex={props.setIndex} />
+        <SetGauge set={props.set} setIndex={props.setIndex} />
       </div>
 
       <div className="exercise-stats--row">
@@ -60,7 +73,7 @@ const ExSet = memo((props: ExSetProps) => {
           routineDate={props.routineDate}
           routineName={props.routineName}
           set={props.set}
-          ex={props.ex}
+          exId={props.ex.id}
           setIndex={props.setIndex}
         />
 
@@ -70,7 +83,7 @@ const ExSet = memo((props: ExSetProps) => {
         />
 
         <SetAddDeleteButton
-          ex={props.ex}
+          exId={props.ex.id}
           setIndex={props.setIndex}
           addOrDelete="delete-set"
           routineName={props.routineName}
@@ -87,7 +100,7 @@ const ExSet = memo((props: ExSetProps) => {
             key={repIndex}
             routineName={props.routineName}
             routineDate={props.routineDate}
-            ex={props.ex}
+            exId={props.ex.id}
             setIndex={props.setIndex}
             repIndex={repIndex}
             onRepClick={(event) =>
@@ -98,7 +111,7 @@ const ExSet = memo((props: ExSetProps) => {
       </div>
 
       <SetAddDeleteButton
-        ex={props.ex}
+        exId={props.ex.id}
         routineName={props.routineName}
         routineDate={props.routineDate}
         setIndex={props.setIndex}
@@ -107,18 +120,6 @@ const ExSet = memo((props: ExSetProps) => {
       />
     </div>
   );
-}, (prevProps, nextProps) => {
-  // Custom comparison: only re-render if THIS set's data actually changed
-  // Ignore changes to the `ex` prop (entire exercise object)
-  return (
-    prevProps.set === nextProps.set &&
-    prevProps.setIndex === nextProps.setIndex &&
-    prevProps.routineName === nextProps.routineName &&
-    prevProps.routineDate === nextProps.routineDate
-    // Note: We intentionally ignore `ex` and `onRepClick` props
-    // - `ex` changes on every update but we don't need to re-render for that
-    // - `onRepClick` should be stable from parent
-  );
-});
+}, arePropsEqual);
 
 export default ExSet;

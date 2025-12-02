@@ -1,10 +1,9 @@
 import { useContext } from "react";
 import "../ExerciseStats.css";
 import { AppActionsContext } from "../../../../../../context/app-context";
-import { Exercise } from "../../../../../../types";
 
 interface SetAddDeleteButtonProps {
-  ex?: Exercise;
+  exId: number;
   routineName: string;
   routineDate: string;
   setIndex: number;
@@ -13,32 +12,21 @@ interface SetAddDeleteButtonProps {
 }
 
 function SetAddDeleteButton(props: SetAddDeleteButtonProps) {
-  const { updateDatabase } = useContext(AppActionsContext);
+  const { updateExercise } = useContext(AppActionsContext);
 
   const addOrDeleteSetHandler = (addOrDelete: string, setIndex: number) => {
-    if (!props.ex) return;
+    const action = addOrDelete === "delete-set" ? "delete" : "add";
 
-    let newSets;
-    if (addOrDelete === "delete-set") {
-      newSets = props.ex.sets.filter((_, i) => i !== setIndex);
-    } else {
-      const newSet = {
-        weight: props.ex.sets[setIndex].weight,
-        reps: Array(props.ex.sets[setIndex].reps.length).fill(0),
-      };
-      newSets = [
-        ...props.ex.sets.slice(0, setIndex + 1),
-        newSet,
-        ...props.ex.sets.slice(setIndex + 1),
-      ];
-    }
-
-    const updatedEx: Exercise = {
-      ...props.ex,
-      sets: newSets,
-    };
-
-    updateDatabase(props.routineName, updatedEx, props.routineDate);
+    updateExercise(
+      props.routineName,
+      props.exId,
+      {
+        type: "addOrDeleteSet",
+        setIndex,
+        action,
+      },
+      props.routineDate
+    );
   };
 
   return (

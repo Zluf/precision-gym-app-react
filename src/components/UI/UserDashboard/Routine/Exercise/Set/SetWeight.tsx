@@ -3,31 +3,32 @@ import { useContext } from "react";
 import { AppActionsContext } from "../../../../../../context/app-context";
 import { keyDownHandler } from "../../Exercise";
 import "../ExerciseStats.css";
-import { Exercise } from "../../../../../../types";
 
 interface SetWeightProps {
   routineDate: string;
   routineName: string;
   set: { weight: number; reps: number[] };
-  ex: Exercise;
+  exId: number;
   setIndex: number;
 }
 
 function SetWeight(props: SetWeightProps) {
-  const { updateDatabase } = useContext(AppActionsContext);
+  const { updateExercise } = useContext(AppActionsContext);
 
   const weightBlurHandler = (
     event: React.FocusEvent<HTMLInputElement>,
     setIndex: number
   ) => {
-    // Create immutable update
-    const updatedEx: Exercise = {
-      ...props.ex,
-      sets: props.ex.sets.map((set, i) =>
-        i === setIndex ? { ...set, weight: +event.target.value } : set
-      ),
-    };
-    updateDatabase(props.routineName, updatedEx, props.routineDate);
+    updateExercise(
+      props.routineName,
+      props.exId,
+      {
+        type: "updateSetWeight",
+        setIndex,
+        newWeight: +event.target.value,
+      },
+      props.routineDate
+    );
   };
 
   return (

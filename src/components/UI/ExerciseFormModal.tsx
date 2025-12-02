@@ -6,7 +6,7 @@ import "./ExerciseFormModal.css";
 
 export default function ExerciseForm() {
   const { currentRoutine } = useContext(AppDataContext);
-  const { updateDatabase, toggleModal } = useContext(AppActionsContext);
+  const { addNewExercise, toggleModal } = useContext(AppActionsContext);
   const nameInput = useRef<HTMLInputElement>(null);
   const weightInput = useRef<HTMLInputElement>(null);
   const setsInput = useRef<HTMLInputElement>(null);
@@ -30,19 +30,19 @@ export default function ExerciseForm() {
 
     const exName = nameInput.current.value;
     const exWeight = +weightInput.current.value;
-    const exSets = setsInput.current.value;
-    const exReps = repsInput.current.value;
+    const exSets = +setsInput.current.value;
+    const exReps = +repsInput.current.value;
 
     const newExInput = {
       id: currentRoutine.exercises.length + 1,
       name: exName,
-      sets: Array(+exSets).fill({
+      sets: Array(exSets).fill({
         weight: exWeight,
-        reps: Array(+exReps).fill(0),
+        reps: Array(exReps).fill(0),
       }),
     };
 
-    updateDatabase(
+    addNewExercise(
       currentRoutine.routineName,
       newExInput,
       currentRoutine.routineDate

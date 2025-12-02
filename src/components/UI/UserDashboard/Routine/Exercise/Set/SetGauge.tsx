@@ -1,8 +1,7 @@
 import "../ExerciseStats.css";
-import { Exercise } from "../../../../../../types";
 
 interface SetGaugeProps {
-  ex: Exercise;
+  set: { weight: number; reps: number[] };
   setIndex: number;
 }
 
@@ -33,7 +32,7 @@ function SetGauge(props: SetGaugeProps) {
 
   return (
     <div className="exercise-stats--set-gauge">
-      {props.ex.sets[props.setIndex].reps.map((rep, i) => (
+      {props.set.reps.map((rep, i) => (
         <div
           key={i}
           className="gauge-sector"

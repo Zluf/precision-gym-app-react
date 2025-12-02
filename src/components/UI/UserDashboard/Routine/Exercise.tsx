@@ -23,28 +23,29 @@ interface ExerciseProps {
 }
 
 const Exercise = memo((props: ExerciseProps) => {
-  console.log(`${props.routineName} EX ${props.ex.name}`);
-  const { updateDatabase } = useContext(AppActionsContext);
+  console.log(`RNDR ${props.routineName} / ${props.ex.name}`);
+  const { updateExercise } = useContext(AppActionsContext);
 
-  const handleRepClick = useCallback((setIndex: number, repIndex: number, newValue: number) => {
-    // Calculate new reps array based on clicked rep
-    const newReps = props.ex.sets[setIndex].reps.map((rep, i) => {
-      if (i !== repIndex && rep > newValue) return rep;
-      if (i <= repIndex) return newValue;
-      if (i > repIndex) return rep;
-      return rep;
-    });
+  const handleRepClick = useCallback(
+    (setIndex: number, repIndex: number, newValue: number) => {
+      // Calculate new reps array based on clicked rep
+      const newReps = props.ex.sets[setIndex].reps.map((rep, i) => {
+        if (i !== repIndex && rep > newValue) return rep;
+        if (i <= repIndex) return newValue;
+        if (i > repIndex) return rep;
+        return rep;
+      });
 
-    // Create immutable update with new exercise object
-    const updatedEx: ExerciseType = {
-      ...props.ex,
-      sets: props.ex.sets.map((set, i) =>
-        i === setIndex ? { ...set, reps: newReps } : set
-      ),
-    };
-
-    updateDatabase(props.routineName, updatedEx, props.routineDate);
-  }, [props.ex, props.routineName, props.routineDate, updateDatabase]);
+      // Call updateExercise with mutation object
+      updateExercise(
+        props.routineName,
+        props.ex.id,
+        { type: "updateRepValues", setIndex, newReps },
+        props.routineDate
+      );
+    },
+    [props.ex.sets, props.ex.id, props.routineName, props.routineDate, updateExercise]
+  );
 
   return (
     <div className="exercise">

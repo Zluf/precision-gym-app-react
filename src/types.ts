@@ -21,6 +21,19 @@ export interface CurrentRoutine {
   exercises: Exercise[];
 }
 
+// Exercise update mutation types (discriminated union)
+export type UpdateMutation =
+  | { type: "updateRepValues"; setIndex: number; newReps: number[] }
+  | {
+      type: "addOrDeleteRep";
+      setIndex: number;
+      repIndex: number;
+      action: "add" | "delete";
+    }
+  | { type: "addOrDeleteSet"; setIndex: number; action: "add" | "delete" }
+  | { type: "updateSetWeight"; setIndex: number; newWeight: number }
+  | { type: "updateExerciseName"; newName: string };
+
 // Data that changes frequently - causes re-renders
 export interface AppDataContextType {
   authUser: string | null;
@@ -38,10 +51,15 @@ export interface AppActionsContextType {
     routineDate: string
   ) => Promise<void>;
   toggleModal: (currentRoutine?: CurrentRoutine) => void;
-  setCurrentRoutine: (currentRoutine: CurrentRoutine) => void;
-  updateDatabase: (
+  addNewExercise: (
     routineName: string,
-    updatedEx: Exercise | null,
+    exercise: Exercise,
+    routineDate: string
+  ) => {};
+  updateExercise: (
+    routineName: string,
+    exerciseId: number,
+    mutation: UpdateMutation,
     routineDate: string
   ) => Promise<void>;
   fetchExerciseDatabase: (uid: string) => Promise<void>;
@@ -53,4 +71,6 @@ export interface AppActionsContextType {
 }
 
 // Combined type for backwards compatibility during migration
-export interface AppContextType extends AppDataContextType, AppActionsContextType {}
+export interface AppContextType
+  extends AppDataContextType,
+    AppActionsContextType {}

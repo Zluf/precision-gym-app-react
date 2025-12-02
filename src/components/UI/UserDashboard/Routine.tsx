@@ -16,14 +16,15 @@ interface RoutineProps {
 }
 
 const Routine = memo((props: RoutineProps) => {
-  console.log(`Routine component for ${props.routineName} rendered`);
+  console.log(`RNDR ${props.routineName}`);
 
   const routineDates = Object.keys(props.routine.logbook);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [sessionIsToday, setSessionIsToday] = useState(false);
 
   // Only use actions context - won't cause re-renders when data changes
-  const { addNewDate, toggleModal, deleteExercise } = useContext(AppActionsContext);
+  const { addNewDate, toggleModal, deleteExercise } =
+    useContext(AppActionsContext);
 
   const [displayedDate, setDisplayedDate] = useState(
     routineDates[routineDates.length - 1]
@@ -102,10 +103,10 @@ const Routine = memo((props: RoutineProps) => {
             width: `${exercisesArr.length * 300}px`,
           }}
         >
-          {exercisesArr.map((exercise, i) => {
+          {exercisesArr.map((exercise) => {
             return (
               <Exercise
-                key={`${exercise.name}-${i + 1}`}
+                key={exercise.id}
                 routineName={props.routineName}
                 routineDate={displayedDate}
                 ex={exercise}

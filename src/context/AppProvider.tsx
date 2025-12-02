@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo, useRef } from "react";
 import App from "../App";
-import { Exercise, Routine, CurrentRoutine } from "../types";
+import { Exercise, Routine, CurrentRoutine, UpdateMutation } from "../types";
 import { AppDataContext, AppActionsContext } from "./app-context";
 import { useFirebaseApi } from "../hooks/useFirebaseApi";
 
@@ -25,11 +25,6 @@ export default function AppProvider() {
   const routineListRef = useRef(routineList);
   routineListRef.current = routineList;
 
-  const setUser = useCallback(
-    (user: string | null): void => setAuthUser(user),
-    []
-  );
-
   const fetchExerciseDatabase = useCallback(async (): Promise<void> => {
     try {
       const data = await firebaseApi.fetchRoutine("routines.json");
@@ -40,27 +35,133 @@ export default function AppProvider() {
     }
   }, [firebaseApi]);
 
-  const updateDatabase = useCallback(
+  const addNewExercise = useCallback(
     async (
       routineName: string,
-      updatedEx: Exercise | null,
+      exercise: Exercise,
       routineDate: string
     ): Promise<void> => {
       const currentList = routineListRef.current;
-      const routineIndex = currentList.findIndex(
+      const newRoutineList = currentList.map((r) => {
+        if (r.routineName !== routineName) return r;
+        return {
+          ...r,
+          logbook: {
+            ...r.logbook,
+            [routineDate]: [...r.logbook[routineDate], exercise],
+          },
+        };
+      });
+
+      setRoutineList(newRoutineList);
+      const newRoutine = newRoutineList.find(
         (r) => r.routineName === routineName
       );
+      await firebaseApi.updateRoutine(
+        `routines/${routineName}/.json`,
+        newRoutine
+      );
+      return;
+    },
+    []
+  );
 
-      const newRoutineList = currentList.map((routine, i) => {
-        if (i !== routineIndex) return routine;
-        if (!updatedEx) return routine;
+  const updateExercise = useCallback(
+    async (
+      routineName: string,
+      exerciseId: number,
+      mutation: UpdateMutation,
+      routineDate: string
+    ): Promise<void> => {
+      const currentList = routineListRef.current;
+      const routine = currentList.find((r) => r.routineName === routineName);
+      if (!routine) return;
+
+      // For updating existing exercises
+      const currentEx = routine.logbook[routineDate][exerciseId - 1];
+      if (!currentEx) return;
+
+      let updatedEx: Exercise = { ...currentEx };
+
+      // Apply mutation based on type
+      switch (mutation.type) {
+        case "updateRepValues":
+          updatedEx = {
+            ...updatedEx,
+            sets: updatedEx.sets.map((set, i) =>
+              i === mutation.setIndex ? { ...set, reps: mutation.newReps } : set
+            ),
+          };
+          break;
+
+        case "updateSetWeight":
+          updatedEx = {
+            ...updatedEx,
+            sets: updatedEx.sets.map((set, i) =>
+              i === mutation.setIndex
+                ? { ...set, weight: mutation.newWeight }
+                : set
+            ),
+          };
+          break;
+
+        case "updateExerciseName":
+          updatedEx = {
+            ...updatedEx,
+            name: mutation.newName,
+          };
+          break;
+
+        case "addOrDeleteRep":
+          const currentReps = updatedEx.sets[mutation.setIndex].reps;
+          const newReps =
+            mutation.action === "delete"
+              ? currentReps.filter((_, i) => i !== mutation.repIndex)
+              : [
+                  ...currentReps.slice(0, mutation.repIndex + 1),
+                  0,
+                  ...currentReps.slice(mutation.repIndex + 1),
+                ];
+          updatedEx = {
+            ...updatedEx,
+            sets: updatedEx.sets.map((set, i) =>
+              i === mutation.setIndex ? { ...set, reps: newReps } : set
+            ),
+          };
+          break;
+
+        case "addOrDeleteSet":
+          const currentSets = updatedEx.sets;
+          const newSets =
+            mutation.action === "delete"
+              ? currentSets.filter((_, i) => i !== mutation.setIndex)
+              : [
+                  ...currentSets.slice(0, mutation.setIndex + 1),
+                  {
+                    weight: currentSets[mutation.setIndex].weight,
+                    reps: Array(
+                      currentSets[mutation.setIndex].reps.length
+                    ).fill(0),
+                  },
+                  ...currentSets.slice(mutation.setIndex + 1),
+                ];
+          updatedEx = {
+            ...updatedEx,
+            sets: newSets,
+          };
+          break;
+      }
+
+      // Update routine list with the modified exercise
+      const newRoutineList = currentList.map((r) => {
+        if (r.routineName !== routineName) return r;
 
         return {
-          ...routine,
+          ...r,
           logbook: {
-            ...routine.logbook,
-            [routineDate]: routine.logbook[routineDate].map((ex, j) =>
-              j === updatedEx.id - 1 ? updatedEx : ex
+            ...r.logbook,
+            [routineDate]: r.logbook[routineDate].map((ex, i) =>
+              i === exerciseId - 1 ? updatedEx : ex
             ),
           },
         };
@@ -71,7 +172,6 @@ export default function AppProvider() {
       const newRoutine = newRoutineList.find(
         (r) => r.routineName === routineName
       );
-
       await firebaseApi.updateRoutine(
         `routines/${routineName}/.json`,
         newRoutine
@@ -187,10 +287,6 @@ export default function AppProvider() {
     setModalWindow((prev) => !prev);
   }, []);
 
-  const handleSetCurrentRoutine = useCallback((routine: CurrentRoutine) => {
-    setCurrentRoutine(routine);
-  }, []);
-
   // Data context value - changes when data changes
   const dataContext = useMemo(
     () => ({
@@ -205,24 +301,24 @@ export default function AppProvider() {
   // Actions context value - stable, never changes
   const actionsContext = useMemo(
     () => ({
-      setUser,
+      setUser: setAuthUser,
       fetchExerciseDatabase,
-      updateDatabase,
+      updateExercise,
+      addNewExercise,
       deleteExercise,
       addNewDate,
       addNewRoutine,
       toggleModal,
-      setCurrentRoutine: handleSetCurrentRoutine,
     }),
     [
-      setUser,
+      setAuthUser,
       fetchExerciseDatabase,
-      updateDatabase,
+      updateExercise,
+      addNewExercise,
       deleteExercise,
       addNewDate,
       addNewRoutine,
       toggleModal,
-      handleSetCurrentRoutine,
     ]
   );
 
