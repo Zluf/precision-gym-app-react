@@ -12,6 +12,47 @@ export const todaysDate = (): string => {
   return `${date.getFullYear()}-${month}-${day}`;
 };
 
+const getFirebasePath = (
+  routineName: string,
+  exerciseId: number,
+  routineDate: string,
+  mutation: UpdateMutation
+): string => {
+  const basePath = `routines/${routineName}/logbook/${routineDate}/${
+    exerciseId - 1
+  }`;
+
+  switch (mutation.type) {
+    case "updateRepValues":
+    case "addOrDeleteRep":
+      return `${basePath}/sets/${mutation.setIndex}/reps`;
+    case "updateSetWeight":
+      return `${basePath}/sets/${mutation.setIndex}/weight`;
+    case "updateExerciseName":
+      return `${basePath}/name`;
+    case "addOrDeleteSet":
+      return `${basePath}/sets`;
+    default:
+      return `routines/${routineName}`;
+  }
+};
+
+const getUpdateValue = (updatedEx: Exercise, mutation: UpdateMutation) => {
+  switch (mutation.type) {
+    case "updateRepValues":
+    case "addOrDeleteRep":
+      return updatedEx.sets[mutation.setIndex].reps;
+    case "updateSetWeight":
+      return updatedEx.sets[mutation.setIndex].weight;
+    case "updateExerciseName":
+      return updatedEx.name;
+    case "addOrDeleteSet":
+      return updatedEx.sets;
+    default:
+      return updatedEx;
+  }
+};
+
 export default function AppProvider() {
   const [authUser, setAuthUser] = useState<string | null>(null);
   const [routineList, setRoutineList] = useState<Routine[]>([]);
